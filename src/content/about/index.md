@@ -8,6 +8,14 @@ team:
     links:
       - label: LinkedIn
         url: https://www.linkedin.com/in/example
+  - name: Karen Jemison
+    role: Co-Founder Director of Strategy and Experience
+    photo: ''
+    photo_alt: ''
+    bio: Short biography goes here. Edit through the CMS at /admin/.
+    links:
+      - label: LinkedIn
+        url: https://www.linkedin.com/in/example
 locations:
   - London
   - New York
