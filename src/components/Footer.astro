@@ -1,0 +1,41 @@
+---
+import { getEntry } from 'astro:content';
+
+interface Props {
+  locations?: string[];
+  email?: string;
+}
+
+let { locations, email } = Astro.props;
+
+if (!locations || !email) {
+  try {
+    const about = await getEntry('about', 'index');
+    if (about) {
+      locations = locations ?? about.data.locations;
+      email = email ?? about.data.contact_email;
+    }
+  } catch {
+    // fall through to defaults
+  }
+}
+
+locations = locations ?? ['London', 'New York', 'Singapore'];
+email = email ?? 'hello@interval.studio';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer" data-theme="dark">
+  <div class="container">
+    <div class="footer__inner">
+      <img class="footer__logo" src="/assets/interval-logo-white.svg" alt="Interval" />
+      <div class="footer__meta">
+        <span>© {year} Interval Studio</span>
+        <span>Total Experience Design™</span>
+        <span>{locations.join(' · ')}</span>
+        <span><a href={`mailto:${email}`} style="color: inherit;">{email}</a></span>
+      </div>
+    </div>
+  </div>
+</footer>

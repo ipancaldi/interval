@@ -1,0 +1,22 @@
+{
+  "name": "interval-website",
+  "type": "module",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Interval — Total Experience Design™. Editorial site, Astro + Cloudflare Pages + Sveltia CMS.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^5.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.0",
+    "typescript": "^5.5.0"
+  }
+}

@@ -1,0 +1,70 @@
+---
+import { getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import MetaRow from '../components/MetaRow.astro';
+import TeamMember from '../components/TeamMember.astro';
+
+const entry = await getEntry('about', 'index');
+
+if (!entry) {
+  throw new Error(
+    'About content not found. Expected src/content/about/index.md to exist with frontmatter.',
+  );
+}
+
+const { intro, team, locations, contact_email } = entry.data;
+const { Content } = await entry.render();
+---
+
+<Base
+  title="About — Interval"
+  description={intro.slice(0, 160)}
+  navTheme="light"
+  footerLocations={locations}
+  footerEmail={contact_email}
+>
+  <section class="container" style="padding-top: 80px;">
+    <MetaRow left="IV / About" right="Practice" />
+
+    <div class="page-intro reveal">
+      <div class="page-intro__label">About Interval</div>
+      <h1 class="page-intro__title">A small practice for <em>large places</em>.</h1>
+      <p class="page-intro__lede">{intro}</p>
+    </div>
+  </section>
+
+  {team.length > 0 && (
+    <section class="container">
+      <MetaRow left={`Team · ${team.length}`} right="Senior, small, embedded" />
+      <div class="team-grid reveal">
+        {team.map((member) => <TeamMember member={member} />)}
+      </div>
+    </section>
+  )}
+
+  <section class="container" style="padding-bottom: var(--section-pad);">
+    <div class="cs-body__prose reveal" style="max-width: 64ch; margin: 0 auto;">
+      <Content />
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" data-theme="dark">
+    <div class="container">
+      <MetaRow left="Contact" right="Selectively taking new work" dark={true} />
+      <div style="padding-top: clamp(40px, 8vh, 80px);">
+        <h2 class="cta__title reveal">Tell us what you're <em>trying to build</em>.</h2>
+        <div class="cta__row reveal">
+          <p class="cta__copy">
+            If you have a place to make, remake, or rethink, and the ambition to do it
+            properly, we'd like to hear from you.
+          </p>
+          <div class="cta__contact">
+            <a class="btn-primary" href={`mailto:${contact_email}`}>{contact_email}</a>
+            <span class="contact-line">{locations.join(' · ')}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

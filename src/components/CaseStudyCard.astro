@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'case-studies'>;
+}
+
+const { entry } = Astro.props;
+const { title, client, year, summary, hero_image, hero_image_alt, pillars } = entry.data;
+const href = `/case-studies/${entry.slug}/`;
+const clientLabel = client && client.trim().length > 0 ? client : 'Confidential';
+---
+
+<a class="case-card" href={href}>
+  <div class="case-card__media">
+    <img src={hero_image} alt={hero_image_alt} loading="lazy" />
+  </div>
+  <div class="case-card__meta">
+    <span>{clientLabel}</span>
+    <span>{year}</span>
+  </div>
+  <h3 class="case-card__title">{title}</h3>
+  <p class="case-card__summary">{summary}</p>
+  {pillars.length > 0 && (
+    <ul class="case-card__pillars">
+      {pillars.map((p) => <li class="case-card__pillar">{p}</li>)}
+    </ul>
+  )}
+</a>

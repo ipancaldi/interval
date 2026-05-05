@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import MetaRow from '../../components/MetaRow.astro';
+import CaseStudyCard from '../../components/CaseStudyCard.astro';
+
+const entries = (await getCollection('case-studies'))
+  .filter((e) => !e.data.draft)
+  .sort((a, b) => {
+    if (a.data.order !== b.data.order) return a.data.order - b.data.order;
+    return b.data.year - a.data.year;
+  });
+---
+
+<Base
+  title="Case Studies — Interval"
+  description="A selection of work from Interval's strategic advisory and design lab."
+  navTheme="light"
+>
+  <section class="container" style="padding-top: 80px;">
+    <MetaRow left="IV / Case Studies" right={`${entries.length} project${entries.length === 1 ? '' : 's'}`} />
+
+    <div class="page-intro reveal">
+      <div class="page-intro__label">Selected Work</div>
+      <h1 class="page-intro__title">Places we've <em>made, remade, and rethought</em>.</h1>
+      <p class="page-intro__lede">
+        A selection of projects across cultural districts, hospitality, civic spaces, and
+        destination experiences — each shaped through the Total Experience Design™ framework.
+      </p>
+    </div>
+  </section>
+
+  <section class="container">
+    {entries.length > 0 ? (
+      <div class="cases-grid reveal">
+        {entries.map((entry) => <CaseStudyCard entry={entry} />)}
+      </div>
+    ) : (
+      <div class="page-intro" style="border-top: 0;">
+        <p class="page-intro__lede">
+          No case studies published yet. Add the first one through the
+          <a href="/admin/" style="border-bottom: 1px solid currentColor;">content manager</a>.
+        </p>
+      </div>
+    )}
+  </section>
+</Base>

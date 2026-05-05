@@ -1,0 +1,177 @@
+# Sveltia CMS configuration
+# Docs: https://github.com/sveltia/sveltia-cms
+
+backend:
+  name: github
+  repo: ipancaldi/interval-website
+  branch: main
+  # OAuth proxy. Set this AFTER deploying sveltia-cms-auth to Cloudflare Workers.
+  # Replace YOUR-WORKER-SUBDOMAIN with your actual workers.dev subdomain.
+  base_url: https://YOUR-WORKER-SUBDOMAIN.workers.dev
+
+site_url: https://interval.studio
+display_url: https://interval.studio
+logo_url: /assets/interval-logo-black.svg
+
+# Where editor uploads land. Astro serves /public/* at site root, so /assets/uploads/foo.jpg
+# in markdown frontmatter resolves to https://interval.studio/assets/uploads/foo.jpg.
+media_folder: "public/assets/uploads"
+public_folder: "/assets/uploads"
+
+# Optional: editorial workflow gives you draft/review/publish state instead of save-and-publish.
+# Disabled by default for simplicity; enable when ready.
+# publish_mode: editorial_workflow
+
+collections:
+  # =====================================================================
+  # CASE STUDIES — folder collection (one markdown file per case study)
+  # =====================================================================
+  - name: case-studies
+    label: Case Studies
+    label_singular: Case Study
+    folder: src/content/case-studies
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{year}}"
+    sortable_fields: [order, year, title]
+    view_groups:
+      - { label: Year, field: year }
+      - { label: Featured, field: featured }
+    fields:
+      - { name: title, label: Title, widget: string }
+      - {
+          name: client,
+          label: Client,
+          widget: string,
+          required: false,
+          hint: "Leave empty to display as 'Confidential'."
+        }
+      - {
+          name: year,
+          label: Year,
+          widget: number,
+          value_type: int,
+          min: 2000,
+          max: 2100
+        }
+      - {
+          name: location,
+          label: Location,
+          widget: string,
+          required: false,
+          hint: "e.g. London, UK"
+        }
+      - name: pillars
+        label: Pillars covered
+        widget: select
+        multiple: true
+        options:
+          - Spatial
+          - Technology
+          - Brand & Digital
+          - Content
+          - Time
+        default: []
+      - name: phases
+        label: Phases delivered
+        widget: select
+        multiple: true
+        required: false
+        options:
+          - Human Foundation
+          - Vision
+          - Master Planning
+          - Realisation
+        default: []
+      - {
+          name: summary,
+          label: One-line summary,
+          widget: text,
+          hint: "Used on the index card and as the meta description."
+        }
+      - { name: hero_image, label: Hero image, widget: image }
+      - { name: hero_image_alt, label: Hero image alt text, widget: string }
+      - name: gallery
+        label: Gallery
+        label_singular: Gallery image
+        widget: list
+        required: false
+        fields:
+          - { name: src, label: Image, widget: image }
+          - { name: alt, label: Alt text, widget: string }
+          - { name: caption, label: Caption, widget: string, required: false }
+      - {
+          name: featured,
+          label: Show on home page,
+          widget: boolean,
+          default: false
+        }
+      - {
+          name: order,
+          label: Sort weight (lower = earlier),
+          widget: number,
+          value_type: int,
+          default: 0
+        }
+      - {
+          name: draft,
+          label: Draft (hidden from production),
+          widget: boolean,
+          default: false
+        }
+      - { name: body, label: Body, widget: markdown }
+
+  # =====================================================================
+  # ABOUT — file collection (single page, repeatable team modules)
+  # =====================================================================
+  - name: about
+    label: About
+    files:
+      - name: about
+        label: About Us
+        file: src/content/about/index.md
+        fields:
+          - {
+              name: intro,
+              label: Intro paragraph (above team),
+              widget: text
+            }
+          - name: team
+            label: Team members
+            label_singular: Team member
+            widget: list
+            fields:
+              - { name: name, label: Name, widget: string }
+              - { name: role, label: Role, widget: string }
+              - { name: photo, label: Photo, widget: image, required: false }
+              - {
+                  name: photo_alt,
+                  label: Photo alt text,
+                  widget: string,
+                  required: false
+                }
+              - { name: bio, label: Bio, widget: markdown }
+              - name: links
+                label: Links
+                widget: list
+                required: false
+                fields:
+                  - { name: label, label: Label, widget: string }
+                  - { name: url, label: URL, widget: string }
+          - name: locations
+            label: Locations shown in footer
+            widget: list
+            field: { name: location, label: Location, widget: string }
+          - {
+              name: contact_email,
+              label: Contact email,
+              widget: string,
+              default: "hello@interval.studio"
+            }
+          - {
+              name: body,
+              label: Long-form body (below team, optional),
+              widget: markdown,
+              required: false
+            }

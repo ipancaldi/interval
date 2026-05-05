@@ -1,0 +1,216 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import MetaRow from '../components/MetaRow.astro';
+import FrameworkDiagram from '../components/FrameworkDiagram.astro';
+import Pillars from '../components/Pillars.astro';
+import Phases from '../components/Phases.astro';
+import CaseStudyCard from '../components/CaseStudyCard.astro';
+
+const featuredCases = (await getCollection('case-studies'))
+  .filter((e) => e.data.featured && !e.data.draft)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+---
+
+<Base
+  title="Interval — Total Experience Design™"
+  description="A new framework for transformational fan, audience, visitor and customer experiences through adaptable spaces and places."
+  navTheme="dark"
+>
+  <Hero />
+
+  <div class="light-block">
+
+    <!-- APPROACH -->
+    <section class="container" id="approach">
+      <MetaRow left="IV001" right="Approach" />
+
+      <div class="editorial reveal">
+        <h2 class="editorial__title">A new approach to experience design.</h2>
+        <div class="editorial__body">
+          <p>
+            Interval is a global strategic advisory and design lab developing transformational
+            fan, audience, visitor and customer experiences through adaptable spaces and places —
+            via a Total Experience Design™ approach.
+          </p>
+          <p>
+            Spaces and places need to be more multi-modal than ever before to deliver
+            transformational experiences for everyone, and greater returns on investment.
+            The creative thinking, technology, content and ambition is available — but the
+            process and full-spectrum framework is not.
+          </p>
+          <p>We exist to close that gap. Quietly, rigorously, end-to-end.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHOTO BLEED 1 -->
+    <figure class="photo-bleed reveal" aria-label="A sculptural concrete amphitheatre with cascading steps." data-theme="dark">
+      <img src="/assets/images/amphitheater.jpg" alt="Aerial view of a sculptural concrete amphitheatre with cascading steps, a single figure standing at the rim." loading="lazy" />
+      <div class="photo-bleed__overlay">
+        <div class="photo-bleed__top">
+          <span>FIG. 02 — Civic Amphitheatre, Concept Study</span>
+          <span>Spatial · Realisation</span>
+        </div>
+        <div class="photo-bleed__bot">
+          <p class="photo-bleed__cap">
+            A place designed to <em>gather</em> a thousand strangers and dismiss them as a crowd.
+          </p>
+          <span class="photo-bleed__meta">2026 · Speculative</span>
+        </div>
+      </div>
+    </figure>
+
+    <!-- STATEMENT -->
+    <section class="container">
+      <div class="statement reveal">
+        <p class="statement__inner">Ambition deserves a <em>method</em>.</p>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="container">
+      <MetaRow left="IV001 / Today's situation" right="The case for change" />
+
+      <div class="stats reveal">
+        <div class="stats__grid">
+          <div>
+            <div class="stat__num">90<em>%</em></div>
+            <div class="stat__label">Of life now spent indoors or in designed environments</div>
+          </div>
+          <div>
+            <div class="stat__num"><em>1</em>.5×</div>
+            <div class="stat__label">Higher dwell time in multi-modal venues vs. single-use</div>
+          </div>
+          <div>
+            <div class="stat__num">5</div>
+            <div class="stat__label">Disciplines required to deliver true total experience</div>
+          </div>
+          <div>
+            <div class="stat__num">2026</div>
+            <div class="stat__label">The year experience becomes infrastructure</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="editorial reveal">
+        <div></div>
+        <div class="editorial__body">
+          <p>
+            Today, ambition is rarely the limiting factor. Capital is available. Technology
+            is mature. Audiences expect more — and are willing to reward those who deliver.
+          </p>
+          <p>
+            What's missing is a connective tissue: a single framework that holds spatial,
+            technological, brand, content and human dimensions together across the full lifecycle
+            of a place. Without it, ambition fragments. Operational teams cannot deliver. The
+            return on investment falls short of what the original vision promised.
+          </p>
+          <p>Interval was founded to provide that connective tissue.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FRAMEWORK -->
+    <FrameworkDiagram />
+
+    <!-- PILLARS -->
+    <Pillars />
+
+    <!-- PHOTO BLEED 2 -->
+    <figure class="photo-bleed reveal" aria-label="A long, low building with a sweeping concrete roof rising from the horizon." data-theme="dark">
+      <img src="/assets/images/coastal-architecture.jpg" alt="A pavilion with a sweeping concrete roof rising from a flat horizon under stormy light." loading="lazy" />
+      <div class="photo-bleed__overlay">
+        <div class="photo-bleed__top">
+          <span>FIG. 03 — Coastal Pavilion, Master Plan Phase</span>
+          <span>Spatial · Master Planning</span>
+        </div>
+        <div class="photo-bleed__bot">
+          <p class="photo-bleed__cap">
+            Built to perform on opening day — and to <em>still perform</em> in twenty&nbsp;years.
+          </p>
+          <span class="photo-bleed__meta">2026 · Speculative</span>
+        </div>
+      </div>
+    </figure>
+
+    <!-- PROCESS -->
+    <Phases />
+
+    <!-- WHY INTERVAL -->
+    <section class="container">
+      <MetaRow left="IV005 / Why Interval" right="Position" />
+
+      <div class="photo-pair reveal">
+        <figure class="photo-pair__image" aria-label="An architectural scale model resting on technical drawings.">
+          <img src="/assets/images/architectural-model.jpg" alt="An architectural model of a stadium-like structure sitting on top of detailed plan drawings." loading="lazy" />
+        </figure>
+        <div class="photo-pair__copy">
+          <div class="photo-pair__label">FIG. 04 — Model on plans, Phase 03</div>
+          <h3 class="photo-pair__title">
+            A practice built for the gap between <em>ambition and operation</em>.
+          </h3>
+          <div class="photo-pair__text">
+            <p>
+              We are not an architecture firm. We are not a brand consultancy. We are not a
+              technology integrator. We work alongside all of them — and we are accountable for
+              the experience that emerges from their combined work.
+            </p>
+            <p>
+              Senior, small teams. Embedded for the full arc, or brought in to unstick a single
+              phase. Always under one framework, so nothing falls between the seams.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SELECTED WORK -->
+    {featuredCases.length > 0 && (
+      <section class="container" id="work">
+        <MetaRow left="IV006 / Selected Work" right={`${featuredCases.length} of many`} />
+
+        <div class="section-title reveal" style="padding-bottom: 0;">
+          <div class="section-title__title" style="max-width: 22ch;">
+            What we've <em>made</em>.
+          </div>
+        </div>
+
+        <div class="cases-grid reveal">
+          {featuredCases.map((entry) => <CaseStudyCard entry={entry} />)}
+        </div>
+
+        <div style="padding-bottom: var(--section-pad); display: flex; justify-content: flex-end;">
+          <a href="/case-studies/" class="btn-primary" style="background: transparent; border: 1px solid rgba(0,0,0,0.2); color: var(--black);">
+            See all case studies
+          </a>
+        </div>
+      </section>
+    )}
+
+  </div>
+
+  <!-- CTA -->
+  <section class="cta" id="contact" data-theme="dark">
+    <div class="container">
+      <MetaRow left="IV007 — Contact" right="Selectively taking new work" dark={true} />
+
+      <div style="padding-top: clamp(40px, 8vh, 80px);">
+        <h2 class="cta__title reveal">Tell us what you're <em>trying to build</em>.</h2>
+
+        <div class="cta__row reveal">
+          <p class="cta__copy">
+            We work with a small number of clients each year. If you have a place to make,
+            remake, or rethink — and the ambition to do it properly — we'd like to hear from you.
+          </p>
+          <div class="cta__contact">
+            <a class="btn-primary" href="mailto:hello@interval.studio">hello@interval.studio</a>
+            <span class="contact-line">London · New York · Singapore</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

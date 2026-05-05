@@ -1,0 +1,138 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import MetaRow from '../../components/MetaRow.astro';
+
+export async function getStaticPaths() {
+  const entries = (await getCollection('case-studies')).filter((e) => !e.data.draft);
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'case-studies'>;
+}
+
+const { entry } = Astro.props;
+const {
+  title,
+  client,
+  year,
+  location,
+  pillars,
+  phases,
+  summary,
+  hero_image,
+  hero_image_alt,
+  gallery,
+} = entry.data;
+
+const { Content } = await entry.render();
+const clientLabel = client && client.trim().length > 0 ? client : 'Confidential';
+---
+
+<Base
+  title={`${title} — Interval`}
+  description={summary}
+  ogImage={hero_image}
+  navTheme="dark"
+>
+  <article>
+    <!-- HERO -->
+    <section class="cs-hero" data-theme="dark">
+      <div class="container">
+        <div class="cs-hero__head">
+          <span>{clientLabel} · {year}</span>
+          <span>{pillars.join(' · ') || 'Total Experience Design™'}</span>
+        </div>
+        <h1 class="cs-hero__title">{title}</h1>
+        <p class="cs-hero__summary">{summary}</p>
+      </div>
+      <div class="cs-hero__media">
+        <img src={hero_image} alt={hero_image_alt} loading="eager" fetchpriority="high" />
+      </div>
+    </section>
+
+    <!-- BODY -->
+    <section class="container">
+      <div class="cs-body reveal">
+        <aside class="cs-body__meta">
+          <dl>
+            <div>
+              <dt>Client</dt>
+              <dd>{clientLabel}</dd>
+            </div>
+            <div>
+              <dt>Year</dt>
+              <dd>{year}</dd>
+            </div>
+            {location && (
+              <div>
+                <dt>Location</dt>
+                <dd>{location}</dd>
+              </div>
+            )}
+            {pillars.length > 0 && (
+              <div>
+                <dt>Pillars</dt>
+                <dd>{pillars.join(', ')}</dd>
+              </div>
+            )}
+            {phases.length > 0 && (
+              <div>
+                <dt>Phases</dt>
+                <dd>{phases.join(', ')}</dd>
+              </div>
+            )}
+          </dl>
+        </aside>
+        <div class="cs-body__prose">
+          <Content />
+        </div>
+      </div>
+
+      {gallery.length > 0 && (
+        <div class="cs-gallery reveal">
+          {gallery.map((g) => (
+            <figure>
+              <img src={g.src} alt={g.alt} loading="lazy" />
+              {g.caption && <figcaption>{g.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      )}
+    </section>
+
+    <!-- BACK TO INDEX -->
+    <section class="container" style="padding-bottom: var(--section-pad);">
+      <MetaRow left="More" right="Selected work" />
+      <div style="padding-top: 24px;">
+        <a href="/case-studies/" class="btn-primary" style="background: transparent; border: 1px solid rgba(0,0,0,0.2); color: var(--black);">
+          Back to all case studies
+        </a>
+      </div>
+    </section>
+  </article>
+
+  <!-- CTA -->
+  <section class="cta" data-theme="dark">
+    <div class="container">
+      <MetaRow left="Contact" right="Selectively taking new work" dark={true} />
+      <div style="padding-top: clamp(40px, 8vh, 80px);">
+        <h2 class="cta__title reveal">Got a place that needs <em>this kind of work</em>?</h2>
+        <div class="cta__row reveal">
+          <p class="cta__copy">
+            We work with a small number of clients each year. Every conversation starts with
+            a question about what you're trying to build.
+          </p>
+          <div class="cta__contact">
+            <a class="btn-primary" href="mailto:hello@interval.studio">hello@interval.studio</a>
+            <span class="contact-line">London · New York · Singapore</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

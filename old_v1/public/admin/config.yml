@@ -1,0 +1,118 @@
+# Sveltia CMS configuration
+# Docs: https://github.com/sveltia/sveltia-cms
+
+backend:
+  name: github
+  repo: ipancaldi/interval-website
+  branch: main
+  # base_url is the URL of your deployed sveltia-cms-auth Cloudflare Worker.
+  # Replace with your actual Worker URL after deploying it.
+  base_url: https://sveltia-cms-auth.YOUR-SUBDOMAIN.workers.dev
+
+# Editorial workflow lets you save drafts that don't deploy until merged.
+# Optional — remove this block if you want every save to publish.
+publish_mode: editorial_workflow
+
+# Where Sveltia uploads images. These end up at /uploads/... on the live site.
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+# Where preview shows the live URL on the deployed site
+site_url: https://interval.studio
+display_url: https://interval.studio
+
+collections:
+  - name: case-studies
+    label: "Case Studies"
+    label_singular: "Case Study"
+    folder: "src/content/case-studies"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    media_folder: "/public/uploads/case-studies"
+    public_folder: "/uploads/case-studies"
+    summary: "{{title}} — {{year}} ({{location}})"
+    sortable_fields: [order, year, title]
+    fields:
+      - { name: title, label: "Title", widget: string }
+      - { name: client, label: "Client", widget: string, default: "Confidential" }
+      - { name: year, label: "Year", widget: number, value_type: int, min: 1900, max: 2100 }
+      - { name: location, label: "Location", widget: string }
+      - name: summary
+        label: "Summary"
+        widget: text
+        hint: "One-line description shown on the work index card."
+      - name: pillars
+        label: "Pillars"
+        widget: select
+        multiple: true
+        required: false
+        options:
+          - "Spatial"
+          - "Technology"
+          - "Brand & Digital"
+          - "Content"
+          - "Time"
+      - name: phases
+        label: "Phases"
+        widget: select
+        multiple: true
+        required: false
+        options:
+          - "Human Foundation"
+          - "Vision"
+          - "Master Planning"
+          - "Realisation"
+      - name: hero_image
+        label: "Hero image"
+        widget: image
+        choose_url: false
+      - name: hero_image_alt
+        label: "Hero image — alt text"
+        widget: string
+        hint: "Describe the image for screen readers and SEO. Required."
+      - name: gallery
+        label: "Gallery"
+        widget: list
+        required: false
+        summary: "{{fields.alt}}"
+        fields:
+          - { name: src, label: "Image", widget: image }
+          - { name: alt, label: "Alt text", widget: string }
+          - { name: caption, label: "Caption", widget: string, required: false }
+      - { name: featured, label: "Featured", widget: boolean, default: false, hint: "Show prominently on the work index." }
+      - { name: order, label: "Order", widget: number, value_type: int, default: 0, hint: "Lower numbers appear first." }
+      - { name: draft, label: "Draft", widget: boolean, default: false, hint: "If on, this case study is excluded from the live site." }
+      - { name: body, label: "Body", widget: markdown }
+
+  - name: pages
+    label: "Pages"
+    files:
+      - name: about
+        label: "About"
+        file: "src/content/pages/about.md"
+        media_folder: "/public/uploads/about"
+        public_folder: "/uploads/about"
+        fields:
+          - { name: title, label: "Title", widget: string, default: "About Interval" }
+          - { name: intro, label: "Intro paragraph", widget: text, hint: "Sits beneath the page title." }
+          - name: team
+            label: "Team"
+            widget: list
+            required: false
+            summary: "{{fields.name}} — {{fields.role}}"
+            fields:
+              - { name: name, label: "Name", widget: string }
+              - { name: role, label: "Role", widget: string }
+              - { name: bio, label: "Bio", widget: text, required: false }
+              - { name: photo, label: "Photo", widget: image, required: false }
+              - { name: photo_alt, label: "Photo — alt text", widget: string, required: false }
+          - name: locations
+            label: "Locations"
+            widget: list
+            field: { name: location, label: "Location", widget: string }
+            default: ["London", "New York", "Singapore"]
+          - { name: contact_email, label: "Contact email", widget: string, default: "hello@interval.studio", pattern: ['^[^@]+@[^@]+\.[^@]+$', "Must be a valid email"] }
+          - { name: body, label: "Body", widget: markdown }

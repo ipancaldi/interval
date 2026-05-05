@@ -1,0 +1,24 @@
+---
+interface Props {
+  initialTheme?: 'dark' | 'light';
+}
+const { initialTheme = 'light' } = Astro.props;
+const isLight = initialTheme === 'light';
+const initialLogo = isLight ? '/assets/interval-logo-black.svg' : '/assets/interval-logo-white.svg';
+---
+
+<nav class={`nav${isLight ? ' is-light' : ''}`} id="nav" aria-label="Primary">
+  <div class="nav__inner">
+    <a href="/" aria-label="Interval — Home">
+      <img class="nav__logo" id="navLogo" src={initialLogo} alt="Interval" />
+    </a>
+    <div class="nav__links" role="navigation">
+      <a href="/case-studies/">Work</a>
+      <a href="/about/">About</a>
+      <a href="/#framework">Framework</a>
+      <a href="/#pillars">Pillars</a>
+      <a href="/#process">Process</a>
+    </div>
+    <a class="nav__cta" href="/#contact">Contact</a>
+  </div>
+</nav>

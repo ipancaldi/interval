@@ -1,0 +1,13 @@
+---
+interface Props {
+  left: string;
+  right: string;
+  dark?: boolean;
+}
+const { left, right, dark = false } = Astro.props;
+---
+
+<div class={`meta-row${dark ? ' dark' : ''}`}>
+  <span>{left}</span>
+  <span>{right}</span>
+</div>
