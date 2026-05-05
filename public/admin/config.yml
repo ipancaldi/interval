@@ -7,7 +7,7 @@ backend:
   branch: main
   # OAuth proxy. Set this AFTER deploying sveltia-cms-auth to Cloudflare Workers.
   # Replace YOUR-WORKER-SUBDOMAIN with your actual workers.dev subdomain.
-  base_url: https://YOUR-WORKER-SUBDOMAIN.workers.dev
+  base_url: https://sveltia-cms-auth.ipancaldi.workers.dev
 
 site_url: https://interval.studio
 display_url: https://interval.studio
