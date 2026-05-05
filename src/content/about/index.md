@@ -1,12 +1,10 @@
 ---
-intro: |
-  Interval is a global strategic advisory and design lab developing transformational fan, audience, visitor and customer experiences through adaptable spaces and places — via a Total Experience Design™ approach.
+intro: Interval is a global strategic advisory and design lab developing transformational fan, audience, visitor and customer experiences through adaptable spaces and places — via a Total Experience Design™ approach.
 team:
-  - name: Placeholder Name
+  - name: Alex Wills
     role: Founder & Principal
-    photo_alt: ""
-    bio: |
-      Short biography goes here. Edit through the CMS at /admin/.
+    photo_alt: ''
+    bio: Short biography goes here. Edit through the CMS at /admin/.
     links:
       - label: LinkedIn
         url: https://www.linkedin.com/in/example
