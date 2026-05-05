@@ -131,7 +131,7 @@ Edit `public/admin/config.yml` — line 11:
 ```yaml
 backend:
   name: github
-  repo: ipancaldi/interval-website
+  repo: ipancaldi/interval
   branch: main
   base_url: https://sveltia-cms-auth.<subdomain>.workers.dev   # ← put your worker URL here
 ```
@@ -145,7 +145,7 @@ Commit and push. Once `interval.studio/admin/` deploys, you can visit it, click 
 In Cloudflare dashboard → **Workers & Pages → Create**:
 
 - Choose the **Pages** flow (not Workers — telltale: it asks for build command + output directory, not `wrangler deploy`).
-- **Connect to Git** → select `ipancaldi/interval-website`.
+- **Connect to Git** → select `ipancaldi/interval`.
 - **Production branch:** `main` (or whichever branch you've merged this scaffold into).
 - **Framework preset:** Astro.
 - **Build command:** `npm run build`.

@@ -3,7 +3,7 @@
 
 backend:
   name: github
-  repo: ipancaldi/interval-website
+  repo: ipancaldi/interval
   branch: main
   # OAuth proxy. Set this AFTER deploying sveltia-cms-auth to Cloudflare Workers.
   # Replace YOUR-WORKER-SUBDOMAIN with your actual workers.dev subdomain.
