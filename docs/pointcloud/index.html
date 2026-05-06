@@ -1,0 +1,1057 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Point Cloud Background</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #000000;
+      transition: background-color 400ms ease;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", ui-sans-serif, system-ui, sans-serif;
+    }
+    #bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+      touch-action: none;
+    }
+    #bg:active { cursor: grabbing; }
+
+    /* Minimal palette UI */
+    #palette {
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px 12px;
+      background: rgba(20, 20, 22, 0.55);
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      user-select: none;
+    }
+    #palette .row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #palette .label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.7);
+      width: 44px;
+    }
+    #palette .sw {
+      width: 18px;
+      height: 18px;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(127, 127, 127, 0.55);
+      cursor: pointer;
+      position: relative;
+      transition: transform 120ms ease;
+      outline: none;
+    }
+    #palette .sw:hover { transform: scale(1.18); }
+    #palette .sw.active::after {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1.5px solid #fff;
+      mix-blend-mode: difference;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+
+  <div id="palette" aria-label="Color palette">
+    <div class="row" data-target="bg">
+      <span class="label">BG</span>
+    </div>
+    <div class="row" data-target="cloud">
+      <span class="label">Cloud</span>
+    </div>
+  </div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { Line2 } from 'three/addons/lines/Line2.js';
+    import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+    import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+
+    // -------------------------------------------------------------------------
+    // Shape generators
+    // Each returns { verts: number[] (flat xyz), edges: number[] (index pairs) }
+    // Vertices live ONLY at structural corners; edges connect them.
+    // -------------------------------------------------------------------------
+
+    const addBox = (verts, edges, cx, cy, cz, w, h, d) => {
+      const base = verts.length / 3;
+      const hw = w / 2, hh = h / 2, hd = d / 2;
+      const c = [
+        [-hw, -hh, -hd], [ hw, -hh, -hd], [ hw,  hh, -hd], [-hw,  hh, -hd],
+        [-hw, -hh,  hd], [ hw, -hh,  hd], [ hw,  hh,  hd], [-hw,  hh,  hd],
+      ];
+      for (const [x, y, z] of c) verts.push(cx + x, cy + y, cz + z);
+      const e = [
+        [0,1],[1,2],[2,3],[3,0],
+        [4,5],[5,6],[6,7],[7,4],
+        [0,4],[1,5],[2,6],[3,7],
+      ];
+      for (const [a, b] of e) edges.push(base + a, base + b);
+    };
+
+    const addRing = (verts, edges, cx, cy, cz, rx, rz, n, closed = true) => {
+      const base = verts.length / 3;
+      for (let i = 0; i < n; i++) {
+        const a = (i / n) * Math.PI * 2;
+        verts.push(cx + Math.cos(a) * rx, cy, cz + Math.sin(a) * rz);
+      }
+      for (let i = 0; i < n - (closed ? 0 : 1); i++) {
+        edges.push(base + i, base + ((i + 1) % n));
+      }
+      return base;
+    };
+
+    // ----- Shape 1: multi-storey architectural space with rooms -----
+    function genArchitecture() {
+      const verts = [];
+      const edges = [];
+
+      const floors = 4;
+      const gridX = 4, gridZ = 4;
+      const rW = 2.0, rD = 2.0, rH = 1.6;
+      const baseY = -3;
+
+      // Atrium void in the middle of upper floors
+      const skip = new Set();
+      for (let f = 1; f <= 2; f++) {
+        skip.add(`${f},1,1`); skip.add(`${f},2,1`);
+        skip.add(`${f},1,2`); skip.add(`${f},2,2`);
+      }
+
+      // Rooms
+      for (let f = 0; f < floors; f++) {
+        for (let i = 0; i < gridX; i++) {
+          for (let j = 0; j < gridZ; j++) {
+            if (skip.has(`${f},${i},${j}`)) continue;
+            const cx = (i - (gridX - 1) / 2) * rW;
+            const cy = baseY + f * rH + rH / 2;
+            const cz = (j - (gridZ - 1) / 2) * rD;
+            addBox(verts, edges, cx, cy, cz, rW * 0.94, rH * 0.94, rD * 0.94);
+          }
+        }
+      }
+
+      // Roof slab
+      addBox(
+        verts, edges,
+        0,
+        baseY + floors * rH + 0.2,
+        0,
+        gridX * rW + 0.4, 0.3, gridZ * rD + 0.4,
+      );
+
+      // Stair / lift tower on the side
+      for (let s = 0; s <= floors; s++) {
+        addBox(
+          verts, edges,
+          -(gridX * rW) / 2 - 1.6,
+          baseY + s * rH,
+          0,
+          1.0, 0.12, 1.4,
+        );
+      }
+      // Tower outer shell
+      addBox(
+        verts, edges,
+        -(gridX * rW) / 2 - 1.6,
+        baseY + (floors * rH) / 2,
+        0,
+        1.2, floors * rH, 1.6,
+      );
+
+      // Window frames – south & north walls
+      for (let f = 0; f < floors; f++) {
+        for (let i = 0; i < gridX; i++) {
+          const cx = (i - (gridX - 1) / 2) * rW;
+          const cy = baseY + f * rH + rH * 0.55;
+          const czS =  ((gridZ - 1) / 2) * rD + rD / 2 + 0.04;
+          const czN = -((gridZ - 1) / 2) * rD - rD / 2 - 0.04;
+          addBox(verts, edges, cx, cy, czS, rW * 0.55, rH * 0.45, 0.05);
+          addBox(verts, edges, cx, cy, czN, rW * 0.55, rH * 0.45, 0.05);
+        }
+      }
+
+      // Ground plinth
+      addBox(verts, edges, 0, baseY - 0.15, 0, gridX * rW + 1.2, 0.2, gridZ * rD + 1.2);
+
+      return { verts, edges };
+    }
+
+    // ----- Shape 2: sports stadium -----
+    function genStadium() {
+      const verts = [];
+      const edges = [];
+
+      const segments = 56;
+      const tiers = 9;
+      const baseY = -3;
+
+      const ringBases = [];
+      for (let t = 0; t < tiers; t++) {
+        const rx = 5.5 + t * 0.45;
+        const rz = 4.2 + t * 0.4;
+        const y = baseY + t * 0.55;
+        ringBases.push(addRing(verts, edges, 0, y, 0, rx, rz, segments));
+      }
+
+      // Vertical risers between tiers (every 2 segments to keep it readable)
+      for (let t = 0; t < tiers - 1; t++) {
+        for (let i = 0; i < segments; i += 2) {
+          edges.push(ringBases[t] + i, ringBases[t + 1] + i);
+        }
+      }
+
+      // Roof / canopy ring
+      const roofY = baseY + tiers * 0.55 + 0.8;
+      const roofRx = 5.5 + tiers * 0.45 + 0.4;
+      const roofRz = 4.2 + tiers * 0.4 + 0.4;
+      const roofBase = addRing(verts, edges, 0, roofY, 0, roofRx, roofRz, segments);
+      const topTier = ringBases[tiers - 1];
+      for (let i = 0; i < segments; i += 2) {
+        edges.push(topTier + i, roofBase + i);
+      }
+
+      // Inner field rectangle on the ground
+      addBox(verts, edges, 0, baseY - 0.1, 0, 8, 0.05, 5.4);
+
+      // Centre line / penalty boxes
+      addBox(verts, edges, 0, baseY - 0.05, 0, 0.05, 0.02, 5);
+      addBox(verts, edges, -3.4, baseY - 0.05, 0, 0.6, 0.02, 2.4);
+      addBox(verts, edges,  3.4, baseY - 0.05, 0, 0.6, 0.02, 2.4);
+
+      // Floodlight towers at the four corners
+      const towers = [
+        [-roofRx - 0.6, -roofRz - 0.6],
+        [ roofRx + 0.6, -roofRz - 0.6],
+        [-roofRx - 0.6,  roofRz + 0.6],
+        [ roofRx + 0.6,  roofRz + 0.6],
+      ];
+      for (const [tx, tz] of towers) {
+        addBox(verts, edges, tx, baseY + 1.2, tz, 0.3, 4.0, 0.3);
+        addBox(verts, edges, tx, baseY + 3.6, tz, 1.6, 0.6, 1.0);
+      }
+
+      // Big-screen scoreboard at one end
+      addBox(verts, edges, 0, baseY + 4.6, -roofRz - 0.4, 4, 1.3, 0.25);
+
+      // Tunnel entries cut into lower tier (small frames)
+      for (let i = 0; i < 4; i++) {
+        const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+        const tx = Math.cos(a) * 5.4;
+        const tz = Math.sin(a) * 4.1;
+        addBox(verts, edges, tx, baseY + 0.4, tz, 0.6, 0.7, 0.6);
+      }
+
+      return { verts, edges };
+    }
+
+    // ----- Shape 3: concert stage with truss & line array -----
+    function genConcertStage() {
+      const verts = [];
+      const edges = [];
+
+      const stageY = -2.6;
+
+      // Stage platform
+      addBox(verts, edges, 0, stageY, 0, 11, 0.5, 4.4);
+
+      // Drum riser at back-centre
+      addBox(verts, edges, 0, stageY + 0.55, -1.0, 2.2, 0.45, 1.8);
+
+      // LED video wall (3 panels) at the back
+      for (let i = -1; i <= 1; i++) {
+        addBox(verts, edges, i * 2.6, stageY + 1.9, -2.0, 2.4, 3.2, 0.1);
+      }
+
+      // Side I-Mag screens
+      addBox(verts, edges, -7.0, stageY + 1.9, -0.6, 0.25, 3.4, 2.6);
+      addBox(verts, edges,  7.0, stageY + 1.9, -0.6, 0.25, 3.4, 2.6);
+
+      // Front-of-house line array (hanging speaker stacks)
+      for (let side = 0; side < 2; side++) {
+        const x = side === 0 ? -6.2 : 6.2;
+        for (let h = 0; h < 6; h++) {
+          addBox(verts, edges, x, stageY + 4.4 - h * 0.55, 1.5, 0.9, 0.5, 0.7);
+        }
+      }
+
+      // Subwoofer array along stage front
+      for (let i = 0; i < 5; i++) {
+        addBox(verts, edges, -4 + i * 2, stageY - 0.05, 2.6, 0.9, 0.55, 0.7);
+      }
+
+      // Truss arch – two vertical posts
+      addBox(verts, edges, -5.6, stageY + 2.6, -0.2, 0.35, 5.4, 0.35);
+      addBox(verts, edges,  5.6, stageY + 2.6, -0.2, 0.35, 5.4, 0.35);
+
+      // Truss arch – top horizontal beam
+      addBox(verts, edges, 0, stageY + 5.3, -0.2, 11.6, 0.35, 0.35);
+
+      // Overhead lighting truss grid
+      const truY = stageY + 5.0;
+      addBox(verts, edges,  0, truY, 1.6, 11.0, 0.3, 0.3); // front
+      addBox(verts, edges,  0, truY, -1.6, 11.0, 0.3, 0.3); // back
+      addBox(verts, edges, -5.2, truY, 0, 0.3, 0.3, 3.2);  // left
+      addBox(verts, edges,  5.2, truY, 0, 0.3, 0.3, 3.2);  // right
+
+      // Hanging moving-head fixtures
+      for (let i = 0; i < 9; i++) {
+        const x = -5 + i * (10 / 8);
+        addBox(verts, edges, x, truY - 0.4, 1.6, 0.28, 0.45, 0.28);
+        addBox(verts, edges, x, truY - 0.4, -1.6, 0.28, 0.45, 0.28);
+      }
+
+      // Mic stands & monitor wedges along the front lip
+      for (let i = -2; i <= 2; i++) {
+        addBox(verts, edges, i * 2, stageY + 0.55, 1.6, 0.08, 0.7, 0.08); // mic
+        addBox(verts, edges, i * 2, stageY + 0.32, 1.9, 0.6, 0.25, 0.4);  // wedge
+      }
+
+      // Front crowd barrier line
+      for (let i = 0; i < 7; i++) {
+        addBox(verts, edges, -6 + i * 2, stageY + 0.1, 3.6, 0.1, 0.7, 0.1);
+      }
+
+      // Stage skirt / front fascia
+      addBox(verts, edges, 0, stageY - 0.4, 2.2, 11, 0.6, 0.05);
+
+      return { verts, edges };
+    }
+
+    // ----- Shape 4: classical proscenium theatre -----
+    function genTheatre() {
+      const verts = [];
+      const edges = [];
+
+      const stageY = -3;
+
+      // Stage platform + apron
+      addBox(verts, edges, 0, stageY + 0.25, -3.8, 9, 0.5, 3);
+      addBox(verts, edges, 0, stageY + 0.05, -2.0, 9, 0.05, 0.6); // orchestra-pit lip
+
+      // Cyclorama / back wall
+      addBox(verts, edges, 0, stageY + 2.8, -5.2, 9, 5, 0.15);
+
+      // Proscenium arch – two posts + top lintel + decorative mouldings
+      addBox(verts, edges, -4.7, stageY + 2.6, -2.4, 0.45, 5.2, 0.45);
+      addBox(verts, edges,  4.7, stageY + 2.6, -2.4, 0.45, 5.2, 0.45);
+      addBox(verts, edges,  0.0, stageY + 5.0, -2.4, 9.9,  0.45, 0.45);
+      addBox(verts, edges,  0.0, stageY + 5.6, -2.4, 8.5,  0.4,  0.4);
+      addBox(verts, edges,  0.0, stageY + 6.1, -2.4, 7.0,  0.3,  0.3);
+
+      // Hanging curtains either side of the arch
+      addBox(verts, edges, -3.4, stageY + 2.4, -2.3, 2.4, 4.7, 0.1);
+      addBox(verts, edges,  3.4, stageY + 2.4, -2.3, 2.4, 4.7, 0.1);
+
+      // Audience – tiered orchestra arcs facing the stage
+      const pivot = { x: 0, z: -10 };
+      const addArcRow = (r, y, span, n) => {
+        const base = verts.length / 3;
+        for (let j = 0; j < n; j++) {
+          const a = -span / 2 + span * (j / (n - 1));
+          verts.push(pivot.x + r * Math.sin(a), y, pivot.z + r * Math.cos(a));
+        }
+        for (let j = 0; j < n - 1; j++) edges.push(base + j, base + j + 1);
+        return base;
+      };
+
+      const orchN = 18;
+      const orchBases = [];
+      for (let i = 0; i < 9; i++) {
+        const r = 11.5 + i * 0.65;
+        const y = stageY + 0.05 + i * 0.18;
+        orchBases.push(addArcRow(r, y, Math.PI / 3, orchN));
+      }
+      // Vertical risers between rows give it a stepped feel
+      for (let i = 0; i < orchBases.length - 1; i++) {
+        for (let j = 0; j < orchN; j += 2) {
+          edges.push(orchBases[i] + j, orchBases[i + 1] + j);
+        }
+      }
+
+      // Balcony – higher, slightly tighter arc
+      for (let i = 0; i < 5; i++) {
+        const r = 12.5 + i * 0.6;
+        const y = stageY + 4.2 + i * 0.22;
+        addArcRow(r, y, Math.PI / 3.4, 16);
+      }
+
+      // Side boxes – 2 stacks per side
+      for (let side = 0; side < 2; side++) {
+        const sx = side === 0 ? -6.5 : 6.5;
+        for (let h = 0; h < 2; h++) {
+          addBox(verts, edges, sx, stageY + 1.6 + h * 1.8, -1.5, 1.6, 1.4, 1.6);
+        }
+      }
+
+      // Ceiling dome – three concentric rings
+      addRing(verts, edges, 0, stageY + 7.4, 0, 5.5, 5.5, 24);
+      addRing(verts, edges, 0, stageY + 8.0, 0, 3.8, 3.8, 18);
+      addRing(verts, edges, 0, stageY + 8.3, 0, 2.0, 2.0, 12);
+
+      // Chandelier
+      addBox(verts, edges, 0, stageY + 6.6, 0, 1.4, 1.0, 1.4);
+      addBox(verts, edges, 0, stageY + 6.0, 0, 0.1, 1.0, 0.1);
+
+      return { verts, edges };
+    }
+
+    // ----- Shape 5: immersive experience space (cubic LED room) -----
+    function genImmersiveSpace() {
+      const verts = [];
+      const edges = [];
+
+      const W = 12, H = 6, D = 12;
+      const baseY = -3;
+
+      // Floor – grid of LED panels
+      const floorN = 5;
+      const cell = W / floorN;
+      for (let i = 0; i < floorN; i++) {
+        for (let j = 0; j < floorN; j++) {
+          const cx = -W / 2 + cell / 2 + i * cell;
+          const cz = -D / 2 + cell / 2 + j * cell;
+          addBox(verts, edges, cx, baseY, cz, cell * 0.92, 0.06, cell * 0.92);
+        }
+      }
+      // Ceiling – matching grid
+      for (let i = 0; i < floorN; i++) {
+        for (let j = 0; j < floorN; j++) {
+          const cx = -W / 2 + cell / 2 + i * cell;
+          const cz = -D / 2 + cell / 2 + j * cell;
+          addBox(verts, edges, cx, baseY + H + 0.05, cz, cell * 0.92, 0.06, cell * 0.92);
+        }
+      }
+
+      // Wall panels – four walls subdivided into a panel grid
+      const wCols = 4, wRows = 2;
+      for (let i = 0; i < wCols; i++) {
+        for (let j = 0; j < wRows; j++) {
+          const cx = -W / 2 + (W / wCols) * (i + 0.5);
+          const cy = baseY + (H / wRows) * (j + 0.5);
+          const w = W / wCols * 0.92;
+          const h = H / wRows * 0.92;
+          addBox(verts, edges, cx, cy,  D / 2, w, h, 0.06);
+          addBox(verts, edges, cx, cy, -D / 2, w, h, 0.06);
+        }
+      }
+      for (let i = 0; i < wCols; i++) {
+        for (let j = 0; j < wRows; j++) {
+          const cz = -D / 2 + (D / wCols) * (i + 0.5);
+          const cy = baseY + (H / wRows) * (j + 0.5);
+          const w = D / wCols * 0.92;
+          const h = H / wRows * 0.92;
+          addBox(verts, edges,  W / 2, cy, cz, 0.06, h, w);
+          addBox(verts, edges, -W / 2, cy, cz, 0.06, h, w);
+        }
+      }
+
+      // Outer room frame (cube edges)
+      const corners = [
+        [-W / 2, baseY,       -D / 2],
+        [ W / 2, baseY,       -D / 2],
+        [ W / 2, baseY,        D / 2],
+        [-W / 2, baseY,        D / 2],
+        [-W / 2, baseY + H,   -D / 2],
+        [ W / 2, baseY + H,   -D / 2],
+        [ W / 2, baseY + H,    D / 2],
+        [-W / 2, baseY + H,    D / 2],
+      ];
+      const cBase = verts.length / 3;
+      for (const [x, y, z] of corners) verts.push(x, y, z);
+      const cubeEdges = [
+        [0, 1], [1, 2], [2, 3], [3, 0],
+        [4, 5], [5, 6], [6, 7], [7, 4],
+        [0, 4], [1, 5], [2, 6], [3, 7],
+      ];
+      for (const [a, b] of cubeEdges) edges.push(cBase + a, cBase + b);
+
+      // Central monolith ring
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2;
+        const r = 3;
+        addBox(verts, edges, Math.cos(a) * r, baseY + 1.4, Math.sin(a) * r, 0.45, 2.6, 0.45);
+      }
+
+      // Stacked centre installation
+      addBox(verts, edges, 0, baseY + 0.6, 0, 1.8, 1.2, 1.8);
+      addBox(verts, edges, 0, baseY + 1.6, 0, 1.2, 0.8, 1.2);
+      addBox(verts, edges, 0, baseY + 2.3, 0, 0.6, 0.6, 0.6);
+
+      // Pendant projection rigs hanging from the ceiling corners
+      for (let i = 0; i < 4; i++) {
+        const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+        const r = 4.5;
+        addBox(verts, edges, Math.cos(a) * r, baseY + H - 0.6, Math.sin(a) * r, 0.4, 0.6, 0.4);
+      }
+
+      return { verts, edges };
+    }
+
+    // ----- Shape 6: spherical theatre (Vegas-Sphere style) -----
+    function genSphericalTheatre() {
+      const verts = [];
+      const edges = [];
+
+      const R = 6.5;
+      const lats = 11; // latitude bands (excluding poles)
+      const lons = 22; // meridians
+
+      // Latitude rings + their around-edges
+      const ringBases = [];
+      for (let i = 1; i < lats; i++) {
+        const phi = (i / lats) * Math.PI;
+        const y = R * Math.cos(phi);
+        const rr = R * Math.sin(phi);
+        const base = verts.length / 3;
+        for (let j = 0; j < lons; j++) {
+          const theta = (j / lons) * Math.PI * 2;
+          verts.push(rr * Math.cos(theta), y, rr * Math.sin(theta));
+        }
+        for (let j = 0; j < lons; j++) {
+          edges.push(base + j, base + (j + 1) % lons);
+        }
+        ringBases.push(base);
+      }
+
+      // Poles
+      const topIdx = verts.length / 3; verts.push(0,  R, 0);
+      const botIdx = verts.length / 3; verts.push(0, -R, 0);
+
+      // Meridians
+      for (let j = 0; j < lons; j++) {
+        edges.push(topIdx, ringBases[0] + j);
+        for (let i = 0; i < ringBases.length - 1; i++) {
+          edges.push(ringBases[i] + j, ringBases[i + 1] + j);
+        }
+        edges.push(ringBases[ringBases.length - 1] + j, botIdx);
+      }
+
+      // Inner stage near the bottom front
+      const stageY = -R + 1.0;
+      addBox(verts, edges, 0, stageY, -2.0, 4, 0.4, 2.5);
+
+      // Audience bowl – concentric arcs wrapping around the stage
+      const bowl = { x: 0, z: 1.0 };
+      for (let i = 0; i < 7; i++) {
+        const r = 1.6 + i * 0.7;
+        const y = stageY + 0.2 + i * 0.25;
+        const span = Math.PI * 1.4;
+        const n = 14 + i * 2;
+        const base = verts.length / 3;
+        for (let j = 0; j < n; j++) {
+          const a = Math.PI / 2 + Math.PI - span / 2 + span * (j / (n - 1));
+          verts.push(bowl.x + r * Math.cos(a), y, bowl.z + r * Math.sin(a));
+        }
+        for (let j = 0; j < n - 1; j++) edges.push(base + j, base + j + 1);
+      }
+
+      // Inner hemispherical screen suggestion – smaller upper rings
+      const innerR = R - 1.0;
+      for (let i = 1; i < 6; i++) {
+        const phi = (i / lats) * Math.PI;
+        const y = innerR * Math.cos(phi) + 0.5;
+        const rr = innerR * Math.sin(phi);
+        const base = verts.length / 3;
+        const n = 16;
+        for (let j = 0; j < n; j++) {
+          const theta = (j / n) * Math.PI * 2;
+          verts.push(rr * Math.cos(theta), y, rr * Math.sin(theta));
+        }
+        for (let j = 0; j < n; j++) edges.push(base + j, base + (j + 1) % n);
+      }
+
+      // Entry portals at the equator
+      for (let i = 0; i < 4; i++) {
+        const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+        const r = R - 0.3;
+        addBox(verts, edges, Math.cos(a) * r, -R + 1, Math.sin(a) * r, 1.0, 2.0, 0.8);
+      }
+
+      // External support pylons
+      for (let i = 0; i < 4; i++) {
+        const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+        const r = R + 0.5;
+        addBox(verts, edges, Math.cos(a) * r, -R + 1, Math.sin(a) * r, 0.4, 4, 0.4);
+      }
+
+      return { verts, edges };
+    }
+
+    // -------------------------------------------------------------------------
+    // Normalise all shapes to a common vertex count so they can morph 1:1.
+    // We pad smaller shapes by re-using existing vertex positions, then sort
+    // every shape by spherical angle so vertex i in shape A roughly corresponds
+    // to vertex i in shape B – that gives a flowing, organic morph instead of
+    // a chaotic point-swap.
+    // -------------------------------------------------------------------------
+
+    function padShape(shape, N) {
+      const src = shape.verts;
+      const srcN = src.length / 3;
+      const verts = src.slice();
+      for (let i = srcN; i < N; i++) {
+        const k = i % srcN;
+        verts.push(src[k * 3], src[k * 3 + 1], src[k * 3 + 2]);
+      }
+      return { verts, edges: shape.edges.slice() };
+    }
+
+    function sortShape(shape) {
+      const n = shape.verts.length / 3;
+      const idx = new Array(n);
+      for (let i = 0; i < n; i++) idx[i] = i;
+
+      idx.sort((a, b) => {
+        const ax = shape.verts[a * 3];
+        const ay = shape.verts[a * 3 + 1];
+        const az = shape.verts[a * 3 + 2];
+        const bx = shape.verts[b * 3];
+        const by = shape.verts[b * 3 + 1];
+        const bz = shape.verts[b * 3 + 2];
+        const angA = Math.atan2(az, ax);
+        const angB = Math.atan2(bz, bx);
+        if (Math.abs(angA - angB) > 0.04) return angA - angB;
+        if (Math.abs(ay - by) > 0.05) return ay - by;
+        return (ax * ax + az * az) - (bx * bx + bz * bz);
+      });
+
+      const newVerts = new Array(n * 3);
+      const inverse = new Array(n);
+      for (let i = 0; i < n; i++) {
+        const o = idx[i];
+        inverse[o] = i;
+        newVerts[i * 3]     = shape.verts[o * 3];
+        newVerts[i * 3 + 1] = shape.verts[o * 3 + 1];
+        newVerts[i * 3 + 2] = shape.verts[o * 3 + 2];
+      }
+      const newEdges = shape.edges.map(e => inverse[e]);
+      return { verts: newVerts, edges: newEdges };
+    }
+
+    function centreShape(shape) {
+      const n = shape.verts.length / 3;
+      let cx = 0, cy = 0, cz = 0;
+      for (let i = 0; i < n; i++) {
+        cx += shape.verts[i * 3];
+        cy += shape.verts[i * 3 + 1];
+        cz += shape.verts[i * 3 + 2];
+      }
+      cx /= n; cy /= n; cz /= n;
+      for (let i = 0; i < n; i++) {
+        shape.verts[i * 3]     -= cx;
+        shape.verts[i * 3 + 1] -= cy;
+        shape.verts[i * 3 + 2] -= cz;
+      }
+      return shape;
+    }
+
+    function shapeToBuffers(shape, N) {
+      const positions = new Float32Array(N * 3);
+      for (let i = 0; i < N * 3; i++) positions[i] = shape.verts[i];
+      return { positions, edges: new Uint32Array(shape.edges) };
+    }
+
+    // -------------------------------------------------------------------------
+    // Build shapes
+    // -------------------------------------------------------------------------
+
+    const rawShapes = [
+      genArchitecture(),
+      genStadium(),
+      genConcertStage(),
+      genTheatre(),
+      genImmersiveSpace(),
+      genSphericalTheatre(),
+    ].map(centreShape);
+
+    // Common vertex count = max of structural counts (well under 10k)
+    const N = Math.max(...rawShapes.map(s => s.verts.length / 3));
+
+    const shapes = rawShapes
+      .map(s => padShape(s, N))
+      .map(sortShape)
+      .map(s => shapeToBuffers(s, N));
+
+    // -------------------------------------------------------------------------
+    // Three.js scene
+    // -------------------------------------------------------------------------
+
+    const canvas = document.getElementById('bg');
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+    camera.position.set(18, 6, 18);
+
+    // Drag / pinch / wheel interaction
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.rotateSpeed = 0.6;
+    controls.zoomSpeed = 0.8;
+    controls.panSpeed = 0.7;
+    controls.minDistance = 8;
+    controls.maxDistance = 70;
+    controls.target.set(0, 0, 0);
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.45; // gentle idle drift
+    controls.update();
+
+    // Pause idle drift while the user is dragging, resume after a beat of stillness.
+    let lastInteractAt = -Infinity;
+    const RESUME_AFTER = 3.5; // seconds
+    controls.addEventListener('start', () => {
+      controls.autoRotate = false;
+      lastInteractAt = performance.now() / 1000;
+    });
+    controls.addEventListener('end', () => {
+      lastInteractAt = performance.now() / 1000;
+    });
+
+    // Registry of LineMaterials whose `resolution` uniform must track the canvas
+    const lineMatRegistry = [];
+
+    function resize() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      for (const m of lineMatRegistry) m.resolution.set(w, h);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // Round point sprite – avoids square gl.POINTS
+    const pointSprite = (() => {
+      const c = document.createElement('canvas');
+      c.width = c.height = 64;
+      const ctx = c.getContext('2d');
+      const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      g.addColorStop(0.0, 'rgba(255,255,255,1)');
+      g.addColorStop(0.4, 'rgba(255,255,255,0.85)');
+      g.addColorStop(1.0, 'rgba(255,255,255,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, 64, 64);
+      const tex = new THREE.CanvasTexture(c);
+      tex.minFilter = THREE.LinearFilter;
+      return tex;
+    })();
+
+    // Shared dynamic position attribute
+    const positions = new Float32Array(N * 3);
+    positions.set(shapes[0].positions);
+    const positionAttr = new THREE.BufferAttribute(positions, 3);
+    positionAttr.setUsage(THREE.DynamicDrawUsage);
+
+    // Points
+    const pointsGeom = new THREE.BufferGeometry();
+    pointsGeom.setAttribute('position', positionAttr);
+    const pointsMat = new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: 0.17,
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: 0.95,
+      depthWrite: false,
+      map: pointSprite,
+      alphaTest: 0.01,
+      blending: THREE.NormalBlending,
+    });
+    const points = new THREE.Points(pointsGeom, pointsMat);
+    scene.add(points);
+
+    // Interval-pattern lines: vertical strokes only, thickness stepping
+    // incrementally from 32 px → 1 px across the sorted set per shape.
+    // Uses Three.js Line2 so `linewidth` is honoured in real screen pixels.
+
+    const VERT_AXIS_EPS = 0.01; // tolerance for "purely vertical"
+    const VERT_MIN_LEN  = 0.25; // ignore tiny vertical edges (e.g. floor slabs)
+    const STROKE_MAX = 32;
+    const STROKE_MIN = 1;
+
+    function findVerticalEdges(shape) {
+      const e = shape.edges;
+      const p = shape.positions;
+      const out = [];
+      for (let k = 0; k < e.length; k += 2) {
+        const ai = e[k], bi = e[k + 1];
+        const ax = p[ai * 3],     ay = p[ai * 3 + 1], az = p[ai * 3 + 2];
+        const bx = p[bi * 3],     by = p[bi * 3 + 1], bz = p[bi * 3 + 2];
+        if (Math.abs(ax - bx) < VERT_AXIS_EPS &&
+            Math.abs(az - bz) < VERT_AXIS_EPS &&
+            Math.abs(ay - by) > VERT_MIN_LEN) {
+          out.push({ a: ai, b: bi, midX: (ax + bx) / 2, midZ: (az + bz) / 2 });
+        }
+      }
+      // Sort spatially so thickness sweeps across the form
+      out.sort((p1, p2) => {
+        if (Math.abs(p1.midX - p2.midX) > 0.05) return p1.midX - p2.midX;
+        return p1.midZ - p2.midZ;
+      });
+      return out;
+    }
+
+    function findHorizontalEdges(shape) {
+      const e = shape.edges;
+      const p = shape.positions;
+      const out = [];
+      for (let k = 0; k < e.length; k += 2) {
+        const ai = e[k], bi = e[k + 1];
+        const ay = p[ai * 3 + 1];
+        const by = p[bi * 3 + 1];
+        if (Math.abs(ay - by) < VERT_AXIS_EPS) {
+          const dx = p[ai * 3]     - p[bi * 3];
+          const dz = p[ai * 3 + 2] - p[bi * 3 + 2];
+          if (dx * dx + dz * dz > VERT_MIN_LEN * VERT_MIN_LEN) {
+            out.push(ai, bi);
+          }
+        }
+      }
+      return out;
+    }
+
+    // Horizontal connectors – uniform 1 px, share the morphed position buffer.
+    const horizontalLineMaterials = shapes.map(() => new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+    }));
+    const horizontalLineMeshes = shapes.map((s, i) => {
+      const idx = findHorizontalEdges(s);
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', positionAttr); // shared!
+      g.setIndex(new THREE.BufferAttribute(new Uint32Array(idx), 1));
+      const m = new THREE.LineSegments(g, horizontalLineMaterials[i]);
+      scene.add(m);
+      return m;
+    });
+
+    // verticalLines[shapeIdx] = [{ line, mat, geom, a, b }, ...]
+    const verticalLines = shapes.map((shape) => {
+      const vEdges = findVerticalEdges(shape);
+      const total = vEdges.length;
+      // Interval per step. With `total` strokes ranging 32 → 1, step = 31/(total-1).
+      const step = total > 1 ? (STROKE_MAX - STROKE_MIN) / (total - 1) : 0;
+
+      return vEdges.map((edge, idx) => {
+        const thickness = total <= 1 ? STROKE_MAX : STROKE_MAX - step * idx;
+
+        const geom = new LineGeometry();
+        geom.setPositions([0, 0, 0, 0, 0, 0]); // placeholder; updated each frame
+
+        const mat = new LineMaterial({
+          color: 0xffffff,
+          linewidth: thickness, // pixels
+          transparent: true,
+          opacity: 0,
+          depthWrite: false,
+          worldUnits: false,
+          dashed: false,
+          alphaToCoverage: false,
+        });
+        // Square (butt) caps – discard the cap region of the extruded quad so
+        // the stroke terminates with a flat, angular edge rather than a round one.
+        mat.onBeforeCompile = (shader) => {
+          shader.fragmentShader = shader.fragmentShader.replace(
+            'void main() {',
+            'void main() {\n  if ( abs( vUv.y ) > 1.0 ) discard;'
+          );
+        };
+        mat.resolution.set(window.innerWidth, window.innerHeight);
+        lineMatRegistry.push(mat);
+
+        const line = new Line2(geom, mat);
+        line.computeLineDistances();
+        scene.add(line);
+
+        return { line, mat, geom, a: edge.a, b: edge.b };
+      });
+    });
+
+    // -------------------------------------------------------------------------
+    // Animation
+    // -------------------------------------------------------------------------
+
+    const SHAPE_DURATION = 5.0;     // each shape cycle, seconds
+    const MORPH_DURATION = 0.8;     // ease-in-out morph
+    const HOLD_DURATION  = SHAPE_DURATION - MORPH_DURATION;
+    const LINE_BASE_OPACITY = 1.0;
+    const NOISE_AMP = 0.018;
+
+    // Standard cubic ease-in-out (smoothstep)
+    const smooth = t => t * t * (3 - 2 * t);
+
+    // -------------------------------------------------------------------------
+    // Palette UI – swap background and cloud (points + lines) colours
+    // -------------------------------------------------------------------------
+
+    const PALETTE = [
+      { name: 'Black',         hex: '#000000' },
+      { name: 'White',         hex: '#FFFFFF' },
+      { name: 'Electric Blue', hex: '#3D2EB8' },
+      { name: 'Mint Green',    hex: '#82FFC0' },
+      { name: 'Brick',         hex: '#C05000' },
+      { name: 'Dark Grey',     hex: '#606060' },
+      { name: 'Light Grey',    hex: '#CBCBCB' },
+      { name: 'Mauve',         hex: '#C8B4DC' },
+      { name: 'Beige',         hex: '#F2EDD8' },
+      { name: 'Off White',     hex: '#F9F9F3' },
+    ];
+
+    const setBg = (hex) => { document.body.style.backgroundColor = hex; };
+    const setCloud = (hex) => {
+      pointsMat.color.set(hex);
+      for (const m of lineMatRegistry) m.color.set(hex);
+      for (const m of horizontalLineMaterials) m.color.set(hex);
+    };
+
+    const buildRow = (target, defaultHex) => {
+      const row = document.querySelector(`#palette .row[data-target="${target}"]`);
+      for (const { name, hex } of PALETTE) {
+        const b = document.createElement('button');
+        b.className = 'sw';
+        b.type = 'button';
+        b.title = name;
+        b.dataset.color = hex;
+        b.style.backgroundColor = hex;
+        if (hex.toUpperCase() === defaultHex.toUpperCase()) b.classList.add('active');
+        b.addEventListener('click', () => {
+          if (target === 'bg') setBg(hex); else setCloud(hex);
+          row.querySelectorAll('.sw').forEach(el => el.classList.toggle('active', el === b));
+        });
+        row.appendChild(b);
+      }
+    };
+
+    buildRow('bg', '#000000');
+    buildRow('cloud', '#FFFFFF');
+
+    const clock = new THREE.Clock();
+
+    function frame() {
+      requestAnimationFrame(frame);
+      const time = clock.getElapsedTime();
+
+      const cycle   = Math.floor(time / SHAPE_DURATION);
+      const inCycle = time - cycle * SHAPE_DURATION;
+
+      let t;
+      if (inCycle < HOLD_DURATION) {
+        t = 0;
+      } else {
+        const raw = (inCycle - HOLD_DURATION) / MORPH_DURATION;
+        t = smooth(raw); // single smoothstep – snappy ease-in-out
+      }
+
+      const fromIdx = ((cycle % shapes.length) + shapes.length) % shapes.length;
+      const toIdx   = (fromIdx + 1) % shapes.length;
+      const fromPos = shapes[fromIdx].positions;
+      const toPos   = shapes[toIdx].positions;
+
+      const arr = positionAttr.array;
+      for (let i = 0; i < N; i++) {
+        const i3 = i * 3;
+        const fX = fromPos[i3],     fY = fromPos[i3 + 1], fZ = fromPos[i3 + 2];
+        const tX = toPos[i3],       tY = toPos[i3 + 1],   tZ = toPos[i3 + 2];
+
+        // Per-vertex slow drift for organic life during the hold phase
+        const seed = i * 0.137;
+        const nx = Math.sin(time * 0.6 + seed)         * NOISE_AMP;
+        const ny = Math.sin(time * 0.45 + seed * 1.7)  * NOISE_AMP;
+        const nz = Math.sin(time * 0.75 + seed * 2.3)  * NOISE_AMP;
+
+        arr[i3]     = fX + (tX - fX) * t + nx;
+        arr[i3 + 1] = fY + (tY - fY) * t + ny;
+        arr[i3 + 2] = fZ + (tZ - fZ) * t + nz;
+      }
+      positionAttr.needsUpdate = true;
+
+      // Snap visibility at the morph midpoint – no transparency at any point,
+      // so colour stays flat 100 % through the transition. Vertex positions
+      // still interpolate smoothly underneath; only the line *connectivity*
+      // flips from shape A to shape B.
+      const visibleIdx = t < 0.5 ? fromIdx : toIdx;
+
+      // Keep both candidate shapes' Line2 geometries in sync with the morphed
+      // positions so the snap-on side is already correct the moment it appears.
+      const writePos = (sl) => {
+        for (let k = 0; k < sl.length; k++) {
+          const v = sl[k];
+          const ai = v.a * 3, bi = v.b * 3;
+          v.geom.setPositions([
+            arr[ai], arr[ai + 1], arr[ai + 2],
+            arr[bi], arr[bi + 1], arr[bi + 2],
+          ]);
+        }
+      };
+      writePos(verticalLines[fromIdx]);
+      if (toIdx !== fromIdx) writePos(verticalLines[toIdx]);
+
+      for (let i = 0; i < shapes.length; i++) {
+        const op = (i === visibleIdx) ? LINE_BASE_OPACITY : 0;
+        const sl = verticalLines[i];
+        for (let k = 0; k < sl.length; k++) sl[k].mat.opacity = op;
+        horizontalLineMaterials[i].opacity = op;
+      }
+
+      // Resume idle auto-rotate after a still pause
+      if (!controls.autoRotate &&
+          performance.now() / 1000 - lastInteractAt > RESUME_AFTER) {
+        controls.autoRotate = true;
+      }
+      controls.update();
+
+      renderer.render(scene, camera);
+    }
+
+    frame();
+  </script>
+</body>
+</html>
