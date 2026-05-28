@@ -13,6 +13,7 @@ import MetaRow from "@components/sections/MetaRow.astro";
 import ServiceModule from "@components/sections/ServiceModule.astro";
 import Button from "@components/ui/Button.astro";
 import { services, getPalette, type Service } from "@lib/services-catalog";
+import { asset } from "@lib/asset";
 
 export function getStaticPaths() {
   return services.map((service, i) => {
@@ -76,7 +77,7 @@ const palette = getPalette(service.slug);
       <nav class="service-nav" aria-label="Other services">
         <div class="service-nav__cell service-nav__cell--prev">
           {prev && (
-            <a class="service-nav__link" href={`/services/${prev.slug}/`}>
+            <a class="service-nav__link" href={asset(`/services/${prev.slug}/`)}>
               <span class="service-nav__dir" aria-hidden="true">← Previous</span>
               <span class="service-nav__name">{prev.name}</span>
             </a>
@@ -84,12 +85,12 @@ const palette = getPalette(service.slug);
         </div>
 
         <div class="service-nav__cell service-nav__cell--all">
-          <Button href="/services/" variant="ghost" arrow={false}>All services</Button>
+          <Button href={asset("/services/")} variant="ghost" arrow={false}>All services</Button>
         </div>
 
         <div class="service-nav__cell service-nav__cell--next">
           {next && (
-            <a class="service-nav__link service-nav__link--right" href={`/services/${next.slug}/`}>
+            <a class="service-nav__link service-nav__link--right" href={asset(`/services/${next.slug}/`)}>
               <span class="service-nav__dir" aria-hidden="true">Next →</span>
               <span class="service-nav__name">{next.name}</span>
             </a>

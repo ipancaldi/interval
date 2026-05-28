@@ -9,6 +9,7 @@
  */
 
 import Button from "@components/ui/Button.astro";
+import { asset } from "@lib/asset";
 
 export type InsightKind = "News" | "Event" | "Article" | "Project" | "Research" | "Interest";
 
@@ -41,7 +42,7 @@ const { items = placeholders } = Astro.props;
   <ul class="insights-teaser__grid" role="list">
     {items.slice(0, 3).map((card) => (
       <li class="insight-card">
-        <a class="insight-card__link" href={card.href ?? "/insights/"}>
+        <a class="insight-card__link" href={card.href ?? asset("/insights/")}>
           <span class="insight-card__kind">{card.kind}</span>
           <span class="insight-card__title">{card.title}</span>
           <span class="insight-card__date">{card.date}</span>
@@ -51,7 +52,7 @@ const { items = placeholders } = Astro.props;
   </ul>
 
   <div class="insights-teaser__more">
-    <Button href="/insights/" variant="ghost" arrow={true}>All insights</Button>
+    <Button href={asset("/insights/")} variant="ghost" arrow={true}>All insights</Button>
   </div>
 </section>
 
