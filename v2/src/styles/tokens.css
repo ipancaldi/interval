@@ -1,0 +1,80 @@
+/* ============================================================
+   tokens.css
+   The brand truth. Every other stylesheet reads from here.
+   Update colours / spacing / type scale in one place.
+   ============================================================ */
+
+:root {
+  /* ---- Palette ---------------------------------------------- */
+  --c-black:         #000000;
+  --c-white:         #FFFFFF;
+  --c-off-white:     #F9F9F3;   /* primary surface (warm paper) */
+  --c-beige:         #F2EDD8;   /* secondary surface */
+  --c-light-grey:    #CBCBCB;
+  --c-mid-grey:      #8C8C8C;
+  --c-dark-grey:     #606060;   /* meta / labels */
+
+  --c-electric:      #3D2EB8;   /* accent — italic emphasis on light */
+  --c-mint:          #82FFC0;   /* accent — italic emphasis on dark */
+  --c-brick:         #C05000;
+  --c-brick-tint:    #F0D9C2;   /* primary CTA fill */
+  --c-brick-hover:   #E8CAAE;
+  --c-mauve:         #C8B4DC;
+
+  /* ---- Semantic colour aliases ------------------------------ */
+  --bg:              var(--c-off-white);
+  --bg-dark:         var(--c-black);
+  --fg:              var(--c-black);
+  --fg-dark:         var(--c-off-white);
+  --fg-muted:        var(--c-dark-grey);
+  --fg-muted-dark:   rgba(249, 249, 243, 0.6);
+  --accent-light:    var(--c-electric);   /* used on light backgrounds */
+  --accent-dark:     var(--c-mint);       /* used on dark backgrounds */
+
+  /* ---- Rules / borders -------------------------------------- */
+  --rule:            1px solid rgba(0, 0, 0, 0.14);
+  --rule-light:      1px solid rgba(255, 255, 255, 0.18);
+
+  /* ---- Typography ------------------------------------------- */
+  --font-sans:
+    "Inter",
+    -apple-system, BlinkMacSystemFont,
+    "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+
+  --fs-meta:         11px;
+  --fs-body:         clamp(15px, 1.05vw, 17px);
+  --fs-body-lg:      clamp(17px, 1.35vw, 22px);
+  --fs-h4:           clamp(20px, 1.6vw, 24px);
+  --fs-h3:           clamp(28px, 3.2vw, 40px);
+  --fs-h2:           clamp(40px, 6vw, 88px);
+  --fs-display:      clamp(48px, 8.5vw, 132px);
+  --fs-statement:    clamp(36px, 6vw, 80px);
+
+  --tracking-meta:   0.14em;
+  --tracking-tight:  -0.025em;
+  --tracking-display: -0.035em;
+
+  --lh-tight:        1.0;
+  --lh-snug:         1.1;
+  --lh-base:         1.55;
+  --lh-display:      0.95;
+
+  /* ---- Spacing ---------------------------------------------- */
+  --gutter:          clamp(20px, 4vw, 56px);
+  --col-gap:         clamp(20px, 3vw, 48px);
+  --section-pad:     clamp(64px, 10vh, 140px);
+  --section-pad-sm:  clamp(40px, 6vh, 80px);
+
+  /* ---- Layout shell ----------------------------------------- */
+  --shell-max:       1440px;
+
+  /* ---- Radius / motion -------------------------------------- */
+  --radius:          4px;
+  --radius-lg:       8px;
+
+  --ease-out:        cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast:        0.25s;
+  --dur-base:        0.4s;
+  --dur-slow:        0.8s;
+}

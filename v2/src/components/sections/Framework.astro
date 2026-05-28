@@ -1,0 +1,51 @@
+---
+/**
+ * Framework — diagram on one side, supporting copy on the other.
+ * Renders the FrameworkDiagram component inline.
+ */
+
+import FrameworkDiagram from "@components/diagrams/FrameworkDiagram.astro";
+
+interface Props {
+  title: string;          // HTML allowed
+}
+
+const { title } = Astro.props;
+---
+
+<section class="framework reveal">
+  <div class="framework__diagram">
+    <FrameworkDiagram />
+  </div>
+  <div class="framework__text">
+    <h3 set:html={title}></h3>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .framework {
+    padding: calc(var(--section-pad) * 0.4) 0 var(--section-pad);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--col-gap);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .framework { grid-template-columns: 1fr 1fr; }
+  }
+  .framework__text {
+    font-size: var(--fs-body);
+    line-height: var(--lh-base);
+    max-width: 44ch;
+  }
+  .framework__text h3 {
+    font-weight: 400;
+    font-size: var(--fs-h3);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-tight);
+    margin-bottom: 18px;
+  }
+  .framework__text h3 :global(em) { color: var(--accent-light); }
+  .framework__text :global(p + p) { margin-top: 1em; }
+</style>

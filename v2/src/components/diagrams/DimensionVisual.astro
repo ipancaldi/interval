@@ -1,0 +1,51 @@
+---
+/**
+ * DimensionVisual — branded square plates representing each of the
+ * five Experience Dimensions on the Approach page.
+ *
+ *   spatial        → /assets/icons/Spatial.svg     (electric blue · mint)
+ *   technology     → /assets/icons/Technology.svg  (black · mauve)
+ *   brand-digital  → /assets/icons/Brand.svg       (beige · brick)
+ *   content        → /assets/icons/Content.svg     (mauve · brick)
+ *   time           → /assets/icons/Time.svg        (black · multi)
+ *
+ * Each asset is a 276 × 276 SVG that already carries its own brand
+ * background colour, so the wrapping <div> just enforces the square
+ * aspect ratio. Updating a visual = swapping its asset file.
+ */
+
+import type { DimensionKey } from "@typings/ui";
+import { asset } from "@lib/asset";
+
+interface Props {
+  variant: DimensionKey;
+}
+
+const { variant } = Astro.props;
+
+const iconFor: Record<DimensionKey, string> = {
+  "spatial":       asset("/assets/icons/Spatial.svg"),
+  "technology":    asset("/assets/icons/Technology.svg"),
+  "brand-digital": asset("/assets/icons/Brand.svg"),
+  "content":       asset("/assets/icons/Content.svg"),
+  "time":          asset("/assets/icons/Time.svg"),
+};
+---
+
+<div class={`dim-visual dim-visual--${variant}`}>
+  <img src={iconFor[variant]} alt="" loading="lazy" />
+</div>
+
+<style>
+  .dim-visual {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .dim-visual img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>

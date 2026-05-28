@@ -1,0 +1,99 @@
+---
+/**
+ * QuestionsList — "Solving for these questions" block on Services.
+ * A two-column list of client questions Interval answers.
+ */
+
+interface Props {
+  label: string;
+  title: string;       // HTML allowed
+  questions: string[];
+}
+
+const { label, title, questions } = Astro.props;
+---
+
+<section class="questions reveal">
+  <header class="questions__head">
+    <div class="questions__label">{label}</div>
+    <h2 class="questions__title" set:html={title}></h2>
+  </header>
+
+  <ul class="questions__grid" role="list">
+    {questions.map((q, i) => (
+      <li class="questions__item">
+        <span class="questions__num">Q{String(i + 1).padStart(2, "0")}</span>
+        <span class="questions__text">{q}</span>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .questions {
+    padding: var(--section-pad) 0;
+    border-top: var(--rule);
+  }
+  .questions__head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: clamp(32px, 4vw, 56px);
+  }
+  .questions__label {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+  }
+  .questions__title {
+    font-size: clamp(28px, 3.4vw, 48px);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-tight);
+    font-weight: 400;
+    max-width: 22ch;
+  }
+  .questions__title :global(em) { color: var(--accent-light); }
+
+  .questions__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-top: var(--rule);
+  }
+  @media (min-width: 800px) {
+    .questions__grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .questions__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    align-items: baseline;
+    padding: 22px 0;
+    border-bottom: var(--rule);
+  }
+  @media (min-width: 800px) {
+    .questions__item:nth-child(odd)  { border-right: var(--rule); padding-right: var(--col-gap); }
+    .questions__item:nth-child(even) { padding-left: var(--col-gap); }
+  }
+
+  .questions__num {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+    min-width: 28px;
+  }
+  .questions__text {
+    font-size: clamp(16px, 1.3vw, 19px);
+    line-height: 1.4;
+    color: var(--c-black);
+    max-width: 44ch;
+  }
+</style>

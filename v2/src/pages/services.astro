@@ -1,0 +1,92 @@
+---
+/**
+ * Services (/services/)
+ *
+ * Per the v2 wireframe:
+ *   Hero
+ *   → 5 service cards (compact) — each links to its detail page
+ *   → "Solving for these questions" — list of client questions
+ *
+ * Detail content lives in src/lib/services-catalog.ts and renders
+ * via src/pages/services/[slug].astro.
+ */
+
+import Base from "@layouts/Base.astro";
+import Hero from "@components/sections/Hero.astro";
+import MetaRow from "@components/sections/MetaRow.astro";
+import ServiceCard from "@components/sections/ServiceCard.astro";
+import QuestionsList from "@components/sections/QuestionsList.astro";
+import { getPage } from "@lib/content";
+import { services, getPalette } from "@lib/services-catalog";
+
+const page = await getPage("services");
+const d = page.data as {
+  hero: { eyebrowLeft: string; eyebrowRight: string; title: string; subtitle: string };
+  questions: { label: string; title: string; items: string[] };
+};
+---
+
+<Base meta={page.meta}>
+
+  <Hero
+    eyebrowLeft={d.hero.eyebrowLeft}
+    eyebrowRight={d.hero.eyebrowRight}
+    title={d.hero.title}
+    subtitle={d.hero.subtitle}
+    theme="mauve"
+    startIndex={2}
+  />
+
+  <div class="light-block" data-surface="light">
+
+    <!-- 5 SERVICE CARDS -->
+    <section class="container" id="services">
+      <MetaRow left="IV003" right={`${services.length} services`} />
+
+      <div class="services-grid reveal">
+        {services.map((s) => {
+          const palette = getPalette(s.slug);
+          return (
+            <ServiceCard
+              num={s.num}
+              name={s.name}
+              intro={s.shortIntro}
+              href={`/services/${s.slug}/`}
+              bgColor={palette.bg}
+              textColor={palette.text}
+              accentColor={palette.pattern}
+            />
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- SOLVING FOR THESE QUESTIONS -->
+    <section class="container" id="questions">
+      <QuestionsList
+        label={d.questions.label}
+        title={d.questions.title}
+        questions={d.questions.items}
+      />
+    </section>
+
+  </div>
+
+</Base>
+
+<style>
+  .light-block { background: var(--bg); color: var(--fg); }
+
+  .services-grid {
+    padding: clamp(32px, 4vw, 56px) 0 var(--section-pad);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(16px, 2vw, 24px);
+  }
+  @media (min-width: 720px) {
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1100px) {
+    .services-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>

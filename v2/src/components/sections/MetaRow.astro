@@ -1,0 +1,38 @@
+---
+/**
+ * MetaRow — the thin uppercase rule that sits above every section.
+ * "IV001 · Approach"   "The case for change"
+ */
+
+interface Props {
+  left: string;
+  right: string;
+  variant?: "light" | "dark";
+}
+
+const { left, right, variant = "light" } = Astro.props;
+---
+
+<div class:list={["meta-row", `meta-row--${variant}`]}>
+  <span>{left}</span>
+  <span>{right}</span>
+</div>
+
+<style>
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-top: var(--rule);
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+  }
+  .meta-row--dark {
+    color: var(--fg-muted-dark);
+    border-top: var(--rule-light);
+  }
+</style>

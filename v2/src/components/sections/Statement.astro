@@ -1,0 +1,34 @@
+---
+/**
+ * Statement — centred display-size aphorism. One sentence per section.
+ *
+ * HTML allowed for the emphasised phrase.
+ */
+
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+---
+
+<section class="statement reveal">
+  <p class="statement__inner" set:html={text}></p>
+</section>
+
+<style>
+  .statement {
+    padding: var(--section-pad) 0;
+    border-top: var(--rule);
+  }
+  .statement__inner {
+    max-width: 24ch;
+    margin: 0 auto;
+    font-size: var(--fs-statement);
+    line-height: var(--lh-tight);
+    letter-spacing: -0.03em;
+    text-align: center;
+    font-weight: 400;
+  }
+  .statement__inner :global(em) { color: var(--accent-light); }
+</style>

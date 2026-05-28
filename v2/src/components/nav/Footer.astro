@@ -1,0 +1,73 @@
+---
+/**
+ * Footer — appears at the bottom of every page on a dark surface.
+ *
+ * Locations + meta lines come from props so they can later be driven
+ * by the shared/site content entry without editing the component.
+ */
+
+import { asset } from "@lib/asset";
+
+interface Props {
+  locations?: string[];
+  rights?: string;
+  tagline?: string;
+}
+
+const {
+  locations = ["London", "Sydney"],
+  rights = `© ${new Date().getFullYear()} Interval Studio`,
+  tagline = "Total Experience Design™",
+} = Astro.props;
+---
+
+<footer class="footer" data-surface="dark">
+  <div class="container">
+    <div class="footer__inner">
+      <a class="footer__brand" href={asset("/")} aria-label="Interval — Home">
+        <img
+          class="footer__logo"
+          src={asset("/assets/logos/interval-logo-white.svg")}
+          alt="Interval"
+          width="160"
+          height="28"
+        />
+      </a>
+
+      <div class="footer__meta">
+        <span>{rights}</span>
+        <span>{tagline}</span>
+        <span>{locations.join(" · ")}</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--bg-dark);
+    color: rgba(249, 249, 243, 0.7);
+    padding: 40px 0 32px;
+    border-top: var(--rule-light);
+  }
+  .footer__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    align-items: end;
+  }
+  @media (min-width: 720px) {
+    .footer__inner { grid-template-columns: 1fr auto; }
+  }
+  .footer__logo { height: 28px; width: auto; }
+  .footer__meta {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: rgba(249, 249, 243, 0.5);
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+</style>

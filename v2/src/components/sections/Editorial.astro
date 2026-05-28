@@ -1,0 +1,63 @@
+---
+/**
+ * Editorial — two-column editorial block: bold left title, long-form
+ * right-hand body. The body slot accepts arbitrary markup (p, h4, lists).
+ *
+ * `title` accepts HTML so callers can <em>-emphasise inline.
+ */
+
+interface Props {
+  title?: string;
+}
+
+const { title } = Astro.props;
+---
+
+<section class="editorial reveal">
+  {title ? (
+    <h2 class="editorial__title" set:html={title}></h2>
+  ) : (
+    <div aria-hidden="true"></div>
+  )}
+  <div class="editorial__body">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .editorial {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: var(--section-pad) 0;
+    border-top: var(--rule);
+  }
+  @media (min-width: 800px) {
+    .editorial {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--col-gap);
+    }
+  }
+  .editorial__title {
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.05;
+    font-weight: 400;
+    letter-spacing: var(--tracking-tight);
+    max-width: 22ch;
+  }
+  .editorial__title :global(em) { color: var(--accent-light); }
+
+  .editorial__body {
+    font-size: var(--fs-body);
+    line-height: var(--lh-base);
+    color: #1a1a1a;
+    max-width: 56ch;
+  }
+  .editorial__body :global(p + p) { margin-top: 1em; }
+  .editorial__body :global(h4) {
+    font-weight: 600;
+    font-size: 15px;
+    margin-top: 1.6em;
+    margin-bottom: 0.4em;
+  }
+</style>

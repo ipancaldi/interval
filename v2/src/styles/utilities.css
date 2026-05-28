@@ -1,0 +1,58 @@
+/* ============================================================
+   utilities.css
+   Layout shell + reveal animation + skip link + small helpers.
+   ============================================================ */
+
+.container {
+  width: 100%;
+  max-width: var(--shell-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* Inverted block — switches to dark surface */
+.is-dark {
+  background: var(--bg-dark);
+  color: var(--fg-dark);
+}
+
+/* Skip-to-content link, visually hidden until focused */
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  padding: 10px 14px;
+  background: var(--c-black);
+  color: var(--c-off-white);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  z-index: 100;
+  border-radius: var(--radius);
+  transform: translateY(-200%);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.skip-link:focus-visible { transform: translateY(0); }
+
+/* Reveal — fades sections in when they enter the viewport */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity var(--dur-slow) ease,
+    transform var(--dur-slow) var(--ease-out);
+}
+.reveal.is-in { opacity: 1; transform: none; }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* No-JS fallback for reveal */
+:where(html.no-js) .reveal { opacity: 1; transform: none; }

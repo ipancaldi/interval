@@ -23,3 +23,9 @@ pnpm-debug.log*
 .vscode/
 .idea/
 old_v1/
+
+# Claude session artefacts (not for git)
+.claude/
+
+# copy-development PDF kept locally only
+*.pdf

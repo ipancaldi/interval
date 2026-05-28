@@ -1,0 +1,75 @@
+---
+/**
+ * PhotoPair — image left, headed text block right (stacks on mobile).
+ * The body slot accepts arbitrary markup.
+ */
+
+interface Props {
+  src: string;
+  alt: string;
+  label: string;
+  title: string;          // HTML allowed
+  imageAlign?: "left" | "right";
+}
+
+const { src, alt, label, title, imageAlign = "left" } = Astro.props;
+---
+
+<section class:list={["photo-pair", "reveal", `photo-pair--${imageAlign}`]}>
+  <figure class="photo-pair__image" aria-label={alt}>
+    <img src={src} alt={alt} loading="lazy" />
+  </figure>
+  <div class="photo-pair__copy">
+    <div class="photo-pair__label">{label}</div>
+    <h3 class="photo-pair__title" set:html={title}></h3>
+    <div class="photo-pair__text">
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .photo-pair {
+    padding: var(--section-pad) 0;
+    border-top: var(--rule);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(28px, 4vw, 56px);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .photo-pair { grid-template-columns: 1fr 1fr; }
+    .photo-pair--right .photo-pair__image { order: 2; }
+  }
+  .photo-pair__image {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #ddd;
+    margin: 0;
+  }
+  .photo-pair__image img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-pair__copy { max-width: 52ch; }
+  .photo-pair__label {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+    margin-bottom: 16px;
+  }
+  .photo-pair__title {
+    font-size: clamp(28px, 3.4vw, 44px);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-tight);
+    font-weight: 400;
+    margin-bottom: 20px;
+  }
+  .photo-pair__title :global(em) { color: var(--accent-light); }
+  .photo-pair__text {
+    font-size: var(--fs-body);
+    line-height: var(--lh-base);
+    color: #1a1a1a;
+  }
+  .photo-pair__text :global(p + p) { margin-top: 1em; }
+</style>

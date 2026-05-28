@@ -1,0 +1,43 @@
+---
+/**
+ * SectionTitle — the big H2 + tiny eyebrow label that opens a section.
+ *
+ * `title` accepts HTML so callers can wrap an emphasised phrase in <em>.
+ * Example: <SectionTitle label="IV002 — The Framework" title='Holds the <em>whole picture</em> together.' />
+ */
+
+interface Props {
+  label: string;
+  title: string;
+}
+
+const { label, title } = Astro.props;
+---
+
+<header class="section-title reveal">
+  <div class="section-title__label">{label}</div>
+  <h2 class="section-title__title" set:html={title}></h2>
+</header>
+
+<style>
+  .section-title {
+    padding: var(--section-pad) 0 calc(var(--section-pad) * 0.5);
+    border-top: var(--rule);
+  }
+  .section-title__label {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+    margin-bottom: 18px;
+  }
+  .section-title__title {
+    font-size: var(--fs-h2);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--tracking-display);
+    max-width: 18ch;
+    font-weight: 400;
+  }
+  .section-title__title :global(em) { color: var(--accent-light); }
+</style>

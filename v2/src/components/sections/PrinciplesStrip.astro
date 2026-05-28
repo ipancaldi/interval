@@ -1,0 +1,145 @@
+---
+/**
+ * PrinciplesStrip / Experience Outcomes — beige horizontal strip with
+ * the five qualities of an Interval engagement. Each tile carries a
+ * small SVG glyph, a label and a short sub-label.
+ *
+ *   human-centered → Human-First · designing for all
+ *   adaptive       → Adaptive by design
+ *   commercial     → Maximised Returns · across every day
+ *   systemic       → Holistic System Design
+ *   operational    → Day 1 Operations
+ */
+
+import { asset } from "@lib/asset";
+
+type PrincipleKey =
+  | "human-centered"
+  | "adaptive"
+  | "commercial"
+  | "systemic"
+  | "operational";
+
+interface Principle {
+  key: PrincipleKey;
+  label: string;
+  sub?: string;
+}
+
+interface Props {
+  items?: Principle[];
+  heading?: string;
+}
+
+const defaultItems: Principle[] = [
+  { key: "human-centered", label: "Human-First",        sub: "designing for all" },
+  { key: "adaptive",       label: "Adaptive by design" },
+  { key: "commercial",     label: "Maximised Returns",  sub: "across every day" },
+  { key: "systemic",       label: "Holistic System Design" },
+  { key: "operational",    label: "Day 1 Operations" },
+];
+
+// One illustration per principle. Each is a separate SVG asset so the
+// composition can evolve without touching component code.
+const iconFor: Record<PrincipleKey, string> = {
+  "human-centered": asset("/assets/icons/human-first.svg"),
+  "adaptive":       asset("/assets/icons/adaptive-by-design.svg"),
+  "commercial":     asset("/assets/icons/max-returns.svg"),
+  "systemic":       asset("/assets/icons/holistic-system.svg"),
+  "operational":    asset("/assets/icons/1-day-ops.svg"),
+};
+
+const { items = defaultItems, heading } = Astro.props;
+---
+
+{heading && (
+  <header class="principles__heading">
+    <h2>{heading}</h2>
+  </header>
+)}
+
+<section class="principles reveal" aria-label="Experience Outcomes">
+  <ul class="principles__grid" role="list">
+    {items.map((p) => (
+      <li class="principle">
+        <div class="principle__glyph" aria-hidden="true">
+          <img src={iconFor[p.key]} alt="" loading="lazy" />
+        </div>
+        <div class="principle__label">{p.label}</div>
+        {p.sub && <div class="principle__sub">{p.sub}</div>}
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .principles {
+    background: var(--c-beige);
+    padding: clamp(28px, 4vw, 48px) var(--gutter);
+    margin-top: 0;
+  }
+  .principles__grid {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: var(--shell-max);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px 24px;
+  }
+  @media (min-width: 720px) {
+    .principles__grid { grid-template-columns: repeat(5, 1fr); gap: 32px; }
+  }
+  .principle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+  /* Each illustration carries its own aspect ratio — we anchor on a
+     consistent height and let the width fall out from there. */
+  .principle__glyph {
+    height: 84px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-width: 100px;
+  }
+  .principle__glyph img {
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    display: block;
+  }
+  .principle__label {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--c-black);
+    line-height: 1.25;
+    max-width: 16ch;
+  }
+  .principle__sub {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--fg-muted);
+    line-height: 1.3;
+    max-width: 18ch;
+  }
+
+  .principles__heading {
+    background: var(--c-beige);
+    padding: clamp(28px, 4vw, 48px) var(--gutter) 0;
+  }
+  .principles__heading h2 {
+    max-width: var(--shell-max);
+    margin: 0 auto;
+    font-size: clamp(22px, 2.4vw, 32px);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    font-weight: 400;
+    color: var(--c-black);
+  }
+  .principles__heading + .principles { padding-top: clamp(20px, 3vw, 36px); }
+</style>

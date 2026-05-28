@@ -1,0 +1,105 @@
+---
+/**
+ * PhotoBleed — full-bleed editorial image with a soft gradient overlay,
+ * a top meta row, and a bottom caption + meta row.
+ *
+ * Caption accepts HTML so a single phrase can be <em>-emphasised.
+ */
+
+interface Props {
+  src: string;
+  alt: string;
+  topLeft?: string;
+  topRight?: string;
+  caption: string;            // HTML allowed
+  metaRight?: string;
+  surface?: "light" | "dark"; // surface declared on the figure for the nav
+}
+
+const {
+  src,
+  alt,
+  topLeft,
+  topRight,
+  caption,
+  metaRight,
+  surface = "dark",
+} = Astro.props;
+---
+
+<figure class="photo-bleed reveal" data-surface={surface} aria-label={alt}>
+  <img src={src} alt={alt} loading="lazy" />
+  <div class="photo-bleed__overlay">
+    <div class="photo-bleed__top">
+      {topLeft && <span>{topLeft}</span>}
+      {topRight && <span>{topRight}</span>}
+    </div>
+    <div class="photo-bleed__bot">
+      <p class="photo-bleed__cap" set:html={caption}></p>
+      {metaRight && <span class="photo-bleed__meta">{metaRight}</span>}
+    </div>
+  </div>
+</figure>
+
+<style>
+  .photo-bleed {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 80vh;
+    overflow: hidden;
+    background: #1a1a1a;
+    margin: 0;
+  }
+  @media (max-width: 720px) {
+    .photo-bleed { aspect-ratio: 4 / 5; }
+  }
+  .photo-bleed img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-bleed__overlay {
+    position: absolute;
+    inset: 0;
+    padding: clamp(20px, 3vw, 40px) var(--gutter);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+      rgba(0,0,0,0.30) 0%,
+      rgba(0,0,0,0)   30%,
+      rgba(0,0,0,0)   65%,
+      rgba(0,0,0,0.55) 100%);
+  }
+  .photo-bleed__top,
+  .photo-bleed__bot {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .photo-bleed__top {
+    align-items: flex-start;
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .photo-bleed__cap {
+    max-width: 30ch;
+    font-size: clamp(18px, 1.6vw, 24px);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: #fff;
+    font-weight: 400;
+  }
+  .photo-bleed__cap :global(em) { color: var(--accent-dark); }
+  .photo-bleed__meta {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: rgba(255, 255, 255, 0.7);
+    text-align: right;
+  }
+</style>

@@ -1,0 +1,146 @@
+---
+/**
+ * InsightsTeaser — "x3 latest from" strip on the home page.
+ *
+ * Reads up to 3 cards from props. Each card has a kind (News, Event,
+ * Article, Project), a title, a date, and an optional href. When no
+ * items are passed, renders three placeholder cards so the layout is
+ * always demonstrable.
+ */
+
+import Button from "@components/ui/Button.astro";
+
+export type InsightKind = "News" | "Event" | "Article" | "Project" | "Research" | "Interest";
+
+interface InsightCard {
+  kind: InsightKind;
+  title: string;
+  date: string;            // already formatted, e.g. "May 2026"
+  href?: string;
+}
+
+interface Props {
+  items?: InsightCard[];
+}
+
+const placeholders: InsightCard[] = [
+  { kind: "Article", title: "Why adaptive spaces need a new experience model.",        date: "Forthcoming" },
+  { kind: "Event",   title: "Total Experience Design — London salon, by invitation.",  date: "Forthcoming" },
+  { kind: "Project", title: "Selected project case study landing soon.",               date: "Forthcoming" },
+];
+
+const { items = placeholders } = Astro.props;
+---
+
+<section class="insights-teaser reveal">
+  <header class="insights-teaser__head">
+    <div class="insights-teaser__label">Insights</div>
+    <h2 class="insights-teaser__title">Latest from the studio.</h2>
+  </header>
+
+  <ul class="insights-teaser__grid" role="list">
+    {items.slice(0, 3).map((card) => (
+      <li class="insight-card">
+        <a class="insight-card__link" href={card.href ?? "/insights/"}>
+          <span class="insight-card__kind">{card.kind}</span>
+          <span class="insight-card__title">{card.title}</span>
+          <span class="insight-card__date">{card.date}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <div class="insights-teaser__more">
+    <Button href="/insights/" variant="ghost" arrow={true}>All insights</Button>
+  </div>
+</section>
+
+<style>
+  .insights-teaser {
+    padding: var(--section-pad) 0;
+    border-top: var(--rule);
+  }
+  .insights-teaser__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: clamp(28px, 4vw, 48px);
+    flex-wrap: wrap;
+  }
+  .insights-teaser__label {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+  }
+  .insights-teaser__title {
+    font-size: clamp(28px, 3.4vw, 44px);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-tight);
+    font-weight: 400;
+  }
+
+  .insights-teaser__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-top: var(--rule);
+  }
+  @media (min-width: 800px) {
+    .insights-teaser__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--col-gap);
+      border-top: none;
+    }
+  }
+
+  .insight-card {
+    border-bottom: var(--rule);
+  }
+  @media (min-width: 800px) {
+    .insight-card { border-bottom: none; border-top: var(--rule); }
+  }
+
+  .insight-card__link {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 24px 0;
+    transition: color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+  }
+  .insight-card__link:hover {
+    color: var(--accent-light);
+    transform: translateX(2px);
+  }
+
+  .insight-card__kind {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+  }
+  .insight-card__title {
+    font-size: clamp(18px, 1.4vw, 22px);
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    max-width: 28ch;
+  }
+  .insight-card__date {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+  }
+
+  .insights-teaser__more {
+    margin-top: clamp(24px, 3vw, 40px);
+    display: flex;
+  }
+</style>

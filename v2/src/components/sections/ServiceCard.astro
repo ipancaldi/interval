@@ -1,0 +1,106 @@
+---
+/**
+ * ServiceCard — compact card for the Services index page.
+ * Number + name + short intro + "Explore" link → detail page.
+ *
+ * Each card wears the same bg/text colour combo as its detail page,
+ * so the click-through reads as a continuous identity.
+ */
+
+interface Props {
+  num: string;        // "01"
+  name: string;
+  intro: string;
+  href: string;
+  /** Brand bg colour (matches detail-page hero bg). */
+  bgColor: string;
+  /** Text colour (matches detail-page hero text colour). */
+  textColor: string;
+  /** Accent colour used for the explore link / divider. */
+  accentColor: string;
+}
+
+const { num, name, intro, href, bgColor, textColor, accentColor } = Astro.props;
+---
+
+<article
+  class="service-card reveal"
+  style={`--card-bg: ${bgColor}; --card-fg: ${textColor}; --card-accent: ${accentColor};`}
+>
+  <a class="service-card__link" href={href}>
+    <div class="service-card__num">{num}</div>
+    <h3 class="service-card__name">{name}</h3>
+    <p class="service-card__intro">{intro}</p>
+    <span class="service-card__more">
+      Explore <span class="service-card__arrow" aria-hidden="true">→</span>
+    </span>
+  </a>
+</article>
+
+<style>
+  .service-card {
+    background: var(--card-bg);
+    color: var(--card-fg);
+    border-radius: var(--radius);
+    padding: clamp(20px, 2.4vw, 28px);
+    height: 100%;
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) ease;
+  }
+  .service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.25);
+  }
+
+  .service-card__link {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+    color: inherit;
+  }
+
+  .service-card__num {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--card-accent);
+  }
+  .service-card__name {
+    font-size: clamp(22px, 1.9vw, 28px);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    font-weight: 400;
+    max-width: 12ch;
+  }
+  .service-card__name :global(em) {
+    color: var(--card-accent);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .service-card__intro {
+    font-size: 14px;
+    line-height: 1.5;
+    flex: 1;
+    opacity: 0.86;
+  }
+  .service-card__more {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--card-accent);
+  }
+  .service-card__arrow {
+    transition: transform var(--dur-fast) ease;
+  }
+  .service-card__link:hover .service-card__arrow {
+    transform: translateX(4px);
+  }
+</style>

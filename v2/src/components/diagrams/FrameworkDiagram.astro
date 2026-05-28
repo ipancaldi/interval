@@ -1,0 +1,30 @@
+---
+/**
+ * FrameworkDiagram — the orbit diagram that anchors the Framework /
+ * "How Total Experience Design Delivers" section.
+ *
+ * Renders the canonical TE Model artwork from
+ * /assets/icons/TE_Model.svg. Updating the diagram is now a matter
+ * of replacing that asset.
+ */
+import { asset } from "@lib/asset";
+---
+
+<img
+  class="te-model"
+  src={asset("/assets/icons/TE_Model.svg")}
+  alt="Total Experience Design framework — Human Foundation, Vision, Master Plan and Realisation orbit Spatial, Technology, Brand & Digital and Content, with Time at the centre."
+  width="591"
+  height="519"
+  loading="lazy"
+/>
+
+<style>
+  .te-model {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+</style>

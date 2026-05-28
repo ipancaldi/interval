@@ -1,0 +1,77 @@
+---
+/**
+ * Button — single visual primary button with optional trailing arrow.
+ * Renders as <a> when `href` is provided, otherwise as <button>.
+ */
+
+interface Props {
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  variant?: "primary" | "ghost";
+  arrow?: boolean;
+  external?: boolean;
+}
+
+const {
+  href,
+  type = "button",
+  variant = "primary",
+  arrow = true,
+  external = false,
+} = Astro.props;
+
+const Tag = href ? "a" : "button";
+const externalAttrs = external ? { target: "_blank", rel: "noopener noreferrer" } : {};
+---
+
+<Tag
+  class:list={["btn", `btn--${variant}`, { "btn--with-arrow": arrow }]}
+  href={href}
+  type={!href ? type : undefined}
+  {...externalAttrs}
+>
+  <slot />
+  {arrow && <span class="btn__arrow" aria-hidden="true">→</span>}
+</Tag>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 22px;
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+    transition:
+      background var(--dur-fast) ease,
+      transform var(--dur-fast) ease,
+      color var(--dur-fast) ease;
+  }
+
+  .btn--primary {
+    background: var(--c-brick-tint);
+    color: var(--c-black);
+  }
+  .btn--primary:hover {
+    background: var(--c-brick-hover);
+    transform: translateY(-1px);
+  }
+
+  .btn--ghost {
+    background: transparent;
+    color: inherit;
+    border: 1px solid currentColor;
+  }
+  .btn--ghost:hover { background: rgba(255, 255, 255, 0.06); }
+
+  .btn__arrow {
+    font-size: 18px;
+    transition: transform var(--dur-fast) ease;
+  }
+  .btn:hover .btn__arrow { transform: translateX(4px); }
+</style>

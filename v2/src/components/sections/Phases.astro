@@ -1,0 +1,75 @@
+---
+/**
+ * Phases — vertical list of 4 process phases. Each phase is a row with
+ * an index, a name and a long description. Hover highlights the name.
+ */
+
+interface Phase {
+  num: string;     // "PH / 01"
+  name: string;
+  desc: string;
+}
+
+interface Props {
+  items: Phase[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="phases reveal">
+  <ol class="phases__list" role="list">
+    {items.map((phase) => (
+      <li class="phase">
+        <div class="phase__num">{phase.num}</div>
+        <div class="phase__name">{phase.name}</div>
+        <div class="phase__desc">{phase.desc}</div>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .phases { padding: var(--section-pad) 0; border-top: var(--rule); }
+  .phases__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .phase {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    padding: 28px 0;
+    border-top: var(--rule);
+    align-items: baseline;
+  }
+  @media (min-width: 800px) {
+    .phase { grid-template-columns: 120px 1fr 2fr; gap: var(--col-gap); }
+  }
+  .phase:last-child { border-bottom: var(--rule); }
+  .phase__num {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+  }
+  .phase__name {
+    font-size: var(--fs-h3);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-tight);
+    font-weight: 400;
+    transition: color var(--dur-fast) ease;
+  }
+  .phase__desc {
+    font-size: 15px;
+    line-height: var(--lh-base);
+    color: #1a1a1a;
+    max-width: 56ch;
+  }
+  .phase:hover .phase__name { color: var(--accent-light); }
+</style>

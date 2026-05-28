@@ -1,0 +1,170 @@
+---
+/**
+ * Pillars — 5-up grid of pillar cards. Each pillar has an SVG visual,
+ * an index label, a name, and a short description.
+ *
+ * The visual is a Pillar.Visual variant identified by `visual` —
+ * five hand-built SVG compositions matching old_v1. Defined inline
+ * below so the component stays self-contained.
+ *
+ * The PillarVisual type lives in @typings/ui to keep .astro components
+ * free of cross-component type imports.
+ */
+
+import type { Pillar } from "@typings/ui";
+
+interface Props {
+  items: Pillar[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="pillars reveal">
+  <div class="pillars__grid">
+    {items.map((p) => (
+      <article class="pillar">
+        <div class="pillar__visual">
+          {p.visual === "spatial" && (
+            <svg viewBox="0 0 200 220" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="200" height="220" fill="#3D2EB8"/>
+              <g fill="#82FFC0">
+                <rect x="20"  y="20"  width="40" height="40"/>
+                <rect x="60"  y="60"  width="40" height="40"/>
+                <rect x="100" y="20"  width="40" height="40"/>
+                <rect x="140" y="60"  width="40" height="40"/>
+                <rect x="20"  y="100" width="40" height="40"/>
+                <rect x="100" y="100" width="40" height="40"/>
+                <rect x="60"  y="140" width="40" height="40"/>
+                <rect x="140" y="140" width="40" height="40"/>
+              </g>
+            </svg>
+          )}
+          {p.visual === "technology" && (
+            <svg viewBox="0 0 200 220" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="200" height="220" fill="#000"/>
+              <g fill="#82FFC0">
+                <rect x="20"  y="20"  width="20" height="20"/>
+                <rect x="60"  y="40"  width="20" height="20"/>
+                <rect x="100" y="20"  width="20" height="20"/>
+                <rect x="140" y="60"  width="20" height="20"/>
+                <rect x="40"  y="80"  width="20" height="20"/>
+                <rect x="80"  y="100" width="20" height="20"/>
+                <rect x="120" y="80"  width="20" height="20"/>
+                <rect x="160" y="120" width="20" height="20"/>
+                <rect x="20"  y="140" width="20" height="20"/>
+                <rect x="60"  y="160" width="20" height="20"/>
+                <rect x="100" y="140" width="20" height="20"/>
+                <rect x="140" y="180" width="20" height="20"/>
+              </g>
+              <g fill="#3D2EB8">
+                <rect x="40"  y="40"  width="20" height="20"/>
+                <rect x="100" y="80"  width="20" height="20"/>
+                <rect x="140" y="140" width="20" height="20"/>
+                <rect x="80"  y="180" width="20" height="20"/>
+              </g>
+            </svg>
+          )}
+          {p.visual === "brand-digital" && (
+            <svg viewBox="0 0 200 220" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="200" height="220" fill="#C05000"/>
+              <g fill="#F2EDD8">
+                <rect x="20" y="20"  width="160" height="20"/>
+                <rect x="20" y="60"  width="100" height="20"/>
+                <rect x="20" y="100" width="140" height="40"/>
+                <rect x="20" y="160" width="60"  height="40"/>
+                <rect x="100" y="160" width="80" height="20"/>
+              </g>
+            </svg>
+          )}
+          {p.visual === "content" && (
+            <svg viewBox="0 0 200 220" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="200" height="220" fill="#C8B4DC"/>
+              <g fill="#000" opacity="0.92">
+                <rect x="30" y="30"  width="60"  height="6"/>
+                <rect x="30" y="44"  width="80"  height="6"/>
+                <rect x="30" y="58"  width="50"  height="6"/>
+                <rect x="30" y="80"  width="140" height="60" opacity="0.12"/>
+                <rect x="30" y="150" width="100" height="6"/>
+                <rect x="30" y="164" width="120" height="6"/>
+                <rect x="30" y="178" width="70"  height="6"/>
+              </g>
+            </svg>
+          )}
+          {p.visual === "time" && (
+            <svg viewBox="0 0 200 220" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="200" height="220" fill="#F9F9F3"/>
+              <g stroke="#000" stroke-width="1.5" fill="none">
+                <line x1="20" y1="40"  x2="180" y2="40"/>
+                <line x1="20" y1="80"  x2="180" y2="80"/>
+                <line x1="20" y1="120" x2="180" y2="120"/>
+                <line x1="20" y1="160" x2="180" y2="160"/>
+              </g>
+              <g fill="#3D2EB8">
+                <rect x="50"  y="34"  width="12" height="12"/>
+                <rect x="120" y="74"  width="12" height="12"/>
+                <rect x="80"  y="114" width="12" height="12"/>
+                <rect x="150" y="154" width="12" height="12"/>
+              </g>
+              <g fill="#C05000">
+                <rect x="160" y="34"  width="12" height="12"/>
+                <rect x="40"  y="154" width="12" height="12"/>
+              </g>
+            </svg>
+          )}
+        </div>
+
+        <div class="pillar__meta">
+          <div class="pillar__num">{p.num}</div>
+          <div class="pillar__name" set:html={p.name}></div>
+          <div class="pillar__desc">{p.desc}</div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .pillars { padding: var(--section-pad) 0; border-top: var(--rule); }
+  .pillars__grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+  @media (min-width: 720px)  { .pillars__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .pillars__grid { grid-template-columns: repeat(5, 1fr); } }
+
+  .pillar {
+    background: var(--c-white);
+    border: var(--rule);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) ease;
+  }
+  .pillar:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.18);
+  }
+  .pillar__visual { aspect-ratio: 1 / 1.1; width: 100%; overflow: hidden; }
+  .pillar__visual svg { width: 100%; height: 100%; display: block; }
+  .pillar__meta {
+    padding: 18px 18px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pillar__num {
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+  }
+  .pillar__name {
+    font-size: var(--fs-h4);
+    line-height: var(--lh-snug);
+    letter-spacing: -0.02em;
+    font-weight: 400;
+  }
+  .pillar__desc { font-size: 13px; line-height: 1.5; color: #2a2a2a; margin-top: 4px; }
+</style>

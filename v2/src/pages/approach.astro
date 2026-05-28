@@ -1,0 +1,205 @@
+---
+/**
+ * Approach (/approach/)
+ *
+ * Per the v2 wireframe:
+ *   Hero
+ *   → Closing the Gap with Total Experience Design
+ *   → A Unique Experience (two-column body)
+ *   → How Total Experience Design Delivers
+ *     · intro paragraph
+ *     · dimension tiles row (5 colored visuals)
+ *     · framework wheel diagram
+ *
+ * Copy lives in src/content/pages/approach.md.
+ */
+
+import Base from "@layouts/Base.astro";
+import Hero from "@components/sections/Hero.astro";
+import MetaRow from "@components/sections/MetaRow.astro";
+import Editorial from "@components/sections/Editorial.astro";
+import SectionTitle from "@components/sections/SectionTitle.astro";
+import FrameworkDiagram from "@components/diagrams/FrameworkDiagram.astro";
+import DimensionsGrid from "@components/sections/DimensionsGrid.astro";
+import { getPage } from "@lib/content";
+import type { DimensionKey } from "@typings/ui";
+
+const page = await getPage("approach");
+const d = page.data as {
+  hero: { eyebrowLeft: string; eyebrowRight: string; title: string; subtitle: string };
+  closing: { label: string; title: string; body: string[] };
+  unique: { label: string; title: string; bodyLeft: string[]; bodyRight: string[] };
+  delivers: { label: string; title: string; intro: string };
+};
+
+interface DimensionRow {
+  num: string;
+  name: string;
+  components: string[];
+  visual: DimensionKey;
+}
+
+const dimensions: DimensionRow[] = [
+  {
+    num: "D / 01",
+    name: "Spatial",
+    visual: "spatial",
+    components: [
+      "Form & Volume",
+      "Lighting",
+      "Materials & Texture",
+      "Zoning",
+      "Adaptability",
+      "Material Provenance & Circularity",
+      "Accessibility & Flow",
+    ],
+  },
+  {
+    num: "D / 02",
+    name: "Technology",
+    visual: "technology",
+    components: [
+      "Video / Display Technology",
+      "Audio",
+      "Responsive Systems & Sensors",
+      "Automation & Kinetics",
+      "Environmental Control",
+      "Connectivity",
+    ],
+  },
+  {
+    num: "D / 03",
+    name: "Brand &amp; Digital",
+    visual: "brand-digital",
+    components: [
+      "Identity Clarity",
+      "Emotional Resonance",
+      "Integration (Brand + Experience)",
+      "Staff / Concierge Design",
+      "App / Web",
+      "Ticketing",
+    ],
+  },
+  {
+    num: "D / 04",
+    name: "Content",
+    visual: "content",
+    components: [
+      "Functional",
+      "Promotional",
+      "Art (spatial, non-advertising)",
+      "Editorial",
+      "Social & Participatory",
+      "Real-Time / Live",
+    ],
+  },
+  {
+    num: "D / 05",
+    name: "Time",
+    visual: "time",
+    components: [
+      "Cycles & Seasons",
+      "Day-parting & Use Cases",
+      "Evolution Across Years",
+      "Programming Rhythm",
+      "Operational Tempo",
+    ],
+  },
+];
+---
+
+<Base meta={page.meta}>
+
+  <Hero
+    eyebrowLeft={d.hero.eyebrowLeft}
+    eyebrowRight={d.hero.eyebrowRight}
+    title={d.hero.title}
+    subtitle={d.hero.subtitle}
+    theme="brick"
+    startIndex={3}
+  />
+
+  <div class="light-block" data-surface="light">
+
+    <!-- CLOSING THE GAP -->
+    <section class="container">
+      <MetaRow left={d.closing.label} right="Closing the gap" />
+      <Editorial title={d.closing.title}>
+        {d.closing.body.map((p) => <p>{p}</p>)}
+      </Editorial>
+    </section>
+
+    <!-- A UNIQUE EXPERIENCE -->
+    <section class="container" id="unique">
+      <SectionTitle
+        label={d.unique.label}
+        title={d.unique.title}
+      />
+      <div class="unique__columns reveal">
+        <div class="unique__col">
+          {d.unique.bodyLeft.map((p) => <p>{p}</p>)}
+        </div>
+        <div class="unique__col">
+          {d.unique.bodyRight.map((p) => <p>{p}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW TOTAL EXPERIENCE DESIGN DELIVERS -->
+    <section class="container" id="delivers">
+      <SectionTitle
+        label={d.delivers.label}
+        title={d.delivers.title}
+      />
+
+      <div class="delivers__intro reveal">
+        <p>{d.delivers.intro}</p>
+      </div>
+
+      <!-- Dimension tiles ABOVE the diagram per wireframe -->
+      <DimensionsGrid items={dimensions} />
+
+      <!-- Framework wheel diagram -->
+      <div class="delivers__diagram reveal">
+        <FrameworkDiagram />
+      </div>
+    </section>
+
+  </div>
+
+</Base>
+
+<style>
+  .light-block { background: var(--bg); color: var(--fg); }
+
+  .unique__columns {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(24px, 4vw, 56px);
+    padding: clamp(24px, 4vw, 48px) 0 var(--section-pad);
+    border-top: var(--rule);
+    font-size: var(--fs-body);
+    line-height: var(--lh-base);
+    color: #1a1a1a;
+  }
+  @media (min-width: 800px) {
+    .unique__columns { grid-template-columns: 1fr 1fr; }
+  }
+  .unique__col p + p { margin-top: 1em; }
+
+  .delivers__intro {
+    padding: clamp(8px, 2vw, 16px) 0 clamp(24px, 4vw, 40px);
+    font-size: clamp(18px, 1.5vw, 22px);
+    line-height: 1.35;
+    letter-spacing: -0.005em;
+    max-width: 64ch;
+    color: #1a1a1a;
+  }
+
+  .delivers__diagram {
+    padding: clamp(24px, 4vw, 48px) 0 var(--section-pad);
+    border-top: var(--rule);
+    display: flex;
+    justify-content: center;
+  }
+</style>

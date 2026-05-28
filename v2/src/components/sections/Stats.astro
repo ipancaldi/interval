@@ -1,0 +1,62 @@
+---
+/**
+ * Stats — 4-up display-figure row with labels underneath.
+ *
+ * Each item's `num` accepts HTML so callers can emphasise the unit
+ * (e.g. "90<em>%</em>" or "<em>1</em>.5×").
+ */
+
+interface Stat {
+  num: string;       // HTML allowed
+  label: string;
+}
+
+interface Props {
+  items: Stat[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="stats reveal">
+  <div class="stats__grid">
+    {items.map((item) => (
+      <div class="stat">
+        <div class="stat__num" set:html={item.num}></div>
+        <div class="stat__label">{item.label}</div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .stats {
+    padding: var(--section-pad) 0 calc(var(--section-pad) * 0.6);
+    border-top: var(--rule);
+  }
+  .stats__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px 24px;
+  }
+  @media (min-width: 800px) {
+    .stats__grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  .stat__num {
+    font-size: clamp(48px, 6vw, 88px);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-weight: 400;
+  }
+  .stat__num :global(em) { color: var(--accent-light); }
+  .stat__label {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: var(--rule);
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--fg-muted);
+  }
+</style>

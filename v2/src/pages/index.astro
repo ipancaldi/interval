@@ -1,0 +1,148 @@
+---
+/**
+ * Home (/)
+ *
+ * Composes the editorial sequence from the v2 wireframe:
+ *   Hero
+ *   → Designing for Adaptability (problem)
+ *   → A New Model — Total Experience Design (solution + diagram)
+ *   → Experience Outcomes (5 KSPs)
+ *
+ * Copy lives in src/content/pages/home.md.
+ */
+
+import Base from "@layouts/Base.astro";
+import Hero from "@components/sections/Hero.astro";
+import MetaRow from "@components/sections/MetaRow.astro";
+import Editorial from "@components/sections/Editorial.astro";
+import SectionTitle from "@components/sections/SectionTitle.astro";
+import FrameworkDiagram from "@components/diagrams/FrameworkDiagram.astro";
+import Button from "@components/ui/Button.astro";
+import PrinciplesStrip from "@components/sections/PrinciplesStrip.astro";
+import { getPage } from "@lib/content";
+
+const page = await getPage("home");
+const d = page.data as {
+  hero: {
+    eyebrowLeft: string;
+    eyebrowRight: string;
+    title: string;
+    subtitle: string;
+    secondary: string;
+  };
+  problem: { label: string; title: string; body: string[] };
+  newModel: {
+    label: string;
+    title: string;
+    intro: string;
+    exploreHref: string;
+    exploreLabel: string;
+    bodyLeft: string[];
+    bodyRight: string[];
+  };
+  outcomes: { label: string; heading: string };
+};
+---
+
+<Base meta={page.meta}>
+
+  <Hero
+    eyebrowLeft={d.hero.eyebrowLeft}
+    eyebrowRight={d.hero.eyebrowRight}
+    title={d.hero.title}
+    subtitle={`${d.hero.subtitle} ${d.hero.secondary}`}
+    cloudColor="#3D2EB8"
+    startIndex={0}
+  />
+
+  <div class="light-block" data-surface="light">
+
+    <!-- DESIGNING FOR ADAPTABILITY — the problem -->
+    <section class="container" id="problem">
+      <MetaRow left="IV001" right="Designing for Adaptability" />
+      <Editorial title={d.problem.title}>
+        {d.problem.body.map((p) => <p>{p}</p>)}
+      </Editorial>
+    </section>
+
+    <!-- A NEW MODEL — total experience design, with diagram + explore CTA -->
+    <section class="container" id="new-model">
+      <SectionTitle
+        label={d.newModel.label}
+        title={d.newModel.title}
+      />
+
+      <div class="new-model__lead reveal">
+        <p class="new-model__intro">{d.newModel.intro}</p>
+      </div>
+
+      <div class="new-model__diagram reveal">
+        <FrameworkDiagram />
+        <div class="new-model__explore">
+          <Button href={d.newModel.exploreHref} variant="ghost" arrow={true}>
+            {d.newModel.exploreLabel}
+          </Button>
+        </div>
+      </div>
+
+      <div class="new-model__columns reveal">
+        <div class="new-model__col">
+          {d.newModel.bodyLeft.map((p) => <p>{p}</p>)}
+        </div>
+        <div class="new-model__col">
+          {d.newModel.bodyRight.map((p) => <p>{p}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE OUTCOMES — 5 KSP strip with heading -->
+    <section id="outcomes">
+      <div class="container">
+        <MetaRow left={d.outcomes.label} right="Five outcomes" />
+      </div>
+      <PrinciplesStrip heading={d.outcomes.heading} />
+    </section>
+
+  </div>
+
+</Base>
+
+<style>
+  .light-block { background: var(--bg); color: var(--fg); }
+
+  .new-model__lead {
+    padding: 0 0 clamp(24px, 4vw, 48px);
+  }
+  .new-model__intro {
+    font-size: clamp(20px, 2vw, 28px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    max-width: 56ch;
+  }
+
+  .new-model__diagram {
+    padding: clamp(24px, 4vw, 48px) 0 clamp(32px, 5vw, 56px);
+    border-top: var(--rule);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(24px, 4vw, 40px);
+    align-items: center;
+    justify-items: center;
+  }
+  .new-model__explore { display: flex; }
+
+  .new-model__columns {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(24px, 4vw, 56px);
+    padding: clamp(24px, 4vw, 48px) 0 var(--section-pad);
+    border-top: var(--rule);
+    font-size: var(--fs-body);
+    line-height: var(--lh-base);
+    color: #1a1a1a;
+  }
+  @media (min-width: 800px) {
+    .new-model__columns { grid-template-columns: 1fr 1fr; }
+  }
+  .new-model__col p + p { margin-top: 1em; }
+</style>

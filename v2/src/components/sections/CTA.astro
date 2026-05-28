@@ -1,0 +1,101 @@
+---
+/**
+ * CTA — the dark closing block. Big display title, copy block, and a
+ * primary button + contact line on the right.
+ */
+
+import Button from "@components/ui/Button.astro";
+
+interface Props {
+  metaLeft?: string;
+  metaRight?: string;
+  title: string;            // HTML allowed
+  copy: string;
+  buttonLabel: string;
+  buttonHref: string;
+  contactLine?: string;
+}
+
+const {
+  metaLeft = "IV007 — Contact",
+  metaRight = "Selectively taking new work",
+  title,
+  copy,
+  buttonLabel,
+  buttonHref,
+  contactLine = "London · Sydney",
+} = Astro.props;
+---
+
+<section class="cta" data-surface="dark" id="contact">
+  <div class="container">
+    <div class="cta__meta">
+      <span>{metaLeft}</span>
+      <span>{metaRight}</span>
+    </div>
+
+    <div class="cta__body">
+      <h2 class="cta__title reveal" set:html={title}></h2>
+
+      <div class="cta__row reveal">
+        <p class="cta__copy">{copy}</p>
+        <div class="cta__contact">
+          <Button href={buttonHref}>{buttonLabel}</Button>
+          {contactLine && <span class="cta__line">{contactLine}</span>}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    background: var(--bg-dark);
+    color: var(--fg-dark);
+    padding: var(--section-pad) 0;
+  }
+  .cta__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-top: var(--rule-light);
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: rgba(255, 255, 255, 0.65);
+  }
+  .cta__body { padding-top: clamp(40px, 8vh, 80px); }
+  .cta__title {
+    font-weight: 400;
+    font-size: var(--fs-display);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    max-width: 16ch;
+  }
+  .cta__title :global(em) { color: var(--accent-dark); }
+
+  .cta__row {
+    margin-top: clamp(32px, 5vh, 56px);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px var(--col-gap);
+  }
+  @media (min-width: 720px) { .cta__row { grid-template-columns: 1fr 1fr; } }
+
+  .cta__copy {
+    max-width: 50ch;
+    font-size: clamp(16px, 1.15vw, 19px);
+    line-height: 1.5;
+    color: rgba(249, 249, 243, 0.78);
+  }
+  .cta__contact { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  .cta__line {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    color: rgba(249, 249, 243, 0.6);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+  }
+</style>

@@ -1,0 +1,168 @@
+---
+/**
+ * Nav
+ *
+ * Fixed, blurred top bar. Visually adapts to the section beneath it via
+ * nav-theme.ts (reads [data-surface] from sections, applies it to the nav).
+ *
+ * Links / CTA are driven from props so they can come from a content
+ * collection later without touching the layout.
+ */
+
+import { asset } from "@lib/asset";
+
+interface NavLink {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  links?: NavLink[];
+  cta?: { href: string; label: string };
+}
+
+const {
+  // Insights is hidden pre-launch — re-enable by uncommenting the line
+  // below. The page + content collection stay in place.
+  links = [
+    { href: asset("/"),          label: "Home" },
+    { href: asset("/approach/"), label: "Approach" },
+    { href: asset("/services/"), label: "Services" },
+    // { href: asset("/insights/"), label: "Insights" },
+  ],
+  cta = { href: asset("/contact/"), label: "Contact" },
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) => {
+  if (href === "/") return currentPath === "/";
+  return currentPath.startsWith(href);
+};
+---
+
+<nav class="nav" data-nav data-surface="dark" aria-label="Primary">
+  <div class="nav__inner">
+    <a class="nav__brand" href="/" aria-label="Interval — Home">
+      <img
+        class="nav__logo nav__logo--light"
+        src={asset("/assets/logos/interval-logo-white.svg")}
+        alt="Interval"
+        width="120"
+        height="22"
+      />
+      <img
+        class="nav__logo nav__logo--dark"
+        src={asset("/assets/logos/interval-logo-black.svg")}
+        alt=""
+        aria-hidden="true"
+        width="120"
+        height="22"
+      />
+    </a>
+
+    <ul class="nav__links" role="list">
+      {links.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class:list={["nav__link", { "is-active": isActive(link.href) }]}
+            aria-current={isActive(link.href) ? "page" : undefined}
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <a class="nav__cta" href={cta.href}>{cta.label}</a>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transition:
+      background var(--dur-base) ease,
+      color var(--dur-base) ease,
+      border-color var(--dur-base) ease;
+  }
+
+  /* Dark surface (over hero, CTA, etc.) */
+  .nav[data-surface="dark"] {
+    background: rgba(0, 0, 0, 0.6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .nav[data-surface="dark"] .nav__logo--dark { display: none; }
+
+  /* Light surface (over editorial body) */
+  .nav[data-surface="light"] {
+    background: rgba(249, 249, 243, 0.85);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    color: rgba(0, 0, 0, 0.78);
+  }
+  .nav[data-surface="light"] .nav__logo--light { display: none; }
+
+  .nav__inner {
+    max-width: var(--shell-max);
+    margin: 0 auto;
+    padding: 14px var(--gutter);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .nav__brand { display: inline-flex; }
+  .nav__logo { height: 22px; width: auto; }
+
+  .nav__links {
+    display: none;
+    gap: 22px;
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  @media (min-width: 820px) {
+    .nav__links { display: flex; gap: 28px; }
+  }
+
+  .nav__link {
+    position: relative;
+    padding: 4px 0;
+    color: inherit;
+  }
+  .nav__link::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-fast) ease;
+  }
+  .nav__link:hover::after,
+  .nav__link.is-active::after { transform: scaleX(1); }
+
+  .nav__cta {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 9px 16px;
+    border-radius: var(--radius);
+    background: var(--c-brick-tint);
+    color: var(--c-black);
+    transition: background var(--dur-fast) ease, transform var(--dur-fast) ease;
+  }
+  .nav__cta:hover { background: var(--c-brick-hover); }
+</style>

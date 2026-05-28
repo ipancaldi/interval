@@ -1,0 +1,304 @@
+---
+/**
+ * Hero — full-bleed dark opener for any landing page.
+ *
+ * `title` accepts HTML so callers can place <em> on the emphasised words.
+ * The image is optional — pass `null` to render a copy-only hero.
+ */
+
+interface HeroImage {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
+/**
+ * Hero theme variants
+ *
+ *   "default"  — black bg, off-white text, mint em accent (Home, Contact, service detail)
+ *   "brick"    — brick bg, off-white text, mint em accent           (Approach)
+ *   "mauve"    — mauve bg, black text, electric em accent           (Services)
+ *
+ * Each variant sets a small set of CSS custom properties scoped to
+ * the hero block; the rest of the component styles read from those
+ * tokens. The `data-surface` attribute drives the nav theme switcher,
+ * so "mauve" is correctly considered a light surface.
+ */
+export type HeroTheme = "default" | "brick" | "mauve";
+
+interface Props {
+  eyebrowLeft: string;       // e.g. "IV001 — Total Experience Design™"
+  eyebrowRight: string;      // e.g. "Strategic Advisory · Design Lab · Est. 2026"
+  title: string;             // HTML allowed (use <em> for emphasis)
+  subtitle?: string;
+  image?: HeroImage | null;
+  footLeft?: string;
+  footRight?: string;
+  /** Background animation cloud colour. Defaults match the theme. */
+  cloudColor?: string;
+  /** Surface variant. */
+  theme?: HeroTheme;
+  /**
+   * Which shape in the 6-shape sequence this hero starts on. 0..5.
+   * Lets each page begin on a different architectural form so the
+   * morph order varies across the site.
+   *   0 = architecture, 1 = stadium, 2 = concert stage,
+   *   3 = theatre, 4 = immersive cube, 5 = spherical theatre
+   */
+  startIndex?: number;
+}
+
+const themeDefaults: Record<HeroTheme, { cloudColor: string; surface: "dark" | "light" }> = {
+  default: { cloudColor: "#F9F9F3", surface: "dark"  },
+  brick:   { cloudColor: "#3D2EB8", surface: "dark"  },
+  mauve:   { cloudColor: "#C05000", surface: "light" },
+};
+
+const {
+  eyebrowLeft,
+  eyebrowRight,
+  title,
+  subtitle,
+  image = null,
+  footLeft = "London · Sydney",
+  footRight = `© ${new Date().getFullYear()} Interval Studio`,
+  theme = "default",
+  cloudColor = themeDefaults[theme].cloudColor,
+  startIndex = 0,
+} = Astro.props;
+
+const surface = themeDefaults[theme].surface;
+---
+
+<header class="hero" data-surface={surface} data-theme={theme} id="top">
+  <!-- Animated point-cloud background. JS module initialises only if
+       WebGL is available and the user hasn't requested reduced motion.
+       If JS / WebGL fail, the hero falls back to flat dark surface. -->
+  <canvas
+    class="hero__bg"
+    data-hero-bg
+    data-cloud-color={cloudColor}
+    data-start-index={String(startIndex)}
+    aria-hidden="true"
+  ></canvas>
+
+  <div class="container hero__inner">
+
+    <div class="hero__head">
+      <span class="accent">{eyebrowLeft}</span>
+      <span>{eyebrowRight}</span>
+    </div>
+
+    <div class:list={["hero__main", { "hero__main--with-image": image }]}>
+      <div class="hero__copy">
+        <h1 class="hero__title" set:html={title}></h1>
+        {subtitle && <p class="hero__sub">{subtitle}</p>}
+      </div>
+
+      {image && (
+        <figure class="hero__image">
+          <img src={image.src} alt={image.alt} loading="eager" />
+          {image.caption && (
+            <figcaption class="hero__image-caption">{image.caption}</figcaption>
+          )}
+        </figure>
+      )}
+    </div>
+
+    <div class="hero__foot">
+      <span>{footLeft}</span>
+      <span class="hero__scroll-cue">Scroll to begin</span>
+      <span>{footRight}</span>
+    </div>
+  </div>
+</header>
+
+<style>
+  /* Themed surface tokens. Default = original black hero. Brick + Mauve
+     variants override these. Everything below reads from --hero-* vars. */
+  .hero {
+    /* default theme */
+    --hero-bg:      var(--bg-dark);
+    --hero-fg:      var(--fg-dark);
+    --hero-accent:  var(--accent-dark);
+    --hero-eyebrow: rgba(255, 255, 255, 0.6);
+    --hero-meta:    rgba(255, 255, 255, 0.55);
+    --hero-sub:     rgba(249, 249, 243, 0.78);
+    --hero-rule:    var(--rule-light);
+
+    background: var(--hero-bg);
+    color: var(--hero-fg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Brick — warm dark surface. Text stays light; accent stays mint. */
+  .hero[data-theme="brick"] {
+    --hero-bg:      var(--c-brick);
+    --hero-fg:      var(--c-off-white);
+    --hero-accent:  var(--c-mint);
+    --hero-eyebrow: rgba(249, 249, 243, 0.78);
+    --hero-meta:    rgba(249, 249, 243, 0.65);
+    --hero-sub:     rgba(249, 249, 243, 0.85);
+    --hero-rule:    1px solid rgba(249, 249, 243, 0.22);
+  }
+
+  /* Mauve — light surface. Text flips to black; accent is electric blue. */
+  .hero[data-theme="mauve"] {
+    --hero-bg:      var(--c-mauve);
+    --hero-fg:      var(--c-black);
+    --hero-accent:  var(--c-electric);
+    --hero-eyebrow: rgba(0, 0, 0, 0.6);
+    --hero-meta:    rgba(0, 0, 0, 0.55);
+    --hero-sub:     rgba(0, 0, 0, 0.72);
+    --hero-rule:    1px solid rgba(0, 0, 0, 0.18);
+  }
+
+  /* Point-cloud canvas behind the hero content. Pointer events on so
+     the user can drag-rotate the cloud; content above (z-index 1)
+     captures its own clicks first. On touch devices, single-finger
+     gestures still scroll the page — OrbitControls is configured to
+     only rotate on two-finger touch. */
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    opacity: 0.85;
+    z-index: 0;
+    cursor: grab;
+    touch-action: pan-y; /* let vertical scroll pass through */
+  }
+  .hero__bg:active { cursor: grabbing; }
+
+  /* Inner content sits above the canvas. Pointer events disabled on
+     the wrapper so the user can drag-rotate the cloud from anywhere
+     in the hero — including the empty space behind the title. Any
+     interactive elements inside (links, buttons) opt back in below. */
+  .hero__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    pointer-events: none;
+  }
+  .hero__inner a,
+  .hero__inner button {
+    pointer-events: auto;
+  }
+
+  .hero__head {
+    padding-top: 96px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--hero-eyebrow);
+  }
+  .hero__head .accent { color: var(--hero-accent); }
+
+  .hero__main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(32px, 6vh, 64px);
+    align-items: center;
+    padding-top: clamp(40px, 6vh, 80px);
+    padding-bottom: clamp(40px, 6vh, 80px);
+  }
+  @media (min-width: 900px) {
+    .hero__main--with-image {
+      grid-template-columns: 1.55fr 1fr;
+      gap: var(--col-gap);
+    }
+  }
+
+  .hero__copy {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(24px, 4vh, 36px);
+  }
+  .hero__title {
+    font-weight: 400;
+    font-size: var(--fs-display);
+    line-height: var(--lh-display);
+    letter-spacing: var(--tracking-display);
+    color: var(--hero-fg);
+    font-feature-settings: "ss01";
+  }
+  .hero__title :global(em) { color: var(--hero-accent); }
+
+  .hero__sub {
+    max-width: 42ch;
+    font-size: var(--fs-body-lg);
+    line-height: 1.4;
+    color: var(--hero-sub);
+  }
+
+  .hero__image {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    aspect-ratio: 438 / 572;
+    overflow: hidden;
+    background: #111;
+  }
+  .hero__image img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: contrast(1.04);
+  }
+  .hero__image::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.35) 100%);
+    pointer-events: none;
+  }
+  .hero__image-caption {
+    position: absolute;
+    left: 14px; bottom: 12px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: rgba(255, 255, 255, 0.85);
+    z-index: 2;
+  }
+
+  .hero__foot {
+    padding: 22px 0 32px;
+    border-top: var(--hero-rule);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--hero-meta);
+  }
+  .hero__scroll-cue { display: inline-flex; align-items: center; gap: 8px; }
+  .hero__scroll-cue::before {
+    content: "";
+    display: block;
+    width: 24px; height: 1px;
+    background: var(--hero-accent);
+    animation: cueSlide 1.8s ease-in-out infinite;
+  }
+  @keyframes cueSlide {
+    0%, 100% { transform: translateX(0); opacity: 1; }
+    50%      { transform: translateX(8px); opacity: 0.4; }
+  }
+</style>

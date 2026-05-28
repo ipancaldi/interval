@@ -1,0 +1,144 @@
+---
+/**
+ * DimensionsGrid — the "Experience Dimensions & Components" table from
+ * the Approach page. Five dimensions; each lists its sub-components.
+ *
+ * Renders as a 5-column grid on desktop, stacked on mobile. Each cell
+ * is topped by a DimensionVisual SVG matched by the `visual` key.
+ */
+
+import DimensionVisual from "@components/diagrams/DimensionVisual.astro";
+import type { DimensionKey } from "@typings/ui";
+
+interface Dimension {
+  num: string;        // "D / 01"
+  name: string;       // "Spatial" — HTML allowed for ampersand entities
+  components: string[];
+  visual?: DimensionKey;
+}
+
+interface Props {
+  items: Dimension[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="dimensions reveal">
+  <ol class="dimensions__grid" role="list">
+    {items.map((d) => (
+      <li class="dimension">
+        {d.visual && (
+          <div class="dimension__visual">
+            <DimensionVisual variant={d.visual} />
+          </div>
+        )}
+        <div class="dimension__num">{d.num}</div>
+        <h3 class="dimension__name" set:html={d.name}></h3>
+        <ul class="dimension__components" role="list">
+          {d.components.map((c) => <li>{c}</li>)}
+        </ul>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .dimensions { padding: calc(var(--section-pad) * 0.6) 0 var(--section-pad); }
+  .dimensions__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-top: var(--rule);
+  }
+  @media (min-width: 720px) {
+    .dimensions__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1100px) {
+    .dimensions__grid { grid-template-columns: repeat(5, 1fr); }
+  }
+
+  /* Cell padding strategy:
+     - At desktop (≥1100px) each cell carries 24px of horizontal padding
+       so the 5 columns sit cleanly side by side with their dividers.
+     - Below desktop the cell loses its horizontal padding entirely so
+       the visual can naturally fill its full width. We re-add the
+       indent only on the text elements via .dimension__text. */
+  .dimension {
+    padding: 28px 0 32px;
+    border-bottom: var(--rule);
+  }
+  @media (min-width: 1100px) {
+    .dimension {
+      border-bottom: none;
+      border-right: var(--rule);
+      padding: 32px 24px 40px;
+    }
+    .dimension:last-child { border-right: none; }
+  }
+
+  /* Visual fills its cell at every breakpoint, keeping the 1:1 ratio.
+     Below desktop the cell has zero horizontal padding (see above),
+     so width: 100% just works — no negative-margin trick needed. */
+  .dimension__visual {
+    width: 100%;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 1099px) {
+    .dimension__visual { border-radius: 0; }
+  }
+
+  /* Below desktop the cell has no horizontal padding (so the visual
+     can be full-bleed), so the text elements add their own. From
+     desktop up the cell already carries padding — these rules don't
+     fire. */
+  .dimension__num,
+  .dimension__name,
+  .dimension__components {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  @media (min-width: 1100px) {
+    .dimension__num,
+    .dimension__name,
+    .dimension__components {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  .dimension__num {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+    margin-bottom: 10px;
+  }
+  .dimension__name {
+    font-size: var(--fs-h4);
+    line-height: var(--lh-snug);
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    margin-bottom: 14px;
+  }
+  .dimension__name :global(em) { color: var(--accent-light); }
+
+  .dimension__components {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1a1a1a;
+  }
+  .dimension__components li {
+    padding-top: 8px;
+    margin-top: 8px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  .dimension__components li:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+</style>

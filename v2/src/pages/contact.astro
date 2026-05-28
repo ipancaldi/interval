@@ -1,0 +1,154 @@
+---
+/**
+ * Contact (/contact/)
+ *
+ * Editorial contact page. Right now the action is a single mailto:
+ * The Contact form scaffold is intentionally absent — when DB or email
+ * integration arrives, we'll add a <ContactForm /> component and wire
+ * its action to a hybrid-rendered API route (see astro.config.mjs).
+ */
+
+import Base from "@layouts/Base.astro";
+import MetaRow from "@components/sections/MetaRow.astro";
+import Editorial from "@components/sections/Editorial.astro";
+import Button from "@components/ui/Button.astro";
+import { getPage, getSite } from "@lib/content";
+
+const page = await getPage("contact");
+const site = await getSite();
+const d = page.data as {
+  email: string;
+  inquiry: { label: string; description: string };
+};
+---
+
+<Base meta={page.meta}>
+
+  <div class="light-block contact-page" data-surface="light">
+
+    <section class="container">
+      <MetaRow left="IV004" right="Contact" />
+
+      <div class="contact-grid reveal">
+        <div class="contact-grid__copy">
+          <h2 class="contact-grid__title">
+            Write to us — we read every message.
+          </h2>
+          <p class="contact-grid__text">
+            A sentence or two on the place is plenty. Where it is, who it's for, what stage it's at. We'll respond within a week.
+          </p>
+
+          <div class="contact-grid__action">
+            <Button href={`mailto:${d.email}`} arrow={true}>{d.email}</Button>
+          </div>
+        </div>
+
+        <aside class="contact-grid__meta">
+          <div class="contact-grid__row">
+            <div class="contact-grid__label">Studios</div>
+            <ul class="contact-grid__list">
+              {site.locations.map((loc) => <li>{loc}</li>)}
+            </ul>
+          </div>
+
+          <div class="contact-grid__row">
+            <div class="contact-grid__label">Inquiries</div>
+            <div class="contact-grid__pill">{d.inquiry.label}</div>
+            <p class="contact-grid__note">{d.inquiry.description}</p>
+          </div>
+
+          <div class="contact-grid__row">
+            <div class="contact-grid__label">Press &amp; speaking</div>
+            <a class="contact-grid__inline" href={`mailto:${d.email}?subject=Press`}>
+              {d.email}
+            </a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="container">
+      <Editorial title="What helps us reply quickly.">
+        <p>A sentence or two on the place — where it is, who it's for, what stage it's at. A sense of timeline and the scale of ambition. Any constraints we should know about up front (procurement, partners, public process).</p>
+        <p>You don't need a brief. We'd rather have the honest version.</p>
+      </Editorial>
+    </section>
+
+  </div>
+
+</Base>
+
+<style>
+  .light-block { background: var(--bg); color: var(--fg); }
+
+  /* No hero on Contact — push the first section below the fixed nav. */
+  .contact-page { padding-top: clamp(96px, 14vh, 140px); }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(40px, 6vw, 80px);
+    padding: var(--section-pad) 0;
+  }
+  @media (min-width: 900px) {
+    .contact-grid { grid-template-columns: 1.4fr 1fr; }
+  }
+
+  .contact-grid__title {
+    font-size: clamp(32px, 4.5vw, 56px);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-tight);
+    font-weight: 400;
+    max-width: 18ch;
+    margin-bottom: 24px;
+  }
+  .contact-grid__text {
+    font-size: var(--fs-body-lg);
+    line-height: 1.5;
+    max-width: 48ch;
+    color: #1a1a1a;
+    margin-bottom: 32px;
+  }
+  .contact-grid__action { margin-top: 8px; }
+
+  .contact-grid__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    border-top: var(--rule);
+    padding-top: 24px;
+  }
+  @media (min-width: 900px) {
+    .contact-grid__meta { border-top: none; border-left: var(--rule); padding: 0 0 0 32px; }
+  }
+
+  .contact-grid__row { display: flex; flex-direction: column; gap: 8px; }
+  .contact-grid__label {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+  }
+  .contact-grid__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: var(--fs-body);
+    line-height: 1.6;
+  }
+  .contact-grid__pill {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 6px 12px;
+    background: var(--c-beige);
+    border-radius: var(--radius);
+    color: var(--c-black);
+    width: fit-content;
+  }
+  .contact-grid__note { font-size: 13px; line-height: 1.5; color: var(--fg-muted); max-width: 36ch; }
+  .contact-grid__inline { text-decoration: underline; text-underline-offset: 3px; }
+</style>

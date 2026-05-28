@@ -1,0 +1,150 @@
+---
+/**
+ * /services/<slug>/ — one detail page per service.
+ *
+ * Pre-renders a route for every entry in the services catalog. The
+ * full module content lives in src/lib/services-catalog.ts so the
+ * index card and the detail page never drift.
+ */
+
+import Base from "@layouts/Base.astro";
+import ServiceDetailHero from "@components/sections/ServiceDetailHero.astro";
+import MetaRow from "@components/sections/MetaRow.astro";
+import ServiceModule from "@components/sections/ServiceModule.astro";
+import Button from "@components/ui/Button.astro";
+import { services, getPalette, type Service } from "@lib/services-catalog";
+
+export function getStaticPaths() {
+  return services.map((service, i) => {
+    const prev = services[i - 1] ?? null;
+    const next = services[i + 1] ?? null;
+    return {
+      params: { slug: service.slug },
+      props: { service, prev, next },
+    };
+  });
+}
+
+interface Props {
+  service: Service;
+  prev: Service | null;
+  next: Service | null;
+}
+
+const { service, prev, next } = Astro.props;
+
+const meta = {
+  title: service.name,
+  description: service.shortIntro,
+};
+
+// Each detail page wears the same colour combo as its card on the
+// Services index — so the click-through feels continuous.
+const palette = getPalette(service.slug);
+---
+
+<Base meta={meta}>
+
+  <ServiceDetailHero
+    eyebrowLeft={`IV003 / S / ${service.num}`}
+    eyebrowRight="Service · Detail"
+    title={`<em>${service.name}</em>.`}
+    subtitle={service.shortIntro}
+    bgColor={palette.bg}
+    patternColor={palette.pattern}
+    textColor={palette.text}
+  />
+
+  <div class="light-block" data-surface="light">
+
+    <section class="container">
+      <MetaRow left={`IV003 / S / ${service.num}`} right="Service detail" />
+
+      <ServiceModule
+        num={`S / ${service.num}`}
+        name={service.name}
+        intro={service.intro}
+        whatsIncluded={service.whatsIncluded}
+        designedFor={service.designedFor}
+        outcomes={service.outcomes}
+        approach={service.approach}
+      />
+    </section>
+
+    <!-- Inter-service nav -->
+    <section class="container">
+      <nav class="service-nav" aria-label="Other services">
+        <div class="service-nav__cell service-nav__cell--prev">
+          {prev && (
+            <a class="service-nav__link" href={`/services/${prev.slug}/`}>
+              <span class="service-nav__dir" aria-hidden="true">← Previous</span>
+              <span class="service-nav__name">{prev.name}</span>
+            </a>
+          )}
+        </div>
+
+        <div class="service-nav__cell service-nav__cell--all">
+          <Button href="/services/" variant="ghost" arrow={false}>All services</Button>
+        </div>
+
+        <div class="service-nav__cell service-nav__cell--next">
+          {next && (
+            <a class="service-nav__link service-nav__link--right" href={`/services/${next.slug}/`}>
+              <span class="service-nav__dir" aria-hidden="true">Next →</span>
+              <span class="service-nav__name">{next.name}</span>
+            </a>
+          )}
+        </div>
+      </nav>
+    </section>
+
+  </div>
+
+</Base>
+
+<style>
+  /* Detail-page body sits on pure off-white regardless of the
+     hero's colour, so the body content reads as a clean continuation. */
+  .light-block {
+    background: var(--c-off-white);
+    color: var(--fg);
+  }
+
+  .service-nav {
+    padding: var(--section-pad) 0;
+    border-top: var(--rule);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  @media (min-width: 720px) {
+    .service-nav { grid-template-columns: 1fr auto 1fr; }
+  }
+
+  .service-nav__cell { min-height: 1px; }
+  .service-nav__cell--all  { display: flex; justify-content: center; }
+  .service-nav__cell--next { display: flex; justify-content: flex-end; }
+
+  .service-nav__link {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: color var(--dur-fast) ease;
+  }
+  .service-nav__link--right { text-align: right; }
+  .service-nav__link:hover { color: var(--accent-light); }
+
+  .service-nav__dir {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+  }
+  .service-nav__name {
+    font-size: clamp(18px, 1.4vw, 22px);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+</style>

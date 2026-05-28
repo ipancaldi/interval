@@ -1,0 +1,90 @@
+---
+/**
+ * Base layout
+ *
+ * The single HTML shell every page renders into. Owns <head>, fonts,
+ * global CSS, Nav, Footer, and the per-page script entry. Pages pass
+ * SEO + OG props through the `meta` prop.
+ */
+
+import "@styles/global.css";
+import Nav from "@components/nav/Nav.astro";
+import Footer from "@components/nav/Footer.astro";
+import { asset } from "@lib/asset";
+
+interface PageMeta {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  noIndex?: boolean;
+}
+
+interface Props {
+  meta: PageMeta;
+}
+
+const { meta } = Astro.props;
+
+const siteTitle = "Interval";
+const siteTagline = "Total Experience Design™";
+const fullTitle = meta.title === siteTitle
+  ? `${siteTitle} — ${siteTagline}`
+  : `${meta.title} · ${siteTitle}`;
+
+const description =
+  meta.description ??
+  "Interval is a global strategic advisory and design lab developing transformational fan, audience, visitor and customer experiences through adaptable spaces and places via a Total Experience Design™ approach.";
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://www.intervaladvisory.co.uk").toString();
+const ogImage = meta.ogImage ?? "/assets/images/sculpture-portal.png";
+const ogImageUrl = new URL(ogImage, Astro.site ?? "https://www.intervaladvisory.co.uk").toString();
+---
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#000000" />
+  <link rel="canonical" href={canonical} />
+  {meta.noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImageUrl} />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={fullTitle} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImageUrl} />
+
+  <!-- Icons -->
+  <link rel="icon" type="image/svg+xml" href={asset("/favicon.svg")} />
+
+  <!-- Fonts: preload the two faces we actually use -->
+  <link rel="preload" href={asset("/assets/fonts/Inter.woff")} as="font" type="font/woff" crossorigin />
+  <link rel="preload" href={asset("/assets/fonts/Inter-Italic.woff")} as="font" type="font/woff" crossorigin />
+</head>
+
+<body data-surface="dark">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <Nav />
+
+  <main id="main">
+    <slot />
+  </main>
+
+  <Footer />
+
+  <script>
+    import "@scripts/main";
+  </script>
+</body>
+</html>

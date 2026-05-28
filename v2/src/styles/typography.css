@@ -1,0 +1,28 @@
+/* ============================================================
+   typography.css
+   Font face + typographic helpers shared across components.
+   ============================================================ */
+
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/fonts/Inter.woff") format("woff");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/fonts/Inter-Italic.woff") format("woff");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Italic emphasis spans — the signature brand tic.
+   Coloured by the surface they sit on (handled per-component),
+   but the weight + style is global. */
+em {
+  font-style: italic;
+  font-weight: 400;
+}

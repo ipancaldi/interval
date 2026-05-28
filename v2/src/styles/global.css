@@ -1,0 +1,11 @@
+/* ============================================================
+   global.css
+   Single entry point imported by the Base layout.
+   Order matters: tokens → reset → typography → utilities.
+   Component styles live alongside their .astro components.
+   ============================================================ */
+
+@import "./tokens.css";
+@import "./reset.css";
+@import "./typography.css";
+@import "./utilities.css";

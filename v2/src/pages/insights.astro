@@ -1,0 +1,298 @@
+---
+/**
+ * Insights (/insights/)
+ *
+ * Filterable index of all published insights. Categories come from the
+ * page markdown (so non-developers can rename them). Entries come
+ * from the `insights` content collection. While no real entries exist
+ * yet, the page falls back to a small set of placeholder cards so the
+ * layout is demonstrable.
+ *
+ * Filtering happens client-side — entries carry their category as a
+ * data attribute, and clicking a chip toggles a body class that hides
+ * the others via CSS.
+ */
+
+import Base from "@layouts/Base.astro";
+import Hero from "@components/sections/Hero.astro";
+import MetaRow from "@components/sections/MetaRow.astro";
+import CTA from "@components/sections/CTA.astro";
+import { getPage, listInsights } from "@lib/content";
+import type { InsightCategory, InsightEntry } from "@typings/content";
+
+const page = await getPage("insights");
+const d = page.data as {
+  hero: { eyebrowLeft: string; eyebrowRight: string; title: string; subtitle: string };
+  categories: { key: string; label: string }[];
+};
+
+const insights = await listInsights();
+
+const placeholders: InsightEntry[] = [
+  {
+    slug: "placeholder-article-1",
+    title: "Why adaptive spaces need a new experience model.",
+    category: "articles",
+    date: new Date("2026-05-10"),
+    summary: "On the gap between strategic ambition and operational reality — and how Total Experience Design closes it.",
+    draft: false,
+  },
+  {
+    slug: "placeholder-event-1",
+    title: "Total Experience Design — London salon, by invitation.",
+    category: "event-reports",
+    date: new Date("2026-04-22"),
+    summary: "An invitation-only conversation with leaders of cultural, civic and commercial places.",
+    draft: false,
+  },
+  {
+    slug: "placeholder-research-1",
+    title: "Adaptive-use stadiums: a global benchmark study.",
+    category: "research",
+    date: new Date("2026-03-30"),
+    summary: "Sampling 12 multi-purpose venues across four continents — what works, what doesn't, what's next.",
+    draft: false,
+  },
+  {
+    slug: "placeholder-project-1",
+    title: "Coastal Pavilion — concept-stage walkthrough.",
+    category: "projects",
+    date: new Date("2026-03-12"),
+    summary: "A speculative case study illustrating how the Total Experience Masterplan threads from vision into delivery.",
+    draft: false,
+  },
+  {
+    slug: "placeholder-news-1",
+    title: "Interval opens a Sydney studio.",
+    category: "news",
+    date: new Date("2026-02-18"),
+    summary: "Our third location — closer to the projects we're seeing in APAC.",
+    draft: false,
+  },
+  {
+    slug: "placeholder-interest-1",
+    title: "Six places to watch in 2026.",
+    category: "interests",
+    date: new Date("2026-01-30"),
+    summary: "A rolling list of buildings, programmes and operators we're learning from.",
+    draft: false,
+  },
+];
+
+const entries = insights.length > 0 ? insights : placeholders;
+
+// Human-readable category labels for chip text
+const categoryLabel = (key: string) =>
+  d.categories.find((c) => c.key === key)?.label ?? key;
+
+// Date formatter — short, e.g. "May 2026"
+const fmt = (date: Date) =>
+  date.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+
+const hrefFor = (entry: InsightEntry) =>
+  entry.externalUrl ?? `/insights/${entry.slug}/`;
+---
+
+<Base meta={page.meta}>
+
+  <Hero
+    eyebrowLeft={d.hero.eyebrowLeft}
+    eyebrowRight={d.hero.eyebrowRight}
+    title={d.hero.title}
+    subtitle={d.hero.subtitle}
+  />
+
+  <div class="light-block" data-surface="light">
+
+    <section class="container">
+      <MetaRow left="IV004" right={`${entries.length} entries`} />
+
+      <!-- Category filter chips -->
+      <nav class="filter" aria-label="Filter insights">
+        <ul class="filter__list" role="list">
+          {d.categories.map((cat, i) => (
+            <li>
+              <button
+                class:list={["filter__chip", { "is-active": i === 0 }]}
+                data-filter={cat.key}
+                type="button"
+              >
+                {cat.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <!-- Entry grid -->
+      <ul class="grid" role="list">
+        {entries.map((entry) => (
+          <li class="card" data-category={entry.category}>
+            <a class="card__link" href={hrefFor(entry)}>
+              <header class="card__head">
+                <span class="card__kind">{categoryLabel(entry.category)}</span>
+                <span class="card__date">{fmt(entry.date)}</span>
+              </header>
+              <h3 class="card__title">{entry.title}</h3>
+              {entry.summary && <p class="card__summary">{entry.summary}</p>}
+              <span class="card__more" aria-hidden="true">Read →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+  </div>
+
+  <CTA
+    metaLeft="IV004 — Insights"
+    metaRight="Studio notes"
+    title="Tell us what you're <em>trying to build</em>."
+    copy="If a piece of writing here speaks to a project you're working on, we'd like to hear from you."
+    buttonLabel="hello@intervaladvisory.co.uk"
+    buttonHref="mailto:hello@intervaladvisory.co.uk"
+  />
+
+  <script>
+    const list = document.querySelector<HTMLElement>(".grid");
+    const chips = document.querySelectorAll<HTMLButtonElement>(".filter__chip");
+    if (list && chips.length > 0) {
+      chips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+          chips.forEach((c) => c.classList.remove("is-active"));
+          chip.classList.add("is-active");
+          const filter = chip.dataset.filter ?? "all";
+          list.dataset.filter = filter;
+        });
+      });
+    }
+  </script>
+
+</Base>
+
+<style>
+  .light-block { background: var(--bg); color: var(--fg); }
+
+  .filter {
+    margin-top: clamp(32px, 4vw, 48px);
+    padding-bottom: clamp(24px, 3vw, 32px);
+    border-bottom: var(--rule);
+  }
+  .filter__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .filter__chip {
+    appearance: none;
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    color: var(--c-black);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition:
+      background var(--dur-fast) ease,
+      color var(--dur-fast) ease,
+      border-color var(--dur-fast) ease;
+  }
+  .filter__chip:hover { background: rgba(0, 0, 0, 0.04); }
+  .filter__chip.is-active {
+    background: var(--c-black);
+    color: var(--c-off-white);
+    border-color: var(--c-black);
+  }
+
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: clamp(32px, 4vw, 56px) 0 var(--section-pad);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-top: var(--rule);
+  }
+  @media (min-width: 720px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0 var(--col-gap);
+    }
+  }
+  @media (min-width: 1100px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* Client-side filter — hide cards whose category doesn't match.
+     The active filter is set as data-filter on the grid root. */
+  .grid[data-filter]:not([data-filter="all"]) .card:not([data-category]),
+  .grid[data-filter="news"]          .card:not([data-category="news"]),
+  .grid[data-filter="articles"]      .card:not([data-category="articles"]),
+  .grid[data-filter="interests"]     .card:not([data-category="interests"]),
+  .grid[data-filter="event-reports"] .card:not([data-category="event-reports"]),
+  .grid[data-filter="research"]      .card:not([data-category="research"]),
+  .grid[data-filter="projects"]      .card:not([data-category="projects"]) {
+    display: none;
+  }
+
+  .card {
+    border-top: var(--rule);
+    padding: 28px 0;
+  }
+  .grid > .card:first-child { border-top: none; }
+  @media (min-width: 720px) {
+    .grid > .card:nth-child(2) { border-top: none; }
+  }
+  @media (min-width: 1100px) {
+    .grid > .card:nth-child(3) { border-top: none; }
+  }
+
+  .card__link {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .card__link:hover { transform: translateX(2px); }
+  .card__link:hover .card__title { color: var(--accent-light); }
+
+  .card__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+  }
+  .card__title {
+    font-size: clamp(20px, 1.6vw, 26px);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    font-weight: 400;
+    transition: color var(--dur-fast) ease;
+    max-width: 28ch;
+  }
+  .card__summary {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #2a2a2a;
+    max-width: 38ch;
+  }
+  .card__more {
+    margin-top: 4px;
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+  }
+</style>
