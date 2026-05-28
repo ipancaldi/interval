@@ -157,11 +157,11 @@ const surface = themeDefaults[theme].surface;
     --hero-rule:    1px solid rgba(0, 0, 0, 0.18);
   }
 
-  /* Point-cloud canvas behind the hero content. Pointer events on so
-     the user can drag-rotate the cloud; content above (z-index 1)
-     captures its own clicks first. On touch devices, single-finger
-     gestures still scroll the page — OrbitControls is configured to
-     only rotate on two-finger touch. */
+  /* Point-cloud canvas behind the hero content. On desktop (mouse)
+     the canvas is interactive so the user can drag-rotate the cloud.
+     On touch devices we set pointer-events: none so the entire hero
+     can be scrolled freely — the cloud still auto-rotates on its own
+     so it stays animated. */
   .hero__bg {
     position: absolute;
     inset: 0;
@@ -171,9 +171,14 @@ const surface = themeDefaults[theme].surface;
     opacity: 0.85;
     z-index: 0;
     cursor: grab;
-    touch-action: pan-y; /* let vertical scroll pass through */
   }
   .hero__bg:active { cursor: grabbing; }
+  @media (hover: none) and (pointer: coarse) {
+    .hero__bg {
+      pointer-events: none;
+      cursor: default;
+    }
+  }
 
   /* Inner content sits above the canvas. Pointer events disabled on
      the wrapper so the user can drag-rotate the cloud from anywhere

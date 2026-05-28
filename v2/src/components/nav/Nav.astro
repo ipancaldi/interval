@@ -5,8 +5,9 @@
  * Fixed, blurred top bar. Visually adapts to the section beneath it via
  * nav-theme.ts (reads [data-surface] from sections, applies it to the nav).
  *
- * Links / CTA are driven from props so they can come from a content
- * collection later without touching the layout.
+ * Below 820px the desktop link strip is hidden and replaced by a
+ * hamburger toggle + slide-down overlay menu (initialised by
+ * scripts/mobile-menu.ts). Links + CTA are driven from props.
  */
 
 import { asset } from "@lib/asset";
@@ -38,11 +39,15 @@ const isActive = (href: string) => {
   if (href === "/") return currentPath === "/";
   return currentPath.startsWith(href);
 };
+
+// Build a single ordered list that includes the CTA, used by the
+// mobile overlay so all destinations are reachable from one place.
+const mobileItems = [...links, { href: cta.href, label: cta.label }];
 ---
 
 <nav class="nav" data-nav data-surface="dark" aria-label="Primary">
   <div class="nav__inner">
-    <a class="nav__brand" href="/" aria-label="Interval — Home">
+    <a class="nav__brand" href={asset("/")} aria-label="Interval — Home">
       <img
         class="nav__logo nav__logo--light"
         src={asset("/assets/logos/interval-logo-white.svg")}
@@ -75,6 +80,44 @@ const isActive = (href: string) => {
     </ul>
 
     <a class="nav__cta" href={cta.href}>{cta.label}</a>
+
+    <!-- Hamburger toggle — visible only below the desktop nav breakpoint. -->
+    <button
+      class="nav__toggle"
+      type="button"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-menu-toggle
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <!-- Mobile overlay menu. Hidden by default; slides down when
+       the toggle is pressed. JS in scripts/mobile-menu.ts handles
+       open/close + Esc + click-outside. -->
+  <div
+    class="nav__mobile"
+    id="mobile-menu"
+    data-mobile-menu
+    hidden
+  >
+    <ul class="nav__mobile-list" role="list">
+      {mobileItems.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class:list={["nav__mobile-link", { "is-active": isActive(item.href) }]}
+            aria-current={isActive(item.href) ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
   </div>
 </nav>
 
@@ -114,7 +157,7 @@ const isActive = (href: string) => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
+    gap: 16px;
   }
 
   .nav__brand { display: inline-flex; }
@@ -153,6 +196,8 @@ const isActive = (href: string) => {
   .nav__link:hover::after,
   .nav__link.is-active::after { transform: scaleX(1); }
 
+  /* The "Contact" pill is replaced by the hamburger toggle below the
+     desktop breakpoint so the mobile bar stays minimal. */
   .nav__cta {
     font-size: 12px;
     font-weight: 500;
@@ -165,4 +210,93 @@ const isActive = (href: string) => {
     transition: background var(--dur-fast) ease, transform var(--dur-fast) ease;
   }
   .nav__cta:hover { background: var(--c-brick-hover); }
+  @media (max-width: 819px) {
+    .nav__cta { display: none; }
+  }
+
+  /* ===== Hamburger toggle (mobile only) ===== */
+  .nav__toggle {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    margin: -6px;
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    border-radius: var(--radius);
+  }
+  @media (min-width: 820px) {
+    .nav__toggle { display: none; }
+  }
+  .nav__toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: currentColor;
+    margin-inline: auto;
+    border-radius: 2px;
+    transition: transform var(--dur-fast) var(--ease-out),
+                opacity var(--dur-fast) var(--ease-out);
+  }
+  /* Hamburger → X when open */
+  .nav.is-menu-open .nav__toggle span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .nav.is-menu-open .nav__toggle span:nth-child(2) { opacity: 0; }
+  .nav.is-menu-open .nav__toggle span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* ===== Mobile overlay menu ===== */
+  .nav__mobile {
+    position: fixed;
+    inset: 0;
+    top: 100%; /* sits directly below the nav bar */
+    height: calc(100vh - 100%);
+    background: var(--c-black);
+    color: var(--c-off-white);
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform var(--dur-base) var(--ease-out),
+                opacity var(--dur-base) ease;
+    pointer-events: none;
+    overflow-y: auto;
+  }
+  .nav__mobile[hidden] { display: block; }    /* override default to enable transitions */
+  .nav.is-menu-open .nav__mobile {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  /* The menu is irrelevant from the desktop breakpoint up. */
+  @media (min-width: 820px) {
+    .nav__mobile { display: none; }
+  }
+
+  .nav__mobile-list {
+    list-style: none;
+    margin: 0;
+    padding: clamp(24px, 6vw, 48px) var(--gutter);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .nav__mobile-link {
+    display: block;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--c-off-white);
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    transition: color var(--dur-fast) ease;
+  }
+  .nav__mobile-link:hover,
+  .nav__mobile-link.is-active { color: var(--accent-dark); }
 </style>
