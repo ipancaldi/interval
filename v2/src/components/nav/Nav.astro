@@ -34,10 +34,21 @@ const {
   cta = { href: asset("/contact/"), label: "Contact" },
 } = Astro.props;
 
-const currentPath = Astro.url.pathname;
-const isActive = (href: string) => {
-  if (href === "/") return currentPath === "/";
-  return currentPath.startsWith(href);
+// Active-state matching has to be base-path-aware. Under GitHub Pages
+// the site lives at /interval/, so both `href` (already prefixed via
+// asset()) and `Astro.url.pathname` carry that base. We strip it from
+// both sides before comparing — otherwise `currentPath.startsWith(href)`
+// matches the Home href ("/interval/") for every page on the site.
+const baseRaw = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
+const stripBase = (p: string): string => {
+  if (baseRaw && p.startsWith(baseRaw)) return p.slice(baseRaw.length) || "/";
+  return p;
+};
+const currentPath = stripBase(Astro.url.pathname);
+const isActive = (href: string): boolean => {
+  const rel = stripBase(href);
+  if (rel === "/") return currentPath === "/" || currentPath === "";
+  return currentPath === rel || currentPath.startsWith(rel);
 };
 
 // Build a single ordered list that includes the CTA, used by the
