@@ -27,6 +27,17 @@ export interface Service {
   outcomes?: ServiceListBlock;
   /** Optional "Approach" paragraphs at the foot of the detail page */
   approach?: string[];
+  /** Photographic hero background (path under /assets, fed through asset()). */
+  heroImage?: string;
+  heroImageAlt?: string;
+  /** Mid-page editorial full-bleed image — a contextual pause. */
+  editorial?: {
+    src: string;
+    alt: string;
+    caption: string;   // HTML allowed (use <em> for emphasis)
+    topLeft: string;
+    metaRight?: string;
+  };
 }
 
 export interface ServicePalette {
@@ -57,6 +68,16 @@ export const services: Service[] = [
     slug: "safari",
     num: "01",
     name: "Interval Experience Safari",
+    heroImage: "/assets/images/editorial/safari-hero.jpg",
+    heroImageAlt:
+      "A crowded city crossing seen from above — streams of people moving across the painted lines.",
+    editorial: {
+      src: "/assets/images/editorial/safari-pause.jpg",
+      alt: "Commuters in silhouette walking through a city plaza in low golden light.",
+      topLeft: "FIG. S01 — Field study, cross-sector",
+      caption: "Insight begins where you go to <em>see</em> it.",
+      metaRight: "Safari · In-person & virtual",
+    },
     shortIntro:
       "A curated virtual and/or in-person immersion programme designed to inspire breakthrough thinking through direct exposure to world-class experiences.",
     intro: [
@@ -102,6 +123,16 @@ export const services: Service[] = [
     slug: "vision",
     num: "02",
     name: "Interval Experience Vision",
+    heroImage: "/assets/images/editorial/vision-hero.avif",
+    heroImageAlt:
+      "Visitors in silhouette inside an immersive installation of suspended lights, blue and violet.",
+    editorial: {
+      src: "/assets/images/editorial/vision-pause.avif",
+      alt: "People standing within a large immersive digital projection that sweeps across the floor.",
+      topLeft: "FIG. S02 — Art of the possible",
+      caption: "Define what the experience <em>could</em> become.",
+      metaRight: "Vision · Future-state",
+    },
     shortIntro:
       "A strategic visioning and experience design phase that defines the future-state ambition for a destination, venue or ecosystem.",
     intro: [
@@ -143,6 +174,16 @@ export const services: Service[] = [
     slug: "masterplan",
     num: "03",
     name: "Interval Experience Masterplan",
+    heroImage: "/assets/images/editorial/masterplan-hero.jpg",
+    heroImageAlt:
+      "A monumental concrete colonnade with a deep coffered ceiling, tiny figures crossing the hall below.",
+    editorial: {
+      src: "/assets/images/editorial/masterplan-pause.jpg",
+      alt: "A glazed entrance threshold at dusk, warm light beyond and a single figure approaching.",
+      topLeft: "FIG. S03 — One connected ecosystem",
+      caption: "Every touchpoint, held in <em>one</em> blueprint.",
+      metaRight: "Masterplan · End-to-end",
+    },
     shortIntro:
       "A comprehensive strategic blueprint that translates the experience vision into an integrated, actionable roadmap for delivery.",
     intro: [
@@ -189,6 +230,16 @@ export const services: Service[] = [
     slug: "prototyping",
     num: "04",
     name: "Interval Experience Prototyping",
+    heroImage: "/assets/images/editorial/prototyping-hero.avif",
+    heroImageAlt:
+      "Hands meeting a vertical strip of light against a dark reflective surface — an interaction being tested.",
+    editorial: {
+      src: "/assets/images/editorial/prototyping-pause.avif",
+      alt: "A figure reaching toward a softly lit wall in coloured light, motion slightly blurred.",
+      topLeft: "FIG. S04 — Tested before it is built",
+      caption: "Try the idea in the <em>real</em> world first.",
+      metaRight: "Prototyping · Live trials",
+    },
     shortIntro:
       "A rapid experimentation and testing phase designed to bring experience concepts to life before full-scale implementation.",
     intro: [
@@ -233,6 +284,16 @@ export const services: Service[] = [
     slug: "realisation",
     num: "05",
     name: "Interval Realisation Framework",
+    heroImage: "/assets/images/editorial/realisation-hero.jpg",
+    heroImageAlt:
+      "People moving along the ramps and walkways of a crisp modern building in daylight.",
+    editorial: {
+      src: "/assets/images/editorial/realisation-pause.jpg",
+      alt: "The working interior of a cultural building, an orange-lit stair glowing in the lower level.",
+      topLeft: "FIG. S05 — Intact from day one",
+      caption: "The ambition, delivered <em>without dilution</em>.",
+      metaRight: "Realisation · In operation",
+    },
     shortIntro:
       "A delivery and activation framework designed to translate the experience masterplan into tangible, operationally successful real-world experiences.",
     intro: [

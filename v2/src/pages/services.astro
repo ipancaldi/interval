@@ -16,6 +16,7 @@ import Hero from "@components/sections/Hero.astro";
 import MetaRow from "@components/sections/MetaRow.astro";
 import ServiceCard from "@components/sections/ServiceCard.astro";
 import QuestionsList from "@components/sections/QuestionsList.astro";
+import PhotoGrid from "@components/sections/PhotoGrid.astro";
 import { getPage } from "@lib/content";
 import { services, getPalette } from "@lib/services-catalog";
 import { asset } from "@lib/asset";
@@ -60,6 +61,31 @@ const d = page.data as {
           );
         })}
       </div>
+    </section>
+
+    <!-- WHERE WE WORK — sectors, as an editorial pause -->
+    <section class="container" id="sectors">
+      <MetaRow left="IV003 / Selected fields" right="Where we work" />
+      <PhotoGrid
+        columns={3}
+        tiles={[
+          {
+            src: asset("/assets/images/editorial/sector-sports.jpg"),
+            alt: "A sweeping timber-roofed velodrome at golden hour, set in long meadow grass.",
+            caption: "Sports & Venues",
+          },
+          {
+            src: asset("/assets/images/editorial/sector-cultural.jpg"),
+            alt: "An angular stone museum above a broad public stair, visitors gathered across the steps.",
+            caption: "Cultural Infrastructure",
+          },
+          {
+            src: asset("/assets/images/editorial/sector-commercial.jpg"),
+            alt: "A commercial plaza framed by a red louvred facade, two figures crossing in motion blur.",
+            caption: "Commercial Developments",
+          },
+        ]}
+      />
     </section>
 
     <!-- SOLVING FOR THESE QUESTIONS -->

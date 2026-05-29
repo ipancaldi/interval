@@ -27,6 +27,12 @@ interface Props {
   textColor?: string;
   /** Path to the pattern SVG used as a CSS mask. */
   patternSvg?: string;
+  /** Optional photographic background. When set, the hero becomes a
+   *  dark, editorial surface: the photo is washed in the brand colour
+   *  and darkened with a scrim so off-white text + mint emphasis read
+   *  cleanly, with the brand pattern still overlaid on the right. */
+  image?: string;
+  imageAlt?: string;
 }
 
 const {
@@ -38,27 +44,64 @@ const {
   patternColor,
   textColor = "#F9F9F3",
   patternSvg = asset("/assets/icons/pattern.svg"),
+  image,
+  imageAlt = "",
 } = Astro.props;
 
-// Decide whether the surface counts as light or dark for the nav
-// theme switcher, by a simple luminance heuristic on the hex.
-const surface: "dark" | "light" = (() => {
-  const hex = bgColor.replace("#", "");
-  const r = parseInt(hex.slice(0, 2), 16);
-  const g = parseInt(hex.slice(2, 4), 16);
-  const b = parseInt(hex.slice(4, 6), 16);
-  // perceived luminance
-  const L = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return L < 0.6 ? "dark" : "light";
-})();
+const hasImage = Boolean(image);
+
+// Over a photo the type is off-white with a coloured italic em. Enforce
+// the rule that text and the foreground graphic (the pattern) never share
+// a colour: if the pattern matches the off-white title it is nudged to
+// mint, and the em is the first brand accent that differs from the pattern.
+const OFF_WHITE = "#F9F9F3";
+const WHITE = "#FFFFFF";
+const MINT = "#82FFC0";
+const BRICK = "#C05000";
+const MAUVE = "#C8B4DC";
+const sameHex = (a: string, b: string) => a.toLowerCase() === b.toLowerCase();
+
+let patternFill = patternColor;
+let emFill = patternColor; // non-photo default: em tracks the pattern colour
+if (hasImage) {
+  if (sameHex(patternFill, OFF_WHITE)) patternFill = MINT; // graphic ≠ off-white title
+  // A mint graphic pairs with white emphasis; otherwise the first brand
+  // accent that differs from the graphic.
+  emFill = sameHex(patternFill, MINT)
+    ? WHITE
+    : [MINT, MAUVE, BRICK].find((c) => !sameHex(c, patternFill)) ?? MINT;
+}
+
+// Over a photo we always read as a dark surface (off-white text on a
+// brand-washed, scrimmed image). Without a photo, fall back to the
+// luminance heuristic on the brand background colour.
+const surface: "dark" | "light" = hasImage
+  ? "dark"
+  : (() => {
+      const hex = bgColor.replace("#", "");
+      const r = parseInt(hex.slice(0, 2), 16);
+      const g = parseInt(hex.slice(2, 4), 16);
+      const b = parseInt(hex.slice(4, 6), 16);
+      // perceived luminance
+      const L = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      return L < 0.6 ? "dark" : "light";
+    })();
 ---
 
 <header
-  class="sd-hero"
+  class:list={["sd-hero", { "sd-hero--photo": hasImage }]}
   data-surface={surface}
   id="top"
-  style={`--sd-bg: ${bgColor}; --sd-pattern: ${patternColor}; --sd-fg: ${textColor}; --sd-pattern-svg: url(${patternSvg});`}
+  style={`--sd-bg: ${bgColor}; --sd-pattern: ${patternFill}; --sd-em: ${emFill}; --sd-fg: ${textColor}; --sd-pattern-svg: url(${patternSvg});`}
 >
+  {hasImage && (
+    <div class="sd-hero__media" aria-hidden="true">
+      <img class="sd-hero__bg" src={image} alt={imageAlt} loading="eager" />
+      <div class="sd-hero__tint"></div>
+      <div class="sd-hero__scrim"></div>
+    </div>
+  )}
+
   <!-- Decorative pattern. CSS mask paints the SVG silhouette in
        --sd-pattern; the rest of the hero shows --sd-bg. -->
   <div class="sd-hero__pattern" aria-hidden="true"></div>
@@ -87,6 +130,47 @@ const surface: "dark" | "light" = (() => {
     flex-direction: column;
   }
 
+  /* ---- Photographic variant ---------------------------------------
+     A layered stack sits behind the pattern + content:
+       1. .sd-hero__bg     the photo (object-fit: cover)
+       2. .sd-hero__tint   a brand-colour wash (multiply) for identity
+       3. .sd-hero__scrim  a diagonal dark gradient so the left-anchored
+                           title/eyebrow always have contrast
+     Over a photo the type switches to off-white with a mint italic em,
+     matching the brand's "mint emphasis on dark surfaces" rule. */
+  .sd-hero__media { position: absolute; inset: 0; z-index: 0; }
+  .sd-hero__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .sd-hero__tint {
+    position: absolute;
+    inset: 0;
+    background: var(--sd-bg);
+    mix-blend-mode: multiply;
+    opacity: 0.38;
+  }
+  .sd-hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(105deg,
+        rgba(0, 0, 0, 0.55) 0%,
+        rgba(0, 0, 0, 0.28) 42%,
+        rgba(0, 0, 0, 0.04) 72%,
+        rgba(0, 0, 0, 0.16) 100%),
+      linear-gradient(0deg,
+        rgba(0, 0, 0, 0.30) 0%,
+        rgba(0, 0, 0, 0) 45%);
+  }
+  .sd-hero--photo { background: #111; color: #F9F9F3; min-height: 58vh; }
+  .sd-hero--photo .sd-hero__title :global(em) { color: var(--sd-em); }
+  .sd-hero--photo .sd-hero__head { opacity: 0.85; }
+  .sd-hero--photo .sd-hero__sub { opacity: 0.95; }
+
   /* Pattern overlay — full-bleed, right-anchored so the title has
      breathing room on the left. Using CSS mask so the SVG silhouette
      can be tinted to any brand colour from CSS. */
@@ -103,7 +187,7 @@ const surface: "dark" | "light" = (() => {
     -webkit-mask-position: right center;
     mask-size: contain;
     -webkit-mask-size: contain;
-    opacity: 0.95;
+    opacity: 0.8;
     pointer-events: none;
   }
 
@@ -137,7 +221,17 @@ const surface: "dark" | "light" = (() => {
   }
   @media (max-width: 800px) {
     .sd-hero__main { max-width: 100%; }
-    .sd-hero__pattern { opacity: 0.55; }
+    /* On mobile the foreground graphic stretches across the full bleed
+       of the hero frame at full opacity, sitting behind the type. */
+    .sd-hero__pattern {
+      inset: 0;
+      width: 100%;
+      opacity: 0.8;
+      mask-position: center;
+      -webkit-mask-position: center;
+      mask-size: cover;
+      -webkit-mask-size: cover;
+    }
   }
 
   .sd-hero__title {

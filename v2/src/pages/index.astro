@@ -18,6 +18,7 @@ import Editorial from "@components/sections/Editorial.astro";
 import SectionTitle from "@components/sections/SectionTitle.astro";
 import FrameworkDiagram from "@components/diagrams/FrameworkDiagram.astro";
 import Button from "@components/ui/Button.astro";
+import PhotoBleed from "@components/sections/PhotoBleed.astro";
 import PrinciplesStrip from "@components/sections/PrinciplesStrip.astro";
 import { getPage } from "@lib/content";
 import { asset } from "@lib/asset";
@@ -65,6 +66,16 @@ const d = page.data as {
         {d.problem.body.map((p) => <p>{p}</p>)}
       </Editorial>
     </section>
+
+    <!-- EDITORIAL PAUSE — adaptive spaces in the real world -->
+    <PhotoBleed
+      src={asset("/assets/images/editorial/home-adaptability.jpg")}
+      alt="A commercial district at golden hour — people crossing an open plaza between mixed-use buildings."
+      topLeft="FIG. 01 — Adaptive spaces, mixed-use"
+      topRight="Spatial · Commercial"
+      caption="One place, asked to be <em>many things</em> at once."
+      metaRight="Total Experience Design"
+    />
 
     <!-- A NEW MODEL — total experience design, with diagram + explore CTA -->
     <section class="container" id="new-model">

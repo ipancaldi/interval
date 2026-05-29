@@ -11,6 +11,7 @@ import Base from "@layouts/Base.astro";
 import ServiceDetailHero from "@components/sections/ServiceDetailHero.astro";
 import MetaRow from "@components/sections/MetaRow.astro";
 import ServiceModule from "@components/sections/ServiceModule.astro";
+import PhotoBleed from "@components/sections/PhotoBleed.astro";
 import Button from "@components/ui/Button.astro";
 import { services, getPalette, type Service } from "@lib/services-catalog";
 import { asset } from "@lib/asset";
@@ -54,6 +55,8 @@ const palette = getPalette(service.slug);
     bgColor={palette.bg}
     patternColor={palette.pattern}
     textColor={palette.text}
+    image={service.heroImage ? asset(service.heroImage) : undefined}
+    imageAlt={service.heroImageAlt}
   />
 
   <div class="light-block" data-surface="light">
@@ -71,6 +74,18 @@ const palette = getPalette(service.slug);
         approach={service.approach}
       />
     </section>
+
+    <!-- Editorial pause — a contextual image before moving on -->
+    {service.editorial && (
+      <PhotoBleed
+        src={asset(service.editorial.src)}
+        alt={service.editorial.alt}
+        topLeft={service.editorial.topLeft}
+        topRight={service.name}
+        caption={service.editorial.caption}
+        metaRight={service.editorial.metaRight}
+      />
+    )}
 
     <!-- Inter-service nav -->
     <section class="container">

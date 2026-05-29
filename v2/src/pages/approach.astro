@@ -21,7 +21,9 @@ import Editorial from "@components/sections/Editorial.astro";
 import SectionTitle from "@components/sections/SectionTitle.astro";
 import FrameworkDiagram from "@components/diagrams/FrameworkDiagram.astro";
 import DimensionsGrid from "@components/sections/DimensionsGrid.astro";
+import PhotoBleed from "@components/sections/PhotoBleed.astro";
 import { getPage } from "@lib/content";
+import { asset } from "@lib/asset";
 import type { DimensionKey } from "@typings/ui";
 
 const page = await getPage("approach");
@@ -129,6 +131,16 @@ const dimensions: DimensionRow[] = [
       </Editorial>
     </section>
 
+    <!-- EDITORIAL PAUSE — bridging strategy and execution -->
+    <PhotoBleed
+      src={asset("/assets/images/editorial/approach-gap.jpg")}
+      alt="A vaulted transit hall with a sweeping arched ceiling and escalators rising into the light."
+      topLeft="FIG. 02 — Closing the gap"
+      topRight="Strategy · Realisation"
+      caption="Strategy and execution, designed as <em>one</em> conversation."
+      metaRight="20 + 20 years"
+    />
+
     <!-- A UNIQUE EXPERIENCE -->
     <section class="container" id="unique">
       <SectionTitle
@@ -144,6 +156,16 @@ const dimensions: DimensionRow[] = [
         </div>
       </div>
     </section>
+
+    <!-- EDITORIAL PAUSE — the human foundation -->
+    <PhotoBleed
+      src={asset("/assets/images/editorial/approach-human.jpg")}
+      alt="The warm timber interior of a contemporary building, sweeping curved balconies layered in soft light."
+      topLeft="FIG. 03 — A deeply human focus"
+      topRight="Human Foundation"
+      caption="Built around how people <em>actually</em> behave."
+      metaRight="Behaviours, not demographics"
+    />
 
     <!-- HOW TOTAL EXPERIENCE DESIGN DELIVERS -->
     <section class="container" id="delivers">
