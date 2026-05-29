@@ -179,7 +179,7 @@ export const services: Service[] = [
     name: "Interval Experience Masterplan",
     heroImage: "/assets/images/editorial/masterplan-hero.jpg",
     heroImageAlt:
-      "A monumental concrete colonnade with a deep coffered ceiling, tiny figures crossing the hall below.",
+      "The warm timber interior of a contemporary building, angular layered balconies stepping up in soft light with figures on each level.",
     editorial: {
       src: "/assets/images/editorial/masterplan-pause.jpg",
       alt: "A glazed entrance threshold at dusk, warm light beyond and a single figure approaching.",
