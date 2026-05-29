@@ -30,6 +30,8 @@ export interface Service {
   /** Photographic hero background (path under /assets, fed through asset()). */
   heroImage?: string;
   heroImageAlt?: string;
+  /** object-position for the hero photo (e.g. "center top"). */
+  heroImagePosition?: string;
   /** Mid-page editorial full-bleed image — a contextual pause. */
   editorial?: {
     src: string;
@@ -123,9 +125,10 @@ export const services: Service[] = [
     slug: "vision",
     num: "02",
     name: "Interval Experience Vision",
-    heroImage: "/assets/images/editorial/vision-hero.avif",
+    heroImage: "/assets/images/editorial/vision-hero.jpg",
     heroImageAlt:
-      "Visitors in silhouette inside an immersive installation of suspended lights, blue and violet.",
+      "A soaring concrete hall with a slatted ceiling sweeping toward a bright curved opening, tiny figures crossing below.",
+    heroImagePosition: "center top",
     editorial: {
       src: "/assets/images/editorial/vision-pause.avif",
       alt: "People standing within a large immersive digital projection that sweeps across the floor.",

@@ -29,6 +29,9 @@ interface Props {
   /** Optional photographic background. */
   image?: string;
   imageAlt?: string;
+  /** object-position for the background photo (e.g. "center top" to
+   *  crop from the bottom). Defaults to centred. */
+  imagePosition?: string;
 }
 
 const {
@@ -37,6 +40,7 @@ const {
   patternSvg = asset("/assets/icons/pattern.svg"),
   image,
   imageAlt = "",
+  imagePosition = "center",
 } = Astro.props;
 
 const hasImage = Boolean(image);
@@ -64,7 +68,7 @@ const surface: "dark" | "light" = hasImage
 >
   {hasImage && (
     <div class="sd-hero__media" aria-hidden="true">
-      <img class="sd-hero__bg" src={image} alt={imageAlt} loading="eager" />
+      <img class="sd-hero__bg" src={image} alt={imageAlt} loading="eager" style={`object-position: ${imagePosition};`} />
       <div class="sd-hero__tint"></div>
       <div class="sd-hero__scrim"></div>
     </div>
