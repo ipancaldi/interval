@@ -30,8 +30,6 @@ export interface Service {
   /** Photographic hero background (path under /assets, fed through asset()). */
   heroImage?: string;
   heroImageAlt?: string;
-  /** object-position for the hero photo (e.g. "center top"). */
-  heroImagePosition?: string;
   /** Mid-page editorial full-bleed image — a contextual pause. */
   editorial?: {
     src: string;
@@ -39,6 +37,8 @@ export interface Service {
     caption: string;   // HTML allowed (use <em> for emphasis)
     topLeft: string;
     metaRight?: string;
+    /** object-position for the image (e.g. "center top" to crop from the bottom). */
+    imagePosition?: string;
   };
 }
 
@@ -125,16 +125,16 @@ export const services: Service[] = [
     slug: "vision",
     num: "02",
     name: "Interval Experience Vision",
-    heroImage: "/assets/images/editorial/vision-hero.jpg",
+    heroImage: "/assets/images/editorial/vision-hero.avif",
     heroImageAlt:
-      "A soaring concrete hall with a slatted ceiling sweeping toward a bright curved opening, tiny figures crossing below.",
-    heroImagePosition: "center top",
+      "Visitors in silhouette inside an immersive installation of suspended lights, blue and violet.",
     editorial: {
-      src: "/assets/images/editorial/vision-pause.avif",
-      alt: "People standing within a large immersive digital projection that sweeps across the floor.",
+      src: "/assets/images/editorial/vision-pause.jpg",
+      alt: "A soaring concrete hall with a slatted ceiling sweeping toward a bright curved opening, tiny figures crossing below.",
       topLeft: "FIG. S02 — Art of the possible",
       caption: "Define what the experience <em>could</em> become.",
       metaRight: "Vision · Future-state",
+      imagePosition: "center top",
     },
     shortIntro:
       "A strategic visioning and experience design phase that defines the future-state ambition for a destination, venue or ecosystem.",

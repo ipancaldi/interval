@@ -57,7 +57,6 @@ const palette = getPalette(service.slug);
     textColor={palette.text}
     image={service.heroImage ? asset(service.heroImage) : undefined}
     imageAlt={service.heroImageAlt}
-    imagePosition={service.heroImagePosition}
   />
 
   <div class="light-block" data-surface="light">
@@ -85,6 +84,7 @@ const palette = getPalette(service.slug);
         topRight={service.name}
         caption={service.editorial.caption}
         metaRight={service.editorial.metaRight}
+        imagePosition={service.editorial.imagePosition}
       />
     )}
 

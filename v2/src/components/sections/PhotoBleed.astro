@@ -14,6 +14,7 @@ interface Props {
   caption: string;            // HTML allowed
   metaRight?: string;
   surface?: "light" | "dark"; // surface declared on the figure for the nav
+  imagePosition?: string;     // object-position (e.g. "center top" to crop from the bottom)
 }
 
 const {
@@ -24,11 +25,12 @@ const {
   caption,
   metaRight,
   surface = "dark",
+  imagePosition = "center",
 } = Astro.props;
 ---
 
 <figure class="photo-bleed reveal" data-surface={surface} aria-label={alt}>
-  <img src={src} alt={alt} loading="lazy" />
+  <img src={src} alt={alt} loading="lazy" style={`object-position: ${imagePosition};`} />
   <div class="photo-bleed__overlay">
     <div class="photo-bleed__top">
       {topLeft && <span>{topLeft}</span>}
