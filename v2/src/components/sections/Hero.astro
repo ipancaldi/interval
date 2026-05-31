@@ -60,7 +60,7 @@ const {
   title,
   subtitle,
   image = null,
-  footLeft = "London · Sydney",
+  footLeft = "London · Melbourne",
   footRight = `© ${new Date().getFullYear()} Interval Advisory`,
   theme = "default",
   cloudColor = themeDefaults[theme].cloudColor,
@@ -235,11 +235,13 @@ const surface = themeDefaults[theme].surface;
   }
   .hero__title {
     font-weight: 400;
-    font-size: var(--fs-display);
+    font-size: clamp(40px, 6.6vw, 104px);
     line-height: var(--lh-display);
     letter-spacing: var(--tracking-display);
     color: var(--hero-fg);
     font-feature-settings: "ss01";
+    max-width: 17ch;
+    text-wrap: balance;
   }
   .hero__title :global(em) { color: var(--hero-accent); }
 

@@ -11,6 +11,7 @@ import "@styles/global.css";
 import Nav from "@components/nav/Nav.astro";
 import Footer from "@components/nav/Footer.astro";
 import { asset } from "@lib/asset";
+import { getSite } from "@lib/content";
 
 interface PageMeta {
   title: string;
@@ -24,6 +25,8 @@ interface Props {
 }
 
 const { meta } = Astro.props;
+
+const site = await getSite();
 
 const siteTitle = "Interval";
 const siteTagline = "Total Experience Design™";
@@ -81,7 +84,7 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? "https://www.intervaladvisory.
     <slot />
   </main>
 
-  <Footer />
+  <Footer locations={site.locations} tagline={site.tagline} />
 
   <script>
     import "@scripts/main";

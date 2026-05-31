@@ -1,32 +1,40 @@
 ---
 meta:
   title: Interval
-  description: Interval is a global experience advisory and design lab developing transformative audience, customer and visitor experiences for multi-functional commercial, sports and cultural infrastructure via a newly developed Total Experience Design model.
+  description: Interval is a global experience advisory and design lab developing transformative audience, customer and visitor experiences for multi-functional commercial, sports and cultural infrastructure via our Total Experience Design model.
 data:
   hero:
     eyebrowLeft: "IV001 — Total Experience Design™"
     eyebrowRight: "Experience Advisory · Design Lab"
-    title: "Unlocking Adaptive Spaces<br />with <em>Total Experience Design</em>."
-    subtitle: "Interval is a global experience advisory and design lab."
-    secondary: "We develop transformative audience, customer and visitor experiences for multi-functional commercial, sports and cultural infrastructure via a newly developed Total Experience Design model."
+    title: "Unlock Adaptive Spaces with <em>Total Experience Design</em>."
+    subtitle: "Interval is a global experience advisory and design lab bringing a new approach for adaptive spaces."
+    secondary: "We develop transformative audience, customer and visitor experiences for multi-functional commercial, sports and cultural infrastructure via our Total Experience Design model."
   problem:
     label: "IV001 / The Problem"
     title: "Designing for <em>Adaptability</em>."
     body:
-      - "Adaptability is now a core requirement — sports stadiums need to double as concert venues, museums must seamlessly execute corporate events and commercial developments have to mix office space with digital art installations and performance spaces."
-      - "Currently, projects fragment across multiple partners, disciplines and delivery phases. And strategy is too often defined without the benefit of execution insight — which creates a critical gap between ambition and operational reality."
+      - "Adaptability is a core requirement for new spaces. Sports stadiums need to double as concert venues, museums must seamlessly execute corporate events and commercial developments have to mix office floors with performance spaces."
+      - "But there is a deep-seated problem."
+      - "Projects fragment across multiple partners, disciplines and delivery phases. Overarching strategy is defined without the benefit of execution insight, technology decisions are made too late in the process and content development later still — creating a critical gap between ambition and operational and commercial success."
   newModel:
     label: "IV001 / Our Solution"
     title: "A New Model — <em>Total Experience Design</em>."
-    intro: "Total Experience Design considers the full, interconnected range of experience dimensions and the often overlooked dimension of time."
+    intro: "Total Experience Design integrates the full range of interconnected experience dimensions across time. Human-centred at its core, our TXD approach ensures the needs of key audiences are understood within the context of the entire experience, while creating adaptable spaces that maximise utilisation, relevance and long-term commercial value."
     exploreHref: "/approach/"
-    exploreLabel: "Explore the model"
-    bodyLeft:
-      - "The model begins with a human focus, looking at behaviours rather than demographics and exploring the deeper drivers behind people's actions and wants. The aim is to ensure every experience is designed with purpose around a real understanding of human motivations, behaviours, expectations and emotional needs."
-      - "Then an equal focus is given to every other dimension, creating more balanced and powerful experience-led strategies and avoiding siloed thinking."
-    bodyRight:
-      - "Too often technology, content and brand are developed independently — limiting the impact and under-delivering the original vision and full commercial goals."
-      - "The final dimension of time ensures that experiences are mapped across the full span of use cases, catering to much wider audiences and delivering far greater and diversified returns."
+    exploreLabel: "Explore the approach"
+    principles:
+      - num: "01"
+        title: "Human Before <em>Technology</em>"
+        body: "Experiences should start with human behaviour, emotion and need — not with systems, platforms or hardware."
+      - num: "02"
+        title: "Designed Across the <em>Whole Journey</em>"
+        body: "Adaptive spaces succeed when every touchpoint works together — physical, digital, operational, sensory and commercial."
+      - num: "03"
+        title: "Insight Meets <em>Hindsight</em>"
+        body: "We combine forward-looking vision, emerging behaviours and evolving technologies with real-world delivery experience — ensuring ideas are not only compelling in concept, but achievable, sustainable and commercially effective in practice."
+      - num: "04"
+        title: "Test Before You <em>Build</em>"
+        body: "The complexity of adaptive spaces means critical experience decisions should be tested, not assumed. We use rapid prototyping, iteration and real-world validation to explore ideas early, reduce risk and refine experiences before major investment or delivery."
   outcomes:
     label: "IV001 — Experience Outcomes"
     heading: "What Total Experience Design delivers."
