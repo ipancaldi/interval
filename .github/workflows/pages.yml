@@ -4,9 +4,10 @@
 # Pages source must be set to "GitHub Actions" in repo settings.
 #
 # At runtime we tell Astro to build with:
-#   SITE_URL  = https://ipancaldi.github.io
-#   BASE_PATH = /interval/
-# so every asset path resolves under the project-pages sub-path.
+#   SITE_URL  = https://intervaladvisory.co.uk
+#   BASE_PATH = /
+# so every asset path resolves at the custom-domain root. A CNAME file in
+# v2/public keeps the custom domain attached across Actions deploys.
 
 name: Deploy v2 to GitHub Pages
 
@@ -44,8 +45,8 @@ jobs:
       - name: Build Astro
         working-directory: v2
         env:
-          SITE_URL: https://ipancaldi.github.io
-          BASE_PATH: /interval/
+          SITE_URL: https://intervaladvisory.co.uk
+          BASE_PATH: /
         run: npm run build
 
       - name: Upload artifact

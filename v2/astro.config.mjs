@@ -10,9 +10,11 @@ import { defineConfig } from 'astro/config';
 // Trailing slashes are forced for predictable Cloudflare Pages routing.
 //
 // `site` and `base` accept env overrides so the same source builds for:
-//   - production custom domain (no SITE_URL set, BASE_PATH empty)
-//   - GitHub Pages at /interval/   (SITE_URL=https://ipancaldi.github.io, BASE_PATH=/interval)
-const SITE_URL  = process.env.SITE_URL  ?? 'https://www.intervaladvisory.co.uk';
+//   - production custom domain at root (defaults below; the deploy
+//     workflow sets SITE_URL=https://intervaladvisory.co.uk, BASE_PATH=/)
+//   - a project sub-path, e.g. GitHub Pages at /interval/
+//     (SITE_URL=https://ipancaldi.github.io, BASE_PATH=/interval/)
+const SITE_URL  = process.env.SITE_URL  ?? 'https://intervaladvisory.co.uk';
 const BASE_PATH = process.env.BASE_PATH ?? '/';
 
 export default defineConfig({
