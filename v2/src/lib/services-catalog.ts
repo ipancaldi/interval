@@ -85,7 +85,7 @@ export const services: Service[] = [
     intro: [
       "A curated virtual and/or in-person immersion programme designed to inspire breakthrough thinking through direct exposure to world-class experiences across industries, sectors and cities.",
       "Interval's Experience Safari takes participants behind the scenes of exceptional physical and digital environments — from highly technical operations to deeply sensory, emotionally engaging experiences — to observe, interrogate and understand how leading organisations design and deliver total experiences in practice.",
-      "Each safari combines curated visits, expert conversations, operational access and facilitated reflection using Interval's Total Experience Design framework. Participants explore both comparable and unexpected environments to uncover transferable insights, challenge assumptions and identify new opportunities for innovation.",
+      "Each safari combines curated visits, expert conversations, operational access and facilitated reflection using Interval's Total Experience Design model. Participants explore both comparable and unexpected environments to uncover transferable insights, challenge assumptions and identify new opportunities for innovation.",
     ],
     whatsIncluded: {
       label: "Key activities",
@@ -137,14 +137,14 @@ export const services: Service[] = [
       imagePosition: "center top",
     },
     shortIntro:
-      "A strategic visioning and experience design phase that defines the future-state ambition for a destination, venue or ecosystem.",
+      "A strategic visioning and experience design phase that defines the future-state ambition through the lens of total experience design.",
     intro: [
       "A strategic visioning and experience design phase that defines the future-state ambition for a destination, venue or ecosystem through the lens of total experience design.",
       "Building on the insights gathered through the Experience Safari, this phase translates inspiration into a clear and differentiated experience vision — combining strategic foresight, human insight and creative possibility to define what the experience could and should become.",
       "Interval works with leadership teams to explore the “art of the possible” across physical, digital and immersive environments — shaping bold yet actionable concepts that respond to evolving audience expectations and future behaviours.",
     ],
     whatsIncluded: {
-      label: "What's included",
+      label: "Key activities",
       items: [
         "Experience vision and strategic positioning development",
         "“Art of the possible” exploration across global benchmarks and emerging trends",
@@ -168,7 +168,7 @@ export const services: Service[] = [
       ],
     },
     approach: [
-      "Interval applies its Total Experience Design framework to ensure the vision is developed holistically — balancing human, operational, technological, commercial and emotional considerations equally.",
+      "Interval applies its Total Experience Design model to ensure the vision is developed holistically — balancing human, operational, technological, commercial and emotional considerations equally.",
       "The process moves beyond traditional demographic profiling to develop a deeper understanding of visitor motivations, behaviours, expectations and emotional needs. This creates richer personas and more meaningful experience strategies that can guide future design and operational decisions.",
     ],
   },
@@ -195,7 +195,7 @@ export const services: Service[] = [
       "Where the Experience Vision defines the ambition, the Masterplan defines how it comes to life.",
     ],
     whatsIncluded: {
-      label: "What's included",
+      label: "Key activities",
       items: [
         "End-to-end experience architecture and masterplanning",
         "Customer and stakeholder journey ecosystems",
@@ -223,7 +223,7 @@ export const services: Service[] = [
       ],
     },
     approach: [
-      "Interval applies its Total Experience Design framework to ensure no dimension is designed in isolation. The Experience Masterplan considers how environments, technology, service, storytelling, operations, culture and human behaviours interact to shape perception and memory over time.",
+      "Interval applies its Total Experience Design model to ensure no dimension is designed in isolation. The Experience Masterplan considers how environments, technology, service, storytelling, operations, culture and human behaviours interact to shape perception and memory over time.",
       "The process balances visionary thinking with operational reality — aligning creative ambition with commercial viability, organisational capability and long-term scalability.",
       "Drawing on cross-sector inspiration and global best practice, Interval develops experience ecosystems that are cohesive, adaptable and designed to evolve alongside changing visitor expectations.",
     ],
@@ -251,7 +251,7 @@ export const services: Service[] = [
       "Rather than relying solely on presentations, concepts or static designs, Interval creates tangible prototypes that allow stakeholders and users to actively experience, interrogate and shape future-state ideas.",
     ],
     whatsIncluded: {
-      label: "What's included",
+      label: "Key activities",
       items: [
         "Rapid concept and experience prototyping",
         "Physical, digital and hybrid experience simulations",
@@ -277,7 +277,7 @@ export const services: Service[] = [
       ],
     },
     approach: [
-      "Interval applies its Total Experience Design framework throughout the prototyping process to test experiences holistically — not just aesthetically or functionally, but emotionally, operationally and behaviourally.",
+      "Interval applies its Total Experience Design model throughout the prototyping process to test experiences holistically — not just aesthetically or functionally, but emotionally, operationally and behaviourally.",
       "Prototypes may range from low-fidelity journey simulations and service role-play exercises through to immersive spatial mock-ups, digital interactions or live pilot activations. The objective is to uncover friction points, validate assumptions and identify opportunities for enhancement early in the process.",
       "The process encourages experimentation, collaboration and iteration — creating a safe environment to challenge ideas, explore alternatives and evolve concepts based on real feedback and observed behaviours.",
     ],
@@ -305,7 +305,7 @@ export const services: Service[] = [
       "Rather than treating delivery as a purely operational process, Interval approaches implementation through the lens of total experience design — ensuring that every decision continues to support the intended emotional, functional and commercial experience objectives.",
     ],
     whatsIncluded: {
-      label: "What's included",
+      label: "Key activities",
       items: [
         "Experience delivery and implementation framework",
         "Governance and decision-making structures",
@@ -333,7 +333,7 @@ export const services: Service[] = [
     },
     approach: [
       "Interval works alongside leadership, operators, designers and delivery teams to ensure the original experience ambition remains intact throughout implementation.",
-      "Using the Total Experience Design framework as a reference point, the Realisation Framework continuously tests whether decisions across physical environments, service, technology, operations and communications are contributing to the intended overall experience.",
+      "Using the Total Experience Design model as a reference point, the Realisation Framework continuously tests whether decisions across physical environments, service, technology, operations and communications are contributing to the intended overall experience.",
       "The process emphasises collaboration, iteration and real-world testing — helping organisations identify gaps, friction points and missed opportunities before launch.",
     ],
   },

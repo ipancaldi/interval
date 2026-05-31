@@ -31,7 +31,7 @@ const d = page.data as {
   hero: { eyebrowLeft: string; eyebrowRight: string; title: string; subtitle: string };
   closing: { label: string; title: string; body: string[] };
   unique: { label: string; title: string; bodyLeft: string[]; bodyRight: string[] };
-  delivers: { label: string; title: string; intro: string };
+  delivers: { label: string; title: string; intro: string[] };
 };
 
 interface DimensionRow {
@@ -175,7 +175,7 @@ const dimensions: DimensionRow[] = [
       />
 
       <div class="delivers__intro reveal">
-        <p>{d.delivers.intro}</p>
+        {d.delivers.intro.map((p) => <p>{p}</p>)}
       </div>
 
       <!-- Dimension tiles ABOVE the diagram per wireframe -->
@@ -217,6 +217,7 @@ const dimensions: DimensionRow[] = [
     max-width: 64ch;
     color: #1a1a1a;
   }
+  .delivers__intro p + p { margin-top: 0.7em; }
 
   .delivers__diagram {
     padding: clamp(24px, 4vw, 48px) 0 var(--section-pad);

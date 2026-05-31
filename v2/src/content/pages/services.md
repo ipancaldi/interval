@@ -7,7 +7,7 @@ data:
     eyebrowLeft: "IV003 — Services"
     eyebrowRight: "Experience-led services"
     title: "Working with <em>Total Experience Design</em>."
-    subtitle: "Total Experience Design offers a completely new way to develop future-ready experiences for adaptive spaces. We have outlined a number of services that collectively transform how spaces can be optimised."
+    subtitle: "Total Experience Design provides an integrated approach to shaping future-ready experiences for adaptive and multi-use spaces. Our services connect strategy, operations, technology, content and human behaviour — creating cohesive experience ecosystems rather than isolated solutions, and helping organisations optimise how spaces perform, evolve and deliver value over time."
   questions:
     label: "IV003 — Solving for these questions"
     title: "Questions we <em>answer</em>."

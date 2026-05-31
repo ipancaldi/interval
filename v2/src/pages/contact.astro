@@ -2,24 +2,22 @@
 /**
  * Contact (/contact/)
  *
- * Editorial contact page. Right now the action is a single mailto:
- * The Contact form scaffold is intentionally absent — when DB or email
- * integration arrives, we'll add a <ContactForm /> component and wire
- * its action to a hybrid-rendered API route (see astro.config.mjs).
+ * Editorial contact page. The primary action is a mailto: link; a
+ * "Stay connected" newsletter sign-up sits below. (The sign-up button
+ * is a mailto for now — wire it to an email provider when ready.)
  */
 
 import Base from "@layouts/Base.astro";
 import MetaRow from "@components/sections/MetaRow.astro";
-import Editorial from "@components/sections/Editorial.astro";
 import Button from "@components/ui/Button.astro";
-import { getPage, getSite } from "@lib/content";
+import { getPage } from "@lib/content";
 
 const page = await getPage("contact");
-const site = await getSite();
-const d = page.data as {
-  email: string;
-  inquiry: { label: string; description: string };
-};
+const d = page.data as { email: string };
+
+const newsletterHref =
+  `mailto:${d.email}?subject=Newsletter%20signup` +
+  `&body=Please%20add%20me%20to%20the%20Interval%20newsletter.`;
 ---
 
 <Base meta={page.meta}>
@@ -29,49 +27,29 @@ const d = page.data as {
     <section class="container">
       <MetaRow left="IV004" right="Contact" />
 
-      <div class="contact-grid reveal">
-        <div class="contact-grid__copy">
-          <h2 class="contact-grid__title">
-            Let's arrange a call.
-          </h2>
-          <p class="contact-grid__text">
-            A sentence or two on the place is plenty. Where it is, who it's for, what stage it's at. We'll respond within a week.
-          </p>
-
-          <div class="contact-grid__action">
-            <Button href={`mailto:${d.email}`} arrow={true}>{d.email}</Button>
-          </div>
+      <div class="contact reveal">
+        <h2 class="contact__title">Get in touch.</h2>
+        <div class="contact__lead">
+          <p>We work with organisations shaping complex, future-focused experiences and spaces.</p>
+          <p>If you'd like to learn more about Interval, discuss an opportunity or explore a potential collaboration, we'd love to hear from you.</p>
         </div>
-
-        <aside class="contact-grid__meta">
-          <div class="contact-grid__row">
-            <div class="contact-grid__label">Studios</div>
-            <ul class="contact-grid__list">
-              {site.locations.map((loc) => <li>{loc}</li>)}
-            </ul>
-          </div>
-
-          <div class="contact-grid__row">
-            <div class="contact-grid__label">Inquiries</div>
-            <div class="contact-grid__pill">{d.inquiry.label}</div>
-            <p class="contact-grid__note">{d.inquiry.description}</p>
-          </div>
-
-          <div class="contact-grid__row">
-            <div class="contact-grid__label">Press &amp; speaking</div>
-            <a class="contact-grid__inline" href={`mailto:${d.email}?subject=Press`}>
-              {d.email}
-            </a>
-          </div>
-        </aside>
+        <div class="contact__action">
+          <Button href={`mailto:${d.email}`} arrow={true}>{d.email}</Button>
+        </div>
       </div>
     </section>
 
     <section class="container">
-      <Editorial title="What helps us reply quickly.">
-        <p>A sentence or two on the place — where it is, who it's for, what stage it's at. A sense of timeline and the scale of ambition. Any constraints we should know about up front (procurement, partners, public process).</p>
-        <p>You don't need a brief. We'd rather have the honest version.</p>
-      </Editorial>
+      <div class="stay reveal">
+        <div class="stay__label">Stay connected</div>
+        <div class="stay__body">
+          <h3 class="stay__title">Stay connected.</h3>
+          <p class="stay__text">Sign up to receive our newsletter with our latest thinking, research and new perspectives from Interval.</p>
+          <div class="stay__action">
+            <Button href={newsletterHref} variant="ghost" arrow={true}>Sign up</Button>
+          </div>
+        </div>
+      </div>
     </section>
 
   </div>
@@ -84,71 +62,57 @@ const d = page.data as {
   /* No hero on Contact — push the first section below the fixed nav. */
   .contact-page { padding-top: clamp(96px, 14vh, 140px); }
 
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(40px, 6vw, 80px);
+  .contact {
     padding: var(--section-pad) 0;
+    max-width: 64ch;
   }
-  @media (min-width: 900px) {
-    .contact-grid { grid-template-columns: 1.4fr 1fr; }
-  }
-
-  .contact-grid__title {
-    font-size: clamp(32px, 4.5vw, 56px);
-    line-height: 1.05;
-    letter-spacing: var(--tracking-tight);
+  .contact__title {
+    font-size: clamp(40px, 6vw, 88px);
+    line-height: var(--lh-display);
+    letter-spacing: var(--tracking-display);
     font-weight: 400;
-    max-width: 18ch;
-    margin-bottom: 24px;
+    margin-bottom: clamp(24px, 4vw, 40px);
+    text-wrap: balance;
   }
-  .contact-grid__text {
+  .contact__lead {
     font-size: var(--fs-body-lg);
     line-height: 1.5;
-    max-width: 48ch;
     color: #1a1a1a;
-    margin-bottom: 32px;
+    max-width: 52ch;
   }
-  .contact-grid__action { margin-top: 8px; }
+  .contact__lead p + p { margin-top: 1em; }
+  .contact__action { margin-top: clamp(28px, 4vw, 40px); }
 
-  .contact-grid__meta {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
+  /* Stay connected — newsletter sign-up */
+  .stay {
+    padding: var(--section-pad) 0;
     border-top: var(--rule);
-    padding-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(16px, 3vw, 32px);
   }
-  @media (min-width: 900px) {
-    .contact-grid__meta { border-top: none; border-left: var(--rule); padding: 0 0 0 32px; }
+  @media (min-width: 760px) {
+    .stay { grid-template-columns: 200px minmax(0, 1fr); }
   }
-
-  .contact-grid__row { display: flex; flex-direction: column; gap: 8px; }
-  .contact-grid__label {
+  .stay__label {
     font-size: var(--fs-meta);
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: var(--tracking-meta);
     color: var(--fg-muted);
   }
-  .contact-grid__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .stay__body { max-width: 52ch; }
+  .stay__title {
+    font-size: clamp(24px, 3vw, 36px);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-tight);
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+  .stay__text {
     font-size: var(--fs-body);
-    line-height: 1.6;
+    line-height: var(--lh-base);
+    color: #1a1a1a;
   }
-  .contact-grid__pill {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    padding: 6px 12px;
-    background: var(--c-beige);
-    border-radius: var(--radius);
-    color: var(--c-black);
-    width: fit-content;
-  }
-  .contact-grid__note { font-size: 13px; line-height: 1.5; color: var(--fg-muted); max-width: 36ch; }
-  .contact-grid__inline { text-decoration: underline; text-underline-offset: 3px; }
+  .stay__action { margin-top: 24px; }
 </style>
