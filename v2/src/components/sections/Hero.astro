@@ -172,6 +172,9 @@ const surface = themeDefaults[theme].surface;
     z-index: 0;
     cursor: grab;
   }
+  /* Light surfaces (mauve) — mute the cloud so the dark title/eyebrow
+     read cleanly over it, matching the legibility of the dark heroes. */
+  .hero[data-theme="mauve"] .hero__bg { opacity: 0.4; }
   .hero__bg:active { cursor: grabbing; }
   @media (hover: none) and (pointer: coarse) {
     .hero__bg {
