@@ -38,9 +38,36 @@ const description =
   meta.description ??
   "Interval is a global experience advisory and design lab bringing a new approach for adaptive spaces. We develop transformative audience, customer and visitor experiences for multi-functional commercial, sports and cultural infrastructure via our Total Experience Design model.";
 
-const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://www.intervaladvisory.co.uk").toString();
+const siteOrigin = (Astro.site ?? new URL("https://intervaladvisory.co.uk")).origin;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://intervaladvisory.co.uk").toString();
 const ogImage = meta.ogImage ?? "/assets/images/sculpture-portal.png";
-const ogImageUrl = new URL(ogImage, Astro.site ?? "https://www.intervaladvisory.co.uk").toString();
+const ogImageUrl = new URL(ogImage, Astro.site ?? "https://intervaladvisory.co.uk").toString();
+
+// Structured data — helps search engines describe the business correctly
+// (and supersedes stale third-party descriptions over time).
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${siteOrigin}/#organization`,
+      name: "Interval",
+      alternateName: "Interval Advisory",
+      url: `${siteOrigin}/`,
+      logo: `${siteOrigin}/assets/logos/interval-logo-black.svg`,
+      description,
+      slogan: "Total Experience Design™",
+      areaServed: ["London, United Kingdom", "Melbourne, Australia"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteOrigin}/#website`,
+      name: "Interval",
+      url: `${siteOrigin}/`,
+      publisher: { "@id": `${siteOrigin}/#organization` },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -73,6 +100,9 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? "https://www.intervaladvisory.
   <!-- Fonts: preload the two faces we actually use -->
   <link rel="preload" href={asset("/assets/fonts/Inter.woff")} as="font" type="font/woff" crossorigin />
   <link rel="preload" href={asset("/assets/fonts/Inter-Italic.woff")} as="font" type="font/woff" crossorigin />
+
+  <!-- Structured data -->
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} is:inline></script>
 </head>
 
 <body data-surface="dark">

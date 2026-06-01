@@ -1,7 +1,7 @@
 ---
 meta:
   title: Approach
-  description: Closing the gap with Total Experience Design — strategic rigour coupled with technological realisation expertise across Spatial, Technology, Brand & Digital, Content and Time.
+  description: Interval's approach — closing the gap with Total Experience Design, connecting strategy, space, technology, brand & digital, content and time across the whole experience.
 data:
   hero:
     eyebrowLeft: "IV002 — Approach"

@@ -1,7 +1,7 @@
 ---
 meta:
   title: Contact
-  description: Get in touch with Interval. London · Sydney.
+  description: Get in touch with Interval — a global experience advisory and design lab working on adaptive spaces. London · Melbourne.
 data:
   hero:
     eyebrowLeft: "IV005 — Contact"

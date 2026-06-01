@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 //
@@ -22,6 +23,13 @@ export default defineConfig({
   base: BASE_PATH,
   output: 'static',
   trailingSlash: 'always',
+  // Generates /sitemap-index.xml (+ sitemap-0.xml) for search engines.
+  // Insights is pre-launch / hidden from nav, so keep it out of the map.
+  integrations: [
+    sitemap({
+      filter: (page) => !page.includes('/insights'),
+    }),
+  ],
   build: {
     format: 'directory',
   },
