@@ -1,7 +1,7 @@
 ---
 meta:
   title: Approach
-  description: Interval's approach — closing the gap with Total Experience Design, connecting strategy, space, technology, brand & digital, content and time across the whole experience.
+  description: Interval Advisory's approach — closing the gap with Total Experience Design, connecting strategy, space, technology, brand, content and time across cultural, commercial, sports and immersive infrastructure projects.
 data:
   hero:
     eyebrowLeft: "IV002 — Approach"

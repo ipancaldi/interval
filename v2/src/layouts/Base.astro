@@ -29,14 +29,15 @@ const { meta } = Astro.props;
 const site = await getSite();
 
 const siteTitle = "Interval";
-const siteTagline = "Total Experience Design™";
+// The site root passes title "Interval" and gets the canonical brand title
+// verbatim; every other page renders "<page title> · Interval".
 const fullTitle = meta.title === siteTitle
-  ? `${siteTitle} — ${siteTagline}`
+  ? "Interval Advisory | Total Experience Design for Adaptive Spaces"
   : `${meta.title} · ${siteTitle}`;
 
 const description =
   meta.description ??
-  "Interval is a global experience advisory and design lab bringing a new approach for adaptive spaces. We develop transformative audience, customer and visitor experiences for multi-functional commercial, sports and cultural infrastructure via our Total Experience Design model.";
+  "Interval Advisory is a strategic experience consultancy specialising in Total Experience Design for cultural, commercial, sports and immersive infrastructure projects.";
 
 const siteOrigin = (Astro.site ?? new URL("https://intervaladvisory.co.uk")).origin;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://intervaladvisory.co.uk").toString();

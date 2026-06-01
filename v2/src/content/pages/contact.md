@@ -1,7 +1,7 @@
 ---
 meta:
   title: Contact
-  description: Get in touch with Interval — a global experience advisory and design lab working on adaptive spaces. London · Melbourne.
+  description: Get in touch with Interval Advisory, a strategic experience consultancy specialising in Total Experience Design for cultural, commercial, sports and immersive infrastructure projects. London · Melbourne.
 data:
   hero:
     eyebrowLeft: "IV005 — Contact"

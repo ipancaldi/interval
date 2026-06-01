@@ -1,7 +1,7 @@
 ---
 meta:
   title: Interval
-  description: Interval is a global experience advisory and design lab bringing a new approach for adaptive spaces. We develop transformative audience, customer and visitor experiences for multi-functional commercial, sports and cultural infrastructure via our Total Experience Design model.
+  description: Interval Advisory is a strategic experience consultancy specialising in Total Experience Design for cultural, commercial, sports and immersive infrastructure projects.
 data:
   hero:
     eyebrowLeft: "IV001 — Total Experience Design™"

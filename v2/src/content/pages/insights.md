@@ -1,7 +1,7 @@
 ---
 meta:
   title: Insights
-  description: News, articles, interests, event reports, research and projects from Interval — perspectives on Total Experience Design and adaptive spaces.
+  description: News, articles, event reports, research and projects from Interval Advisory — perspectives on Total Experience Design for cultural, commercial, sports and immersive infrastructure projects.
 data:
   hero:
     eyebrowLeft: "IV004 — Insights"

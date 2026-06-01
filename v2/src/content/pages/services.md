@@ -1,7 +1,7 @@
 ---
 meta:
   title: Services
-  description: Experience-led services from Interval. Five services that collectively transform how spaces can be optimised — Safari, Vision, Masterplan, Prototyping, Realisation Framework.
+  description: Interval Advisory's experience-led services — Safari, Vision, Masterplan, Prototyping and Realisation Framework — applying Total Experience Design across cultural, commercial, sports and immersive infrastructure projects.
 data:
   hero:
     eyebrowLeft: "IV003 — Services"
