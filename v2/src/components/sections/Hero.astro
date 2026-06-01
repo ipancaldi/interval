@@ -92,7 +92,7 @@ const surface = themeDefaults[theme].surface;
     <div class:list={["hero__main", { "hero__main--with-image": image }]}>
       <div class="hero__copy">
         <h1 class="hero__title" set:html={title}></h1>
-        {subtitle && <p class="hero__sub">{subtitle}</p>}
+        {subtitle && <p class="hero__sub" set:html={subtitle}></p>}
       </div>
 
       {image && (

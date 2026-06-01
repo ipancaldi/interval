@@ -44,7 +44,7 @@ interface DimensionRow {
 const dimensions: DimensionRow[] = [
   {
     num: "D / 01",
-    name: "Spatial",
+    name: "Space",
     visual: "spatial",
     components: [
       "Form & Volume",
@@ -138,7 +138,6 @@ const dimensions: DimensionRow[] = [
       topLeft="FIG. 02 — Closing the gap"
       topRight="Strategy · Realisation"
       caption="Strategy and execution, designed as <em>one</em> conversation."
-      metaRight="20 + 20 years"
     />
 
     <!-- A UNIQUE EXPERIENCE -->
@@ -178,12 +177,16 @@ const dimensions: DimensionRow[] = [
         {d.delivers.intro.map((p) => <p>{p}</p>)}
       </div>
 
-      <!-- Dimension tiles ABOVE the diagram per wireframe -->
-      <DimensionsGrid items={dimensions} />
-
-      <!-- Framework wheel diagram -->
-      <div class="delivers__diagram reveal">
+      <!-- The model first — the framework wheel with its own title -->
+      <div class="delivers__block delivers__block--model reveal">
+        <h3 class="block-title">The Total Experience Design Model</h3>
         <FrameworkDiagram />
+      </div>
+
+      <!-- Then the dimensions that make up the model -->
+      <div class="delivers__block reveal">
+        <h3 class="block-title">The Experience Dimensions</h3>
+        <DimensionsGrid items={dimensions} />
       </div>
     </section>
 
@@ -219,10 +222,21 @@ const dimensions: DimensionRow[] = [
   }
   .delivers__intro p + p { margin-top: 0.7em; }
 
-  .delivers__diagram {
-    padding: clamp(24px, 4vw, 48px) 0 var(--section-pad);
+  .delivers__block {
+    padding: clamp(28px, 4vw, 52px) 0;
     border-top: var(--rule);
-    display: flex;
-    justify-content: center;
   }
+  .delivers__block:last-child { padding-bottom: var(--section-pad); }
+  .block-title {
+    font-size: clamp(20px, 2.4vw, 30px);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-tight);
+    font-weight: 400;
+    margin-bottom: clamp(20px, 3vw, 36px);
+  }
+  .delivers__block--model {
+    display: flex;
+    flex-direction: column;
+  }
+  .delivers__block--model :global(.te-model) { margin-top: clamp(8px, 2vw, 24px); }
 </style>
