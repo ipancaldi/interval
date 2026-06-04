@@ -44,6 +44,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://intervaladv
 const ogImage = meta.ogImage ?? "/assets/images/sculpture-portal.png";
 const ogImageUrl = new URL(ogImage, Astro.site ?? "https://intervaladvisory.co.uk").toString();
 
+// Google Analytics 4 — public Measurement ID, safe to commit. Only emitted in
+// production builds so dev/preview traffic never reaches the live property.
+const GA_MEASUREMENT_ID = "G-5FMF6KXHY8";
+
 // Structured data — helps search engines describe the business correctly
 // (and supersedes stale third-party descriptions over time).
 const structuredData = {
@@ -104,6 +108,19 @@ const structuredData = {
 
   <!-- Structured data -->
   <script type="application/ld+json" set:html={JSON.stringify(structuredData)} is:inline></script>
+
+  <!-- Google Analytics 4 (production only) -->
+  {import.meta.env.PROD && (
+    <>
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} is:inline></script>
+      <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', GA_MEASUREMENT_ID);
+      </script>
+    </>
+  )}
 </head>
 
 <body data-surface="dark">
