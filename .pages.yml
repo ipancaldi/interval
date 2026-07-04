@@ -138,6 +138,16 @@ content:
             fields:
               - { name: label, label: Section label, type: string }
               - { name: heading, label: Heading, type: string }
+          - name: pause
+            label: "Section: Editorial photo"
+            type: object
+            fields:
+              - { name: image, label: Image, type: image }
+              - { name: alt, label: Image description (alt text), type: string }
+              - { name: topLeft, label: Top-left label, type: string }
+              - { name: topRight, label: Top-right label, type: string }
+              - { name: caption, label: Caption (HTML — use <em> for emphasis), type: string }
+              - { name: metaRight, label: Bottom-right meta, type: string }
       - name: body
         label: Body (unused)
         type: text
@@ -188,6 +198,26 @@ content:
               - { name: label, label: Section label, type: string }
               - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
               - { name: intro, label: Intro paragraphs, type: text, list: true }
+          - name: pauseGap
+            label: "Section: Editorial photo — Closing the gap"
+            type: object
+            fields:
+              - { name: image, label: Image, type: image }
+              - { name: alt, label: Image description (alt text), type: string }
+              - { name: topLeft, label: Top-left label, type: string }
+              - { name: topRight, label: Top-right label, type: string }
+              - { name: caption, label: Caption (HTML — use <em> for emphasis), type: string }
+              - { name: metaRight, label: Bottom-right meta, type: string }
+          - name: pauseHuman
+            label: "Section: Editorial photo — Human foundation"
+            type: object
+            fields:
+              - { name: image, label: Image, type: image }
+              - { name: alt, label: Image description (alt text), type: string }
+              - { name: topLeft, label: Top-left label, type: string }
+              - { name: topRight, label: Top-right label, type: string }
+              - { name: caption, label: Caption (HTML — use <em> for emphasis), type: string }
+              - { name: metaRight, label: Bottom-right meta, type: string }
       - name: body
         label: Body (unused)
         type: text
@@ -223,6 +253,14 @@ content:
               - { name: label, label: Section label, type: string }
               - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
               - { name: items, label: Questions, type: string, list: true }
+          - name: sectors
+            label: "Section: Sectors (photo grid)"
+            type: object
+            list: true
+            fields:
+              - { name: image, label: Image, type: image }
+              - { name: alt, label: Image description (alt text), type: string }
+              - { name: caption, label: Caption, type: string }
       - name: body
         label: Body (unused)
         type: text

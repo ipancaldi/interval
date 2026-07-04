@@ -25,6 +25,7 @@ const page = await getPage("services");
 const d = page.data as {
   hero: { eyebrowLeft: string; eyebrowRight: string; title: string; subtitle: string };
   questions: { label: string; title: string; items: string[] };
+  sectors: { image: string; alt: string; caption?: string }[];
 };
 ---
 
@@ -68,23 +69,7 @@ const d = page.data as {
       <MetaRow left="IV003 / Selected fields" right="Where we work" />
       <PhotoGrid
         columns={3}
-        tiles={[
-          {
-            src: asset("/assets/images/editorial/sector-sports.jpg"),
-            alt: "A sweeping timber-roofed velodrome at golden hour, set in long meadow grass.",
-            caption: "Sports & Venues",
-          },
-          {
-            src: asset("/assets/images/editorial/sector-cultural.jpg"),
-            alt: "An angular stone museum above a broad public stair, visitors gathered across the steps.",
-            caption: "Cultural Infrastructure",
-          },
-          {
-            src: asset("/assets/images/editorial/sector-commercial.jpg"),
-            alt: "A commercial plaza framed by a red louvred facade, two figures crossing in motion blur.",
-            caption: "Commercial Developments",
-          },
-        ]}
+        tiles={d.sectors.map((s) => ({ src: asset(s.image), alt: s.alt, caption: s.caption }))}
       />
     </section>
 

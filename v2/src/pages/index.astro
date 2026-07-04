@@ -41,6 +41,14 @@ const d = page.data as {
     principles: { num: string; title: string; body: string }[];
   };
   outcomes: { label: string; heading: string };
+  pause: {
+    image: string;
+    alt: string;
+    topLeft?: string;
+    topRight?: string;
+    caption: string;
+    metaRight?: string;
+  };
 };
 ---
 
@@ -67,12 +75,12 @@ const d = page.data as {
 
     <!-- EDITORIAL PAUSE — adaptive spaces in the real world -->
     <PhotoBleed
-      src={asset("/assets/images/editorial/home-adaptability.jpg")}
-      alt="A commercial district at golden hour — people crossing an open plaza between mixed-use buildings."
-      topLeft="FIG. 01 — Adaptive spaces, mixed-use"
-      topRight="Spatial · Commercial"
-      caption="One place, asked to be <em>many things</em> at once."
-      metaRight="Total Experience Design"
+      src={asset(d.pause.image)}
+      alt={d.pause.alt}
+      topLeft={d.pause.topLeft}
+      topRight={d.pause.topRight}
+      caption={d.pause.caption}
+      metaRight={d.pause.metaRight}
     />
 
     <!-- A NEW MODEL — total experience design, with diagram + explore CTA -->

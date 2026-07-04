@@ -29,6 +29,19 @@ data:
     intro:
       - "Designing experiences for adaptive and multi-use spaces is inherently complex. Total Experience Design brings focus to every experience dimension — ensuring decisions are connected rather than developed in isolation."
       - "Grounded in deep human understanding, the approach creates experiences that are not only visionary, but practical, scalable and capable of delivering against the project's full ambition."
+  pauseGap:
+    image: "/assets/images/editorial/approach-gap.jpg"
+    alt: "A long colonnade of angled tiled piers, raking light between the columns as two figures walk toward the opening."
+    topLeft: "FIG. 02 — Closing the gap"
+    topRight: "Strategy · Realisation"
+    caption: "Strategy and execution, designed as <em>one</em> conversation."
+  pauseHuman:
+    image: "/assets/images/editorial/approach-human.avif"
+    alt: "Visitors moving through an immersive installation, a vast swirling field of projected light flowing across the floor around them."
+    topLeft: "FIG. 03 — A deeply human focus"
+    topRight: "Human Foundation"
+    caption: "Built around how people <em>actually</em> behave."
+    metaRight: "Behaviours, not demographics"
 ---
 
 Placeholder body.

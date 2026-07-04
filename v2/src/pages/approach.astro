@@ -32,6 +32,22 @@ const d = page.data as {
   closing: { label: string; title: string; body: string[] };
   unique: { label: string; title: string; bodyLeft: string[]; bodyRight: string[] };
   delivers: { label: string; title: string; intro: string[] };
+  pauseGap: {
+    image: string;
+    alt: string;
+    topLeft?: string;
+    topRight?: string;
+    caption: string;
+    metaRight?: string;
+  };
+  pauseHuman: {
+    image: string;
+    alt: string;
+    topLeft?: string;
+    topRight?: string;
+    caption: string;
+    metaRight?: string;
+  };
 };
 
 interface DimensionRow {
@@ -133,11 +149,12 @@ const dimensions: DimensionRow[] = [
 
     <!-- EDITORIAL PAUSE — bridging strategy and execution -->
     <PhotoBleed
-      src={asset("/assets/images/editorial/approach-gap.jpg")}
-      alt="A long colonnade of angled tiled piers, raking light between the columns as two figures walk toward the opening."
-      topLeft="FIG. 02 — Closing the gap"
-      topRight="Strategy · Realisation"
-      caption="Strategy and execution, designed as <em>one</em> conversation."
+      src={asset(d.pauseGap.image)}
+      alt={d.pauseGap.alt}
+      topLeft={d.pauseGap.topLeft}
+      topRight={d.pauseGap.topRight}
+      caption={d.pauseGap.caption}
+      metaRight={d.pauseGap.metaRight}
     />
 
     <!-- A UNIQUE EXPERIENCE -->
@@ -158,12 +175,12 @@ const dimensions: DimensionRow[] = [
 
     <!-- EDITORIAL PAUSE — the human foundation -->
     <PhotoBleed
-      src={asset("/assets/images/editorial/approach-human.avif")}
-      alt="Visitors moving through an immersive installation, a vast swirling field of projected light flowing across the floor around them."
-      topLeft="FIG. 03 — A deeply human focus"
-      topRight="Human Foundation"
-      caption="Built around how people <em>actually</em> behave."
-      metaRight="Behaviours, not demographics"
+      src={asset(d.pauseHuman.image)}
+      alt={d.pauseHuman.alt}
+      topLeft={d.pauseHuman.topLeft}
+      topRight={d.pauseHuman.topRight}
+      caption={d.pauseHuman.caption}
+      metaRight={d.pauseHuman.metaRight}
     />
 
     <!-- HOW TOTAL EXPERIENCE DESIGN DELIVERS -->

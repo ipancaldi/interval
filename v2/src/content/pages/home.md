@@ -38,6 +38,13 @@ data:
   outcomes:
     label: "IV001 — Experience Outcomes"
     heading: "What Total Experience Design delivers."
+  pause:
+    image: "/assets/images/editorial/home-adaptability.jpg"
+    alt: "A commercial district at golden hour — people crossing an open plaza between mixed-use buildings."
+    topLeft: "FIG. 01 — Adaptive spaces, mixed-use"
+    topRight: "Spatial · Commercial"
+    caption: "One place, asked to be <em>many things</em> at once."
+    metaRight: "Total Experience Design"
 ---
 
 Placeholder body.
