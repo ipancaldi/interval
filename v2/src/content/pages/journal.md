@@ -1,10 +1,10 @@
 ---
 meta:
-  title: Insights
-  description: News, articles, event reports, research and projects from Interval Advisory — perspectives on Total Experience Design for cultural, commercial, sports and immersive infrastructure projects.
+  title: Journal
+  description: The Interval Advisory journal — news, articles, event reports, research and projects. Perspectives on Total Experience Design for cultural, commercial, sports and immersive infrastructure projects.
 data:
   hero:
-    eyebrowLeft: "IV004 — Insights"
+    eyebrowLeft: "IV005 — Journal"
     eyebrowRight: "News · Articles · Research"
     title: "Perspectives on <em>adaptive spaces</em>."
     subtitle: "Notes from the studio. News, articles, interests, event reports, research and projects — gathered as we work."

@@ -16,7 +16,7 @@ import type {
   PageContent,
   SiteSettings,
   ServiceItem,
-  InsightEntry,
+  JournalEntry,
 } from "@typings/content";
 import { markdownAdapter } from "./adapters/markdown";
 
@@ -30,7 +30,7 @@ export interface ContentAdapter {
   getPage(slug: PageSlug): Promise<PageContent>;
   listPages(): Promise<PageContent[]>;
   listServices(): Promise<ServiceItem[]>;
-  listInsights(): Promise<InsightEntry[]>;
+  listJournal(): Promise<JournalEntry[]>;
 }
 
 /**
@@ -45,6 +45,6 @@ export const getSite      = (): Promise<SiteSettings>     => adapter.getSite();
 export const getPage      = (slug: PageSlug)              => adapter.getPage(slug);
 export const listPages    = (): Promise<PageContent[]>    => adapter.listPages();
 export const listServices = (): Promise<ServiceItem[]>    => adapter.listServices();
-export const listInsights = (): Promise<InsightEntry[]>   => adapter.listInsights();
+export const listJournal  = (): Promise<JournalEntry[]>   => adapter.listJournal();
 
-export type { PageSlug, PageContent, SiteSettings, ServiceItem, InsightEntry };
+export type { PageSlug, PageContent, SiteSettings, ServiceItem, JournalEntry };

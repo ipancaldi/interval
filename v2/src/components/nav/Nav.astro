@@ -23,13 +23,12 @@ interface Props {
 }
 
 const {
-  // Insights is hidden pre-launch — re-enable by uncommenting the line
-  // below. The page + content collection stay in place.
   links = [
     { href: asset("/"),          label: "Home" },
     { href: asset("/approach/"), label: "Approach" },
     { href: asset("/services/"), label: "Services" },
-    // { href: asset("/insights/"), label: "Insights" },
+    { href: asset("/about/"),    label: "About" },
+    { href: asset("/journal/"),  label: "Journal" },
   ],
   cta = { href: asset("/contact/"), label: "Contact" },
 } = Astro.props;

@@ -1,30 +1,32 @@
 ---
 /**
- * InsightsTeaser — "x3 latest from" strip on the home page.
+ * JournalTeaser — "x3 latest from" strip for the home page.
  *
  * Reads up to 3 cards from props. Each card has a kind (News, Event,
  * Article, Project), a title, a date, and an optional href. When no
  * items are passed, renders three placeholder cards so the layout is
- * always demonstrable.
+ * always demonstrable. (Currently not mounted on any page — wire it
+ * into index.astro fed from listJournal() when the client wants a
+ * home-page teaser.)
  */
 
 import Button from "@components/ui/Button.astro";
 import { asset } from "@lib/asset";
 
-export type InsightKind = "News" | "Event" | "Article" | "Project" | "Research" | "Interest";
+export type JournalKind = "News" | "Event" | "Article" | "Project" | "Research" | "Interest";
 
-interface InsightCard {
-  kind: InsightKind;
+interface JournalCard {
+  kind: JournalKind;
   title: string;
   date: string;            // already formatted, e.g. "May 2026"
   href?: string;
 }
 
 interface Props {
-  items?: InsightCard[];
+  items?: JournalCard[];
 }
 
-const placeholders: InsightCard[] = [
+const placeholders: JournalCard[] = [
   { kind: "Article", title: "Why adaptive spaces need a new experience model.",        date: "Forthcoming" },
   { kind: "Event",   title: "Total Experience Design — London salon, by invitation.",  date: "Forthcoming" },
   { kind: "Project", title: "Selected project case study landing soon.",               date: "Forthcoming" },
@@ -33,35 +35,35 @@ const placeholders: InsightCard[] = [
 const { items = placeholders } = Astro.props;
 ---
 
-<section class="insights-teaser reveal">
-  <header class="insights-teaser__head">
-    <div class="insights-teaser__label">Insights</div>
-    <h2 class="insights-teaser__title">Latest from the studio.</h2>
+<section class="journal-teaser reveal">
+  <header class="journal-teaser__head">
+    <div class="journal-teaser__label">Journal</div>
+    <h2 class="journal-teaser__title">Latest from the studio.</h2>
   </header>
 
-  <ul class="insights-teaser__grid" role="list">
+  <ul class="journal-teaser__grid" role="list">
     {items.slice(0, 3).map((card) => (
-      <li class="insight-card">
-        <a class="insight-card__link" href={card.href ?? asset("/insights/")}>
-          <span class="insight-card__kind">{card.kind}</span>
-          <span class="insight-card__title">{card.title}</span>
-          <span class="insight-card__date">{card.date}</span>
+      <li class="journal-card">
+        <a class="journal-card__link" href={card.href ?? asset("/journal/")}>
+          <span class="journal-card__kind">{card.kind}</span>
+          <span class="journal-card__title">{card.title}</span>
+          <span class="journal-card__date">{card.date}</span>
         </a>
       </li>
     ))}
   </ul>
 
-  <div class="insights-teaser__more">
-    <Button href={asset("/insights/")} variant="ghost" arrow={true}>All insights</Button>
+  <div class="journal-teaser__more">
+    <Button href={asset("/journal/")} variant="ghost" arrow={true}>All journal entries</Button>
   </div>
 </section>
 
 <style>
-  .insights-teaser {
+  .journal-teaser {
     padding: var(--section-pad) 0;
     border-top: var(--rule);
   }
-  .insights-teaser__head {
+  .journal-teaser__head {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -69,21 +71,21 @@ const { items = placeholders } = Astro.props;
     margin-bottom: clamp(28px, 4vw, 48px);
     flex-wrap: wrap;
   }
-  .insights-teaser__label {
+  .journal-teaser__label {
     font-size: var(--fs-meta);
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: var(--tracking-meta);
     color: var(--fg-muted);
   }
-  .insights-teaser__title {
+  .journal-teaser__title {
     font-size: clamp(28px, 3.4vw, 44px);
     line-height: 1.05;
     letter-spacing: var(--tracking-tight);
     font-weight: 400;
   }
 
-  .insights-teaser__grid {
+  .journal-teaser__grid {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -93,46 +95,46 @@ const { items = placeholders } = Astro.props;
     border-top: var(--rule);
   }
   @media (min-width: 800px) {
-    .insights-teaser__grid {
+    .journal-teaser__grid {
       grid-template-columns: repeat(3, 1fr);
       gap: var(--col-gap);
       border-top: none;
     }
   }
 
-  .insight-card {
+  .journal-card {
     border-bottom: var(--rule);
   }
   @media (min-width: 800px) {
-    .insight-card { border-bottom: none; border-top: var(--rule); }
+    .journal-card { border-bottom: none; border-top: var(--rule); }
   }
 
-  .insight-card__link {
+  .journal-card__link {
     display: grid;
     grid-template-columns: 1fr;
     gap: 12px;
     padding: 24px 0;
     transition: color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
   }
-  .insight-card__link:hover {
+  .journal-card__link:hover {
     color: var(--accent-light);
     transform: translateX(2px);
   }
 
-  .insight-card__kind {
+  .journal-card__kind {
     font-size: var(--fs-meta);
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: var(--tracking-meta);
     color: var(--fg-muted);
   }
-  .insight-card__title {
+  .journal-card__title {
     font-size: clamp(18px, 1.4vw, 22px);
     line-height: 1.25;
     letter-spacing: -0.015em;
     max-width: 28ch;
   }
-  .insight-card__date {
+  .journal-card__date {
     font-size: var(--fs-meta);
     font-weight: 500;
     text-transform: uppercase;
@@ -140,7 +142,7 @@ const { items = placeholders } = Astro.props;
     color: var(--fg-muted);
   }
 
-  .insights-teaser__more {
+  .journal-teaser__more {
     margin-top: clamp(24px, 3vw, 40px);
     display: flex;
   }

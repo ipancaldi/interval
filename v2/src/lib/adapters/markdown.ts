@@ -20,7 +20,7 @@ import type {
   PageContent,
   SiteSettings,
   ServiceItem,
-  InsightEntry,
+  JournalEntry,
 } from "@typings/content";
 
 async function loadSite(): Promise<SiteSettings> {
@@ -69,11 +69,13 @@ async function loadServices(): Promise<ServiceItem[]> {
     });
 }
 
-async function loadInsights(): Promise<InsightEntry[]> {
-  const entries = await getCollection("insights", ({ data }) => !data.draft);
+async function loadJournal(): Promise<JournalEntry[]> {
+  const entries = await getCollection("journal", ({ data }) => !data.draft);
   return entries
     .map((entry) => ({
-      slug: entry.id,
+      // entry.id keeps the .md extension on legacy content collections —
+      // entry.slug is the clean, URL-safe identifier.
+      slug: entry.slug,
       title: entry.data.title,
       category: entry.data.category,
       date: entry.data.date,
@@ -91,5 +93,5 @@ export const markdownAdapter: ContentAdapter = {
   getPage: loadPage,
   listPages: loadAllPages,
   listServices: loadServices,
-  listInsights: loadInsights,
+  listJournal: loadJournal,
 };

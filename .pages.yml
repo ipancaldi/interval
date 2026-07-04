@@ -1,0 +1,220 @@
+# Pages CMS configuration — https://pagescms.org/docs/
+#
+# Gives non-developers a friendly editing UI over this repo's content.
+# Sign in at https://app.pagescms.org with GitHub, open this repo and
+# select the `v2` BRANCH (the site deploys from v2, not main).
+#
+# Every save commits to the branch → GitHub Actions rebuilds and
+# deploys the site automatically (~1 min).
+#
+# The field definitions below MUST stay in lockstep with the Zod
+# schemas in v2/src/content/config.ts — if you add a field there,
+# add it here too (and vice versa).
+
+media:
+  input: v2/public/assets/images
+  output: /assets/images
+
+content:
+  # ── Journal entries ────────────────────────────────────────────────
+  # One markdown file per entry. `draft: true` keeps an entry off the
+  # live site. The `_template` entry is a permanent draft — don't delete.
+  - name: journal
+    label: Journal entries
+    type: collection
+    path: v2/src/content/journal
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      fields: [title, category, date, draft]
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: category
+        label: Category
+        type: select
+        required: true
+        options:
+          values:
+            - value: news
+              label: News
+            - value: articles
+              label: Articles
+            - value: interests
+              label: Interests
+            - value: event-reports
+              label: Event reports
+            - value: research
+              label: Research
+            - value: projects
+              label: Projects
+      - name: date
+        label: Date
+        type: date
+        required: true
+      - name: summary
+        label: Summary
+        description: One or two sentences shown on the Journal index card.
+        type: text
+      - name: coverImage
+        label: Cover image
+        description: Optional. Shown full-width at the top of the article.
+        type: image
+      - name: coverImageAlt
+        label: Cover image description (alt text)
+        type: string
+      - name: externalUrl
+        label: External link
+        description: Optional. If set, the index card links out to this URL instead of an article page.
+        type: string
+      - name: draft
+        label: Draft (hidden from the site)
+        type: boolean
+        default: false
+      - name: body
+        label: Article body
+        type: rich-text
+
+  # ── Page copy ──────────────────────────────────────────────────────
+  - name: page-journal
+    label: "Page: Journal"
+    type: file
+    path: v2/src/content/pages/journal.md
+    format: yaml-frontmatter
+    fields:
+      - name: meta
+        label: SEO
+        type: object
+        fields:
+          - { name: title, label: Meta title, type: string }
+          - { name: description, label: Meta description, type: text }
+      - name: data
+        label: Content
+        type: object
+        fields:
+          - name: hero
+            label: Hero
+            type: object
+            fields:
+              - { name: eyebrowLeft, label: Eyebrow (left), type: string }
+              - { name: eyebrowRight, label: Eyebrow (right), type: string }
+              - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+              - { name: subtitle, label: Subtitle, type: text }
+          - name: categories
+            label: Filter categories
+            description: "Rename labels freely; keys must match the entry categories (all, news, articles, interests, event-reports, research, projects)."
+            type: object
+            list: true
+            fields:
+              - { name: key, label: Key, type: string }
+              - { name: label, label: Label, type: string }
+      - name: body
+        label: Body (unused)
+        type: text
+
+  - name: page-about
+    label: "Page: About"
+    type: file
+    path: v2/src/content/pages/about.md
+    format: yaml-frontmatter
+    fields:
+      - name: meta
+        label: SEO
+        type: object
+        fields:
+          - { name: title, label: Meta title, type: string }
+          - { name: description, label: Meta description, type: text }
+      - name: data
+        label: Content
+        type: object
+        fields:
+          - name: hero
+            label: Hero
+            type: object
+            fields:
+              - { name: eyebrowLeft, label: Eyebrow (left), type: string }
+              - { name: eyebrowRight, label: Eyebrow (right), type: string }
+              - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+              - { name: subtitle, label: Subtitle, type: text }
+          - name: story
+            label: Who we are
+            type: object
+            fields:
+              - { name: label, label: Section label, type: string }
+              - { name: title, label: Title, type: string }
+              - { name: body, label: Paragraphs, type: text, list: true }
+          - name: how
+            label: How we work
+            type: object
+            fields:
+              - { name: label, label: Section label, type: string }
+              - { name: title, label: Title, type: string }
+              - { name: bodyLeft, label: Left column paragraphs, type: text, list: true }
+              - { name: bodyRight, label: Right column paragraphs, type: text, list: true }
+          - name: studios
+            label: Where we work
+            type: object
+            fields:
+              - { name: label, label: Section label, type: string }
+              - { name: title, label: Title, type: string }
+              - { name: body, label: Intro paragraph, type: text }
+          - name: pause
+            label: Photo section
+            type: object
+            fields:
+              - { name: image, label: Image, type: image }
+              - { name: alt, label: Image description (alt text), type: string }
+              - { name: topLeft, label: Top-left label, type: string }
+              - { name: topRight, label: Top-right label, type: string }
+              - { name: caption, label: Caption (HTML — use <em> for emphasis), type: string }
+      - name: body
+        label: Body (unused)
+        type: text
+
+  - name: page-contact
+    label: "Page: Contact"
+    type: file
+    path: v2/src/content/pages/contact.md
+    format: yaml-frontmatter
+    fields:
+      - name: meta
+        label: SEO
+        type: object
+        fields:
+          - { name: title, label: Meta title, type: string }
+          - { name: description, label: Meta description, type: text }
+      - name: data
+        label: Content
+        type: object
+        fields:
+          - name: hero
+            label: Hero
+            type: object
+            fields:
+              - { name: eyebrowLeft, label: Eyebrow (left), type: string }
+              - { name: eyebrowRight, label: Eyebrow (right), type: string }
+              - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+              - { name: subtitle, label: Subtitle, type: text }
+          - { name: email, label: Contact email, type: string }
+      - name: body
+        label: Body (unused)
+        type: text
+
+  # ── Site settings ──────────────────────────────────────────────────
+  - name: site
+    label: Site settings
+    type: file
+    path: v2/src/content/shared/site.json
+    fields:
+      - { name: name, label: Site name, type: string }
+      - { name: tagline, label: Tagline, type: string }
+      - { name: locations, label: Locations (footer), type: string, list: true }
+      - { name: contactEmail, label: Contact email, type: string }
+      - { name: established, label: Established label, type: string }

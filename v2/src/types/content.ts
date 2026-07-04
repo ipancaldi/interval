@@ -6,7 +6,7 @@
  * MUST be updated to match — they validate the markdown adapter's input.
  */
 
-export type PageSlug = "home" | "approach" | "services" | "insights" | "contact";
+export type PageSlug = "home" | "approach" | "services" | "about" | "journal" | "contact";
 
 export interface SiteSettings {
   name: string;
@@ -47,10 +47,10 @@ export interface ServiceItem {
 }
 
 /**
- * One entry on the Insights page. Backs both the long-form pages
- * (future) and the home-page teaser.
+ * One entry on the Journal page. Backs both the per-article pages
+ * (/journal/[slug]) and the home-page teaser.
  */
-export type InsightCategory =
+export type JournalCategory =
   | "news"
   | "articles"
   | "interests"
@@ -58,10 +58,10 @@ export type InsightCategory =
   | "research"
   | "projects";
 
-export interface InsightEntry {
+export interface JournalEntry {
   slug: string;
   title: string;
-  category: InsightCategory;
+  category: JournalCategory;
   date: Date;
   summary?: string;
   coverImage?: string;

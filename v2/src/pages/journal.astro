@@ -1,85 +1,32 @@
 ---
 /**
- * Insights (/insights/)
+ * Journal (/journal/)
  *
- * Filterable index of all published insights. Categories come from the
- * page markdown (so non-developers can rename them). Entries come
- * from the `insights` content collection. While no real entries exist
- * yet, the page falls back to a small set of placeholder cards so the
- * layout is demonstrable.
+ * Filterable index of all published journal entries. Categories come
+ * from the page markdown (so non-developers can rename them). Entries
+ * come from the `journal` content collection — one markdown file per
+ * entry, editable via the CMS (Pages CMS → commits to the repo).
  *
  * Filtering happens client-side — entries carry their category as a
- * data attribute, and clicking a chip toggles a body class that hides
- * the others via CSS.
+ * data attribute, and clicking a chip toggles a data-filter attribute
+ * on the grid that hides the others via CSS.
  */
 
 import Base from "@layouts/Base.astro";
 import Hero from "@components/sections/Hero.astro";
 import MetaRow from "@components/sections/MetaRow.astro";
 import CTA from "@components/sections/CTA.astro";
-import { getPage, listInsights } from "@lib/content";
-import type { InsightCategory, InsightEntry } from "@typings/content";
+import { getPage, listJournal } from "@lib/content";
+import { asset } from "@lib/asset";
+import type { JournalEntry } from "@typings/content";
 
-const page = await getPage("insights");
+const page = await getPage("journal");
 const d = page.data as {
   hero: { eyebrowLeft: string; eyebrowRight: string; title: string; subtitle: string };
   categories: { key: string; label: string }[];
 };
 
-const insights = await listInsights();
-
-const placeholders: InsightEntry[] = [
-  {
-    slug: "placeholder-article-1",
-    title: "Why adaptive spaces need a new experience model.",
-    category: "articles",
-    date: new Date("2026-05-10"),
-    summary: "On the gap between strategic ambition and operational reality — and how Total Experience Design closes it.",
-    draft: false,
-  },
-  {
-    slug: "placeholder-event-1",
-    title: "Total Experience Design — London salon, by invitation.",
-    category: "event-reports",
-    date: new Date("2026-04-22"),
-    summary: "An invitation-only conversation with leaders of cultural, civic and commercial places.",
-    draft: false,
-  },
-  {
-    slug: "placeholder-research-1",
-    title: "Adaptive-use stadiums: a global benchmark study.",
-    category: "research",
-    date: new Date("2026-03-30"),
-    summary: "Sampling 12 multi-purpose venues across four continents — what works, what doesn't, what's next.",
-    draft: false,
-  },
-  {
-    slug: "placeholder-project-1",
-    title: "Coastal Pavilion — concept-stage walkthrough.",
-    category: "projects",
-    date: new Date("2026-03-12"),
-    summary: "A speculative case study illustrating how the Total Experience Masterplan threads from vision into delivery.",
-    draft: false,
-  },
-  {
-    slug: "placeholder-news-1",
-    title: "Interval opens a Sydney studio.",
-    category: "news",
-    date: new Date("2026-02-18"),
-    summary: "Our third location — closer to the projects we're seeing in APAC.",
-    draft: false,
-  },
-  {
-    slug: "placeholder-interest-1",
-    title: "Six places to watch in 2026.",
-    category: "interests",
-    date: new Date("2026-01-30"),
-    summary: "A rolling list of buildings, programmes and operators we're learning from.",
-    draft: false,
-  },
-];
-
-const entries = insights.length > 0 ? insights : placeholders;
+const entries = await listJournal();
 
 // Human-readable category labels for chip text
 const categoryLabel = (key: string) =>
@@ -89,8 +36,8 @@ const categoryLabel = (key: string) =>
 const fmt = (date: Date) =>
   date.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
 
-const hrefFor = (entry: InsightEntry) =>
-  entry.externalUrl ?? `/insights/${entry.slug}/`;
+const hrefFor = (entry: JournalEntry) =>
+  entry.externalUrl ?? asset(`/journal/${entry.slug}/`);
 ---
 
 <Base meta={page.meta}>
@@ -105,47 +52,59 @@ const hrefFor = (entry: InsightEntry) =>
   <div class="light-block" data-surface="light">
 
     <section class="container">
-      <MetaRow left="IV004" right={`${entries.length} entries`} />
+      <MetaRow left="IV005" right={`${entries.length} ${entries.length === 1 ? "entry" : "entries"}`} />
 
-      <!-- Category filter chips -->
-      <nav class="filter" aria-label="Filter insights">
-        <ul class="filter__list" role="list">
-          {d.categories.map((cat, i) => (
-            <li>
-              <button
-                class:list={["filter__chip", { "is-active": i === 0 }]}
-                data-filter={cat.key}
-                type="button"
-              >
-                {cat.label}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      {entries.length > 0 ? (
+        <>
+          <!-- Category filter chips -->
+          <nav class="filter" aria-label="Filter journal entries">
+            <ul class="filter__list" role="list">
+              {d.categories.map((cat, i) => (
+                <li>
+                  <button
+                    class:list={["filter__chip", { "is-active": i === 0 }]}
+                    data-filter={cat.key}
+                    type="button"
+                  >
+                    {cat.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-      <!-- Entry grid -->
-      <ul class="grid" role="list">
-        {entries.map((entry) => (
-          <li class="card" data-category={entry.category}>
-            <a class="card__link" href={hrefFor(entry)}>
-              <header class="card__head">
-                <span class="card__kind">{categoryLabel(entry.category)}</span>
-                <span class="card__date">{fmt(entry.date)}</span>
-              </header>
-              <h3 class="card__title">{entry.title}</h3>
-              {entry.summary && <p class="card__summary">{entry.summary}</p>}
-              <span class="card__more" aria-hidden="true">Read →</span>
-            </a>
-          </li>
-        ))}
-      </ul>
+          <!-- Entry grid -->
+          <ul class="grid" role="list">
+            {entries.map((entry) => (
+              <li class="card" data-category={entry.category}>
+                <a class="card__link" href={hrefFor(entry)}>
+                  <header class="card__head">
+                    <span class="card__kind">{categoryLabel(entry.category)}</span>
+                    <span class="card__date">{fmt(entry.date)}</span>
+                  </header>
+                  <h3 class="card__title">{entry.title}</h3>
+                  {entry.summary && <p class="card__summary">{entry.summary}</p>}
+                  <span class="card__more" aria-hidden="true">Read →</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <div class="empty">
+          <p class="empty__lead">First entries are on their way.</p>
+          <p class="empty__copy">
+            Notes from the studio — news, articles, research and projects —
+            will be published here as we work.
+          </p>
+        </div>
+      )}
     </section>
 
   </div>
 
   <CTA
-    metaLeft="IV004 — Insights"
+    metaLeft="IV005 — Journal"
     metaRight="Studio notes"
     title="Tell us what you're <em>trying to build</em>."
     copy="If a piece of writing here speaks to a project you're working on, we'd like to hear from you."
@@ -294,5 +253,24 @@ const hrefFor = (entry: InsightEntry) =>
     text-transform: uppercase;
     letter-spacing: var(--tracking-meta);
     color: var(--fg-muted);
+  }
+
+  /* Empty state — shown when no entries are published yet. */
+  .empty {
+    padding: clamp(48px, 8vw, 96px) 0 var(--section-pad);
+    border-top: var(--rule);
+    margin-top: clamp(32px, 4vw, 48px);
+  }
+  .empty__lead {
+    font-size: clamp(22px, 2.2vw, 30px);
+    letter-spacing: var(--tracking-tight);
+    font-weight: 400;
+  }
+  .empty__copy {
+    margin-top: 12px;
+    font-size: var(--fs-body);
+    line-height: var(--lh-base);
+    color: var(--fg-muted);
+    max-width: 44ch;
   }
 </style>

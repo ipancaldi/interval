@@ -49,10 +49,10 @@ const shared = defineCollection({
   }),
 });
 
-// Insights — one markdown file per entry (article, news item, event
+// Journal — one markdown file per entry (article, news item, event
 // report, etc.). The body is the long-form content. The category
-// drives filtering on /insights/.
-const insights = defineCollection({
+// drives filtering on /journal/.
+const journal = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
@@ -73,4 +73,4 @@ const insights = defineCollection({
   }),
 });
 
-export const collections = { pages, services, shared, insights };
+export const collections = { pages, services, shared, journal };

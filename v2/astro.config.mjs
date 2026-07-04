@@ -24,12 +24,8 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'always',
   // Generates /sitemap-index.xml (+ sitemap-0.xml) for search engines.
-  // Insights is pre-launch / hidden from nav, so keep it out of the map.
-  integrations: [
-    sitemap({
-      filter: (page) => !page.includes('/insights'),
-    }),
-  ],
+  // All routes are public now (About + Journal launched with v2.3).
+  integrations: [sitemap()],
   build: {
     format: 'directory',
   },

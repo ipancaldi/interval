@@ -1,0 +1,167 @@
+---
+/**
+ * About (/about/)
+ *
+ *   Hero
+ *   → Who we are (editorial)
+ *   → Editorial pause (photo bleed)
+ *   → How we work (two-column body)
+ *   → Where we work (studios strip fed from site.json locations)
+ *   → CTA
+ *
+ * Copy lives in src/content/pages/about.md (editable via the CMS).
+ */
+
+import Base from "@layouts/Base.astro";
+import Hero from "@components/sections/Hero.astro";
+import MetaRow from "@components/sections/MetaRow.astro";
+import Editorial from "@components/sections/Editorial.astro";
+import SectionTitle from "@components/sections/SectionTitle.astro";
+import PhotoBleed from "@components/sections/PhotoBleed.astro";
+import CTA from "@components/sections/CTA.astro";
+import { getPage, getSite } from "@lib/content";
+import { asset } from "@lib/asset";
+
+const page = await getPage("about");
+const site = await getSite();
+const d = page.data as {
+  hero: { eyebrowLeft: string; eyebrowRight: string; title: string; subtitle: string };
+  story: { label: string; title: string; body: string[] };
+  how: { label: string; title: string; bodyLeft: string[]; bodyRight: string[] };
+  studios: { label: string; title: string; body: string };
+  pause: { image: string; alt: string; topLeft: string; topRight: string; caption: string };
+};
+---
+
+<Base meta={page.meta}>
+
+  <Hero
+    eyebrowLeft={d.hero.eyebrowLeft}
+    eyebrowRight={d.hero.eyebrowRight}
+    title={d.hero.title}
+    subtitle={d.hero.subtitle}
+    startIndex={5}
+  />
+
+  <div class="light-block" data-surface="light">
+
+    <!-- WHO WE ARE -->
+    <section class="container">
+      <MetaRow left={d.story.label} right="The studio" />
+      <Editorial title={d.story.title}>
+        {d.story.body.map((p) => <p>{p}</p>)}
+      </Editorial>
+    </section>
+
+    <!-- EDITORIAL PAUSE -->
+    <PhotoBleed
+      src={asset(d.pause.image)}
+      alt={d.pause.alt}
+      topLeft={d.pause.topLeft}
+      topRight={d.pause.topRight}
+      caption={d.pause.caption}
+    />
+
+    <!-- HOW WE WORK -->
+    <section class="container" id="how">
+      <SectionTitle label={d.how.label} title={d.how.title} />
+      <div class="how__columns reveal">
+        <div class="how__col">
+          {d.how.bodyLeft.map((p) => <p>{p}</p>)}
+        </div>
+        <div class="how__col">
+          {d.how.bodyRight.map((p) => <p>{p}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <!-- WHERE WE WORK -->
+    <section class="container" id="studios">
+      <SectionTitle label={d.studios.label} title={d.studios.title} />
+      <div class="studios reveal">
+        <p class="studios__body">{d.studios.body}</p>
+        <ul class="studios__list" role="list">
+          {site.locations.map((loc) => (
+            <li class="studios__item">
+              <span class="studios__city">{loc}</span>
+              <span class="studios__meta">{site.established}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+  </div>
+
+  <CTA
+    metaLeft="IV004 — About"
+    metaRight={site.locations.join(" · ")}
+    title="Let's talk about <em>what you're building</em>."
+    copy="If you'd like to learn more about Interval or explore a potential collaboration, we'd love to hear from you."
+    buttonLabel={site.contactEmail}
+    buttonHref={`mailto:${site.contactEmail}`}
+  />
+
+</Base>
+
+<style>
+  .light-block { background: var(--bg); color: var(--fg); }
+
+  .how__columns {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(24px, 4vw, 56px);
+    padding: clamp(24px, 4vw, 48px) 0 var(--section-pad);
+    border-top: var(--rule);
+    font-size: var(--fs-body);
+    line-height: var(--lh-base);
+    color: #1a1a1a;
+  }
+  @media (min-width: 800px) {
+    .how__columns { grid-template-columns: 1fr 1fr; }
+  }
+  .how__col p + p { margin-top: 1em; }
+
+  .studios {
+    padding: clamp(24px, 4vw, 48px) 0 var(--section-pad);
+    border-top: var(--rule);
+  }
+  .studios__body {
+    font-size: clamp(18px, 1.5vw, 22px);
+    line-height: 1.35;
+    letter-spacing: -0.005em;
+    max-width: 52ch;
+    color: #1a1a1a;
+  }
+  .studios__list {
+    list-style: none;
+    margin: clamp(28px, 4vw, 48px) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  @media (min-width: 720px) {
+    .studios__list { grid-template-columns: repeat(2, 1fr); gap: 0 var(--col-gap); }
+  }
+  .studios__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 20px 0;
+    border-top: var(--rule);
+  }
+  .studios__city {
+    font-size: clamp(22px, 2.4vw, 32px);
+    letter-spacing: var(--tracking-tight);
+    font-weight: 400;
+  }
+  .studios__meta {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+  }
+</style>

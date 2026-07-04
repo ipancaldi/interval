@@ -1,0 +1,218 @@
+---
+/**
+ * Journal entry (/journal/[slug]/)
+ *
+ * Long-form page for a single journal entry. One static page is built
+ * per published entry in the `journal` content collection (drafts and
+ * external-link entries are skipped — external entries link out from
+ * the index instead).
+ *
+ * The markdown body is rendered through Astro's Content component;
+ * the `.prose` styles below define the article typography.
+ */
+
+import { getCollection, render } from "astro:content";
+import Base from "@layouts/Base.astro";
+import MetaRow from "@components/sections/MetaRow.astro";
+import CTA from "@components/sections/CTA.astro";
+import { getPage } from "@lib/content";
+import { asset } from "@lib/asset";
+
+export async function getStaticPaths() {
+  const entries = await getCollection(
+    "journal",
+    ({ data }) => !data.draft && !data.externalUrl,
+  );
+  return entries.map((entry) => ({
+    // entry.id keeps the .md extension on legacy content collections —
+    // entry.slug is the clean, URL-safe identifier.
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+// Category labels come from the Journal page content so they stay in
+// sync with the index filters when renamed via the CMS.
+const journalPage = await getPage("journal");
+const categories =
+  (journalPage.data as { categories: { key: string; label: string }[] }).categories;
+const categoryLabel =
+  categories.find((c) => c.key === entry.data.category)?.label ?? entry.data.category;
+
+const dateLong = entry.data.date.toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+
+const meta = {
+  title: entry.data.title,
+  description: entry.data.summary,
+  ogImage: entry.data.coverImage,
+};
+---
+
+<Base meta={meta}>
+
+  <div class="light-block article-page" data-surface="light">
+
+    <section class="container">
+      <MetaRow left="IV005 — Journal" right={categoryLabel} />
+
+      <header class="article__head reveal">
+        <p class="article__meta">
+          <span>{categoryLabel}</span>
+          <span aria-hidden="true">·</span>
+          <time datetime={entry.data.date.toISOString().slice(0, 10)}>{dateLong}</time>
+        </p>
+        <h1 class="article__title">{entry.data.title}</h1>
+        {entry.data.summary && <p class="article__summary">{entry.data.summary}</p>}
+      </header>
+    </section>
+
+    {entry.data.coverImage && (
+      <figure class="article__cover">
+        <img
+          src={asset(entry.data.coverImage)}
+          alt={entry.data.coverImageAlt ?? ""}
+          loading="eager"
+        />
+      </figure>
+    )}
+
+    <section class="container">
+      <article class="prose reveal">
+        <Content />
+      </article>
+
+      <p class="article__back">
+        <a href={asset("/journal/")}>← All journal entries</a>
+      </p>
+    </section>
+
+  </div>
+
+  <CTA
+    metaLeft="IV005 — Journal"
+    metaRight="Studio notes"
+    title="Tell us what you're <em>trying to build</em>."
+    copy="If this piece speaks to a project you're working on, we'd like to hear from you."
+    buttonLabel="hello@intervaladvisory.co.uk"
+    buttonHref="mailto:hello@intervaladvisory.co.uk"
+  />
+
+</Base>
+
+<style>
+  .light-block { background: var(--bg); color: var(--fg); }
+
+  /* No dark hero here — push the first section below the fixed nav. */
+  .article-page { padding-top: clamp(96px, 14vh, 140px); }
+
+  .article__head {
+    padding: clamp(32px, 5vw, 64px) 0 clamp(40px, 6vw, 72px);
+    max-width: 70ch;
+  }
+  .article__meta {
+    display: flex;
+    gap: 10px;
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+    margin-bottom: clamp(16px, 2.5vw, 28px);
+  }
+  .article__title {
+    font-size: clamp(34px, 4.6vw, 64px);
+    line-height: var(--lh-display);
+    letter-spacing: var(--tracking-display);
+    font-weight: 400;
+    text-wrap: balance;
+  }
+  .article__summary {
+    margin-top: clamp(16px, 2.5vw, 24px);
+    font-size: var(--fs-body-lg);
+    line-height: 1.5;
+    color: #1a1a1a;
+    max-width: 56ch;
+  }
+
+  .article__cover {
+    margin: 0 0 clamp(40px, 6vw, 72px);
+  }
+  .article__cover img {
+    display: block;
+    width: 100%;
+    height: clamp(280px, 55vh, 640px);
+    object-fit: cover;
+  }
+
+  /* ===== Article body typography ===== */
+  .prose {
+    max-width: 66ch;
+    padding-bottom: clamp(40px, 6vw, 72px);
+    font-size: var(--fs-body);
+    line-height: var(--lh-base);
+    color: #1a1a1a;
+  }
+  .prose :global(p + p) { margin-top: 1em; }
+  .prose :global(h2) {
+    font-size: clamp(24px, 2.6vw, 34px);
+    line-height: 1.15;
+    letter-spacing: var(--tracking-tight);
+    font-weight: 400;
+    margin: clamp(36px, 5vw, 56px) 0 0.6em;
+  }
+  .prose :global(h3) {
+    font-size: clamp(19px, 1.8vw, 24px);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    font-weight: 500;
+    margin: clamp(28px, 4vw, 44px) 0 0.6em;
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 1em 0;
+    padding-inline-start: 1.4em;
+  }
+  .prose :global(li + li) { margin-top: 0.4em; }
+  .prose :global(blockquote) {
+    margin: clamp(28px, 4vw, 44px) 0;
+    padding-inline-start: clamp(18px, 3vw, 28px);
+    border-inline-start: 2px solid var(--c-black);
+    font-size: clamp(19px, 1.8vw, 24px);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  .prose :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color var(--dur-fast) ease;
+  }
+  .prose :global(a:hover) { color: var(--accent-light); }
+  .prose :global(img) {
+    display: block;
+    max-width: 100%;
+    margin: clamp(28px, 4vw, 44px) 0;
+  }
+  .prose :global(hr) {
+    border: 0;
+    border-top: var(--rule);
+    margin: clamp(36px, 5vw, 56px) 0;
+  }
+  .prose :global(strong) { font-weight: 500; }
+
+  .article__back {
+    padding-bottom: var(--section-pad);
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+  }
+  .article__back a { color: var(--fg-muted); transition: color var(--dur-fast) ease; }
+  .article__back a:hover { color: var(--c-black); }
+</style>
