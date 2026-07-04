@@ -14,14 +14,14 @@ data:
     people:
       - name: "Alex"
         role: "Co-founder"
-        image: ""
-        imageAlt: ""
+        image: "/assets/images/alex.jpg"
+        imageAlt: "Portrait of Alex, co-founder of Interval Advisory."
         bio:
           - "Alex is a co-founder of Interval Advisory, the strategic experience consultancy behind Total Experience Design."
       - name: "Karen"
         role: "Co-founder"
-        image: ""
-        imageAlt: ""
+        image: "/assets/images/karen.jpg"
+        imageAlt: "Portrait of Karen, co-founder of Interval Advisory."
         bio:
           - "Karen is a co-founder of Interval Advisory, the strategic experience consultancy behind Total Experience Design."
   story:
