@@ -13,7 +13,6 @@
  */
 
 import Base from "@layouts/Base.astro";
-import PageHeader from "@components/sections/PageHeader.astro";
 import MetaRow from "@components/sections/MetaRow.astro";
 import CTA from "@components/sections/CTA.astro";
 import { getPage, listJournal } from "@lib/content";
@@ -43,13 +42,6 @@ const hrefFor = (entry: JournalEntry) =>
 <Base meta={page.meta}>
 
   <div class="light-block" data-surface="light">
-
-    <PageHeader
-      eyebrowLeft={d.hero.eyebrowLeft}
-      eyebrowRight={d.hero.eyebrowRight}
-      title={d.hero.title}
-      subtitle={d.hero.subtitle}
-    />
 
     <section class="container">
       <MetaRow left="IV005" right={`${entries.length} ${entries.length === 1 ? "entry" : "entries"}`} />
@@ -139,7 +131,12 @@ const hrefFor = (entry: JournalEntry) =>
 </Base>
 
 <style>
-  .light-block { background: var(--bg); color: var(--fg); }
+  /* No hero — clear the fixed nav so the filters lead the page. */
+  .light-block {
+    background: var(--bg);
+    color: var(--fg);
+    padding-top: clamp(72px, 10vh, 104px);
+  }
 
   .filter {
     margin-top: clamp(32px, 4vw, 48px);
