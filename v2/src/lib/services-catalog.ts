@@ -7,7 +7,13 @@
  *
  * Editing here updates both. The structure mirrors the ServiceModule
  * component's props.
+ *
+ * Per-service imagery (hero + editorial pause) lives in
+ * ../data/service-media.json so it can be edited via the CMS; it is
+ * merged onto each service by slug in the `services` export below.
  */
+
+import serviceMedia from "../data/service-media.json";
 
 export interface ServiceListBlock {
   label: string;
@@ -65,21 +71,11 @@ export const paletteBySlug: Record<string, ServicePalette> = {
 export const getPalette = (slug: string): ServicePalette =>
   paletteBySlug[slug] ?? paletteBySlug.safari!;
 
-export const services: Service[] = [
+const serviceContent: Service[] = [
   {
     slug: "safari",
     num: "01",
     name: "Interval Experience Safari",
-    heroImage: "/assets/images/editorial/safari-hero.jpg",
-    heroImageAlt:
-      "A crowded city crossing seen from above — streams of people moving across the painted lines.",
-    editorial: {
-      src: "/assets/images/editorial/safari-pause.jpg",
-      alt: "Commuters in silhouette walking through a city plaza in low golden light.",
-      topLeft: "FIG. S01 — Field study, cross-sector",
-      caption: "Insight begins where you go to <em>see</em> it.",
-      metaRight: "Safari · In-person & virtual",
-    },
     shortIntro:
       "A curated virtual and/or in-person immersion programme designed to inspire breakthrough thinking through direct exposure to world-class experiences.",
     intro: [
@@ -125,17 +121,6 @@ export const services: Service[] = [
     slug: "vision",
     num: "02",
     name: "Interval Experience Vision",
-    heroImage: "/assets/images/editorial/vision-hero.avif",
-    heroImageAlt:
-      "Visitors in silhouette inside an immersive installation of suspended lights, blue and violet.",
-    editorial: {
-      src: "/assets/images/editorial/vision-pause.jpg",
-      alt: "A soaring concrete hall with a slatted ceiling sweeping toward a bright curved opening, tiny figures crossing below.",
-      topLeft: "FIG. S02 — Art of the possible",
-      caption: "Define what the experience <em>could</em> become.",
-      metaRight: "Vision · Future-state",
-      imagePosition: "center top",
-    },
     shortIntro:
       "A strategic visioning and experience design phase that defines the future-state ambition through the lens of total experience design.",
     intro: [
@@ -177,16 +162,6 @@ export const services: Service[] = [
     slug: "masterplan",
     num: "03",
     name: "Interval Experience Masterplan",
-    heroImage: "/assets/images/editorial/masterplan-hero.jpg",
-    heroImageAlt:
-      "The warm timber interior of a contemporary building, angular layered balconies stepping up in soft light with figures on each level.",
-    editorial: {
-      src: "/assets/images/editorial/masterplan-pause.jpg",
-      alt: "A glazed entrance threshold at dusk, warm light beyond and a single figure approaching.",
-      topLeft: "FIG. S03 — One connected ecosystem",
-      caption: "Every touchpoint, held in <em>one</em> blueprint.",
-      metaRight: "Masterplan · End-to-end",
-    },
     shortIntro:
       "A comprehensive strategic blueprint that translates the experience vision into an integrated, actionable roadmap for delivery.",
     intro: [
@@ -233,16 +208,6 @@ export const services: Service[] = [
     slug: "prototyping",
     num: "04",
     name: "Interval Experience Prototyping",
-    heroImage: "/assets/images/editorial/prototyping-hero.avif",
-    heroImageAlt:
-      "Hands meeting a vertical strip of light against a dark reflective surface — an interaction being tested.",
-    editorial: {
-      src: "/assets/images/editorial/prototyping-pause.avif",
-      alt: "A figure reaching toward a softly lit wall in coloured light, motion slightly blurred.",
-      topLeft: "FIG. S04 — Tested before it is built",
-      caption: "Try the idea in the <em>real</em> world first.",
-      metaRight: "Prototyping · Live trials",
-    },
     shortIntro:
       "A rapid experimentation and testing phase designed to bring experience concepts to life before full-scale implementation.",
     intro: [
@@ -287,16 +252,6 @@ export const services: Service[] = [
     slug: "realisation",
     num: "05",
     name: "Interval Realisation Framework",
-    heroImage: "/assets/images/editorial/realisation-hero.jpg",
-    heroImageAlt:
-      "People moving along the ramps and walkways of a crisp modern building in daylight.",
-    editorial: {
-      src: "/assets/images/editorial/realisation-pause.jpg",
-      alt: "The working interior of a cultural building, an orange-lit stair glowing in the lower level.",
-      topLeft: "FIG. S05 — Intact from day one",
-      caption: "The ambition, delivered <em>without dilution</em>.",
-      metaRight: "Realisation · In operation",
-    },
     shortIntro:
       "A delivery and activation framework designed to translate the experience masterplan into tangible, operationally successful real-world experiences.",
     intro: [
@@ -338,6 +293,16 @@ export const services: Service[] = [
     ],
   },
 ];
+
+/** Imagery keyed by slug, editable via the CMS (../data/service-media.json). */
+type ServiceMedia = Pick<Service, "heroImage" | "heroImageAlt" | "editorial">;
+const mediaBySlug = serviceMedia as Record<string, ServiceMedia>;
+
+/** The five services, with CMS-managed imagery merged on by slug. */
+export const services: Service[] = serviceContent.map((service) => ({
+  ...service,
+  ...mediaBySlug[service.slug],
+}));
 
 export function getService(slug: string): Service | undefined {
   return services.find((s) => s.slug === slug);

@@ -405,6 +405,96 @@ content:
         label: Body (unused)
         type: text
 
+  # ── Service detail page imagery ────────────────────────────────────
+  # Hero + editorial photo for each of the 5 service detail pages.
+  # Merged onto the services by slug in v2/src/lib/services-catalog.ts.
+  - name: service-media
+    label: "Service page images"
+    type: file
+    path: v2/src/data/service-media.json
+    format: json
+    fields:
+      - name: safari
+        label: "Safari"
+        type: object
+        fields:
+          - { name: heroImage, label: Hero image, type: image }
+          - { name: heroImageAlt, label: Hero image description (alt text), type: string }
+          - name: editorial
+            label: Editorial photo
+            type: object
+            fields:
+              - { name: src, label: Image, type: image }
+              - { name: alt, label: Image description (alt text), type: string }
+              - { name: topLeft, label: Top-left label, type: string }
+              - { name: caption, label: Caption (HTML — use <em> for emphasis), type: string }
+              - { name: metaRight, label: Bottom-right meta, type: string }
+              - { name: imagePosition, label: "Crop position (e.g. center top)", type: string }
+      - name: vision
+        label: "Vision"
+        type: object
+        fields:
+          - { name: heroImage, label: Hero image, type: image }
+          - { name: heroImageAlt, label: Hero image description (alt text), type: string }
+          - name: editorial
+            label: Editorial photo
+            type: object
+            fields:
+              - { name: src, label: Image, type: image }
+              - { name: alt, label: Image description (alt text), type: string }
+              - { name: topLeft, label: Top-left label, type: string }
+              - { name: caption, label: Caption (HTML — use <em> for emphasis), type: string }
+              - { name: metaRight, label: Bottom-right meta, type: string }
+              - { name: imagePosition, label: "Crop position (e.g. center top)", type: string }
+      - name: masterplan
+        label: "Masterplan"
+        type: object
+        fields:
+          - { name: heroImage, label: Hero image, type: image }
+          - { name: heroImageAlt, label: Hero image description (alt text), type: string }
+          - name: editorial
+            label: Editorial photo
+            type: object
+            fields:
+              - { name: src, label: Image, type: image }
+              - { name: alt, label: Image description (alt text), type: string }
+              - { name: topLeft, label: Top-left label, type: string }
+              - { name: caption, label: Caption (HTML — use <em> for emphasis), type: string }
+              - { name: metaRight, label: Bottom-right meta, type: string }
+              - { name: imagePosition, label: "Crop position (e.g. center top)", type: string }
+      - name: prototyping
+        label: "Prototyping"
+        type: object
+        fields:
+          - { name: heroImage, label: Hero image, type: image }
+          - { name: heroImageAlt, label: Hero image description (alt text), type: string }
+          - name: editorial
+            label: Editorial photo
+            type: object
+            fields:
+              - { name: src, label: Image, type: image }
+              - { name: alt, label: Image description (alt text), type: string }
+              - { name: topLeft, label: Top-left label, type: string }
+              - { name: caption, label: Caption (HTML — use <em> for emphasis), type: string }
+              - { name: metaRight, label: Bottom-right meta, type: string }
+              - { name: imagePosition, label: "Crop position (e.g. center top)", type: string }
+      - name: realisation
+        label: "Realisation"
+        type: object
+        fields:
+          - { name: heroImage, label: Hero image, type: image }
+          - { name: heroImageAlt, label: Hero image description (alt text), type: string }
+          - name: editorial
+            label: Editorial photo
+            type: object
+            fields:
+              - { name: src, label: Image, type: image }
+              - { name: alt, label: Image description (alt text), type: string }
+              - { name: topLeft, label: Top-left label, type: string }
+              - { name: caption, label: Caption (HTML — use <em> for emphasis), type: string }
+              - { name: metaRight, label: Bottom-right meta, type: string }
+              - { name: imagePosition, label: "Crop position (e.g. center top)", type: string }
+
   # ── Site settings ──────────────────────────────────────────────────
   - name: site
     label: Site settings
