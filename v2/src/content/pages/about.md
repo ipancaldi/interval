@@ -16,7 +16,7 @@ data:
     label: IV004 / Founders
     title: Meet the <em>founders</em>.
     people:
-      - name: Alex Wills
+      - name: Alex
         role: Co-founder
         image: /assets/images/alex.jpg
         imageAlt: Portrait of Alex, co-founder of Interval Advisory.
