@@ -65,7 +65,7 @@ content:
         type: text
       - name: coverImage
         label: Cover image
-        description: Optional. Shown full-width at the top of the article.
+        description: Optional. Used as the thumbnail on the Journal index card and as the full-bleed header at the top of the article page.
         type: image
       - name: coverImageAlt
         label: Cover image description (alt text)

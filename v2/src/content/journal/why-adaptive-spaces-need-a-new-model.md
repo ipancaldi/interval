@@ -3,6 +3,8 @@ title: "Why adaptive spaces need a new experience model."
 category: articles
 date: 2026-06-18
 summary: "Strategy can no longer sit separately from delivery. On the gap between ambition and operational reality — and how Total Experience Design closes it."
+coverImage: /assets/images/editorial/home-adaptability.jpg
+coverImageAlt: "A large multi-use interior configured for a public event."
 draft: false
 ---
 

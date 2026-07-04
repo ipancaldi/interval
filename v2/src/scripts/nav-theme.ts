@@ -20,9 +20,13 @@ export function initNavTheme(): void {
   const nav = document.querySelector<HTMLElement>(NAV_SELECTOR);
   if (!nav) return;
 
+  // Only real content sections count. The nav sets its own data-surface
+  // (it's the output), and <body> carries a default data-surface for
+  // pre-JS styling — both must be excluded or the body's full-page rect
+  // would always win the overlap test and pin the nav to one theme.
   const surfaceSections = Array.from(
     document.querySelectorAll<HTMLElement>(`[${SURFACE_ATTR}]`)
-  );
+  ).filter((el) => el !== nav && el !== document.body);
   if (surfaceSections.length === 0) return;
 
   function currentSurface(): Surface {

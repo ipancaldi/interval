@@ -3,6 +3,8 @@ title: "Human before technology: designing from behaviour, not demographics."
 category: articles
 date: 2026-05-27
 summary: "Technology should follow understanding, not lead it. Why the human foundation comes first in every Total Experience Design engagement."
+coverImage: /assets/images/editorial/approach-human.avif
+coverImageAlt: "Visitors moving through a naturally lit public space."
 draft: false
 ---
 

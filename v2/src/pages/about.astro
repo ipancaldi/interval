@@ -13,7 +13,7 @@
  */
 
 import Base from "@layouts/Base.astro";
-import Hero from "@components/sections/Hero.astro";
+import PageHeader from "@components/sections/PageHeader.astro";
 import MetaRow from "@components/sections/MetaRow.astro";
 import Editorial from "@components/sections/Editorial.astro";
 import SectionTitle from "@components/sections/SectionTitle.astro";
@@ -35,15 +35,14 @@ const d = page.data as {
 
 <Base meta={page.meta}>
 
-  <Hero
-    eyebrowLeft={d.hero.eyebrowLeft}
-    eyebrowRight={d.hero.eyebrowRight}
-    title={d.hero.title}
-    subtitle={d.hero.subtitle}
-    startIndex={5}
-  />
-
   <div class="light-block" data-surface="light">
+
+    <PageHeader
+      eyebrowLeft={d.hero.eyebrowLeft}
+      eyebrowRight={d.hero.eyebrowRight}
+      title={d.hero.title}
+      subtitle={d.hero.subtitle}
+    />
 
     <!-- WHO WE ARE -->
     <section class="container">

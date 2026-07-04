@@ -57,7 +57,20 @@ const meta = {
 
 <Base meta={meta}>
 
-  <div class="light-block article-page" data-surface="light">
+  {entry.data.coverImage && (
+    <figure class="article-cover" data-surface="dark">
+      <img
+        src={asset(entry.data.coverImage)}
+        alt={entry.data.coverImageAlt ?? ""}
+        loading="eager"
+      />
+    </figure>
+  )}
+
+  <div
+    class:list={["light-block", "article-page", { "article-page--no-cover": !entry.data.coverImage }]}
+    data-surface="light"
+  >
 
     <section class="container">
       <MetaRow left="IV005 — Journal" right={categoryLabel} />
@@ -72,16 +85,6 @@ const meta = {
         {entry.data.summary && <p class="article__summary">{entry.data.summary}</p>}
       </header>
     </section>
-
-    {entry.data.coverImage && (
-      <figure class="article__cover">
-        <img
-          src={asset(entry.data.coverImage)}
-          alt={entry.data.coverImageAlt ?? ""}
-          loading="eager"
-        />
-      </figure>
-    )}
 
     <section class="container">
       <article class="prose reveal">
@@ -109,8 +112,24 @@ const meta = {
 <style>
   .light-block { background: var(--bg); color: var(--fg); }
 
-  /* No dark hero here — push the first section below the fixed nav. */
-  .article-page { padding-top: clamp(96px, 14vh, 140px); }
+  /* Full-bleed image header. Sits at the very top; the fixed nav floats
+     over it (nav goes dark via data-surface="dark" so it stays legible). */
+  .article-cover {
+    margin: 0;
+    width: 100%;
+    height: clamp(340px, 66vh, 760px);
+    background: #111;
+  }
+  .article-cover img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* No dark hero. With a cover header above, the article head spacing is
+     enough; without one, push the first section clear of the fixed nav. */
+  .article-page--no-cover { padding-top: clamp(96px, 14vh, 140px); }
 
   .article__head {
     padding: clamp(32px, 5vw, 64px) 0 clamp(40px, 6vw, 72px);
@@ -139,16 +158,6 @@ const meta = {
     line-height: 1.5;
     color: #1a1a1a;
     max-width: 56ch;
-  }
-
-  .article__cover {
-    margin: 0 0 clamp(40px, 6vw, 72px);
-  }
-  .article__cover img {
-    display: block;
-    width: 100%;
-    height: clamp(280px, 55vh, 640px);
-    object-fit: cover;
   }
 
   /* ===== Article body typography ===== */
