@@ -83,6 +83,150 @@ content:
         type: rich-text
 
   # ── Page copy ──────────────────────────────────────────────────────
+  - name: page-home
+    label: "Page: Home"
+    type: file
+    path: v2/src/content/pages/home.md
+    format: yaml-frontmatter
+    fields:
+      - name: meta
+        label: SEO
+        type: object
+        fields:
+          - { name: title, label: Meta title, type: string }
+          - { name: description, label: Meta description, type: text }
+      - name: data
+        label: Content
+        type: object
+        fields:
+          - name: hero
+            label: Hero
+            type: object
+            fields:
+              - { name: eyebrowLeft, label: Eyebrow (left), type: string }
+              - { name: eyebrowRight, label: Eyebrow (right), type: string }
+              - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+              - { name: subtitle, label: Subtitle, type: text }
+              - { name: secondary, label: Secondary line, type: text }
+          - name: problem
+            label: "Section: The problem"
+            type: object
+            fields:
+              - { name: label, label: Section label, type: string }
+              - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+              - { name: body, label: Paragraphs, type: text, list: true }
+          - name: newModel
+            label: "Section: Our solution"
+            type: object
+            fields:
+              - { name: label, label: Section label, type: string }
+              - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+              - { name: intro, label: Intro paragraph, type: text }
+              - { name: exploreHref, label: Explore link — URL, type: string }
+              - { name: exploreLabel, label: Explore link — label, type: string }
+              - name: principles
+                label: Principles
+                type: object
+                list: true
+                fields:
+                  - { name: num, label: Number, type: string }
+                  - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+                  - { name: body, label: Body, type: text }
+          - name: outcomes
+            label: "Section: Experience outcomes"
+            type: object
+            fields:
+              - { name: label, label: Section label, type: string }
+              - { name: heading, label: Heading, type: string }
+      - name: body
+        label: Body (unused)
+        type: text
+
+  - name: page-approach
+    label: "Page: Approach"
+    type: file
+    path: v2/src/content/pages/approach.md
+    format: yaml-frontmatter
+    fields:
+      - name: meta
+        label: SEO
+        type: object
+        fields:
+          - { name: title, label: Meta title, type: string }
+          - { name: description, label: Meta description, type: text }
+      - name: data
+        label: Content
+        type: object
+        fields:
+          - name: hero
+            label: Hero
+            type: object
+            fields:
+              - { name: eyebrowLeft, label: Eyebrow (left), type: string }
+              - { name: eyebrowRight, label: Eyebrow (right), type: string }
+              - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+              - { name: subtitle, label: Subtitle, type: text }
+          - name: closing
+            label: "Section: Closing the gap"
+            type: object
+            fields:
+              - { name: label, label: Section label, type: string }
+              - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+              - { name: body, label: Paragraphs, type: text, list: true }
+          - name: unique
+            label: "Section: Our unique experience"
+            type: object
+            fields:
+              - { name: label, label: Section label, type: string }
+              - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+              - { name: bodyLeft, label: Left column paragraphs, type: text, list: true }
+              - { name: bodyRight, label: Right column paragraphs, type: text, list: true }
+          - name: delivers
+            label: "Section: How TXD delivers"
+            type: object
+            fields:
+              - { name: label, label: Section label, type: string }
+              - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+              - { name: intro, label: Intro paragraphs, type: text, list: true }
+      - name: body
+        label: Body (unused)
+        type: text
+
+  - name: page-services
+    label: "Page: Services"
+    type: file
+    path: v2/src/content/pages/services.md
+    format: yaml-frontmatter
+    fields:
+      - name: meta
+        label: SEO
+        type: object
+        fields:
+          - { name: title, label: Meta title, type: string }
+          - { name: description, label: Meta description, type: text }
+      - name: data
+        label: Content
+        type: object
+        fields:
+          - name: hero
+            label: Hero
+            type: object
+            fields:
+              - { name: eyebrowLeft, label: Eyebrow (left), type: string }
+              - { name: eyebrowRight, label: Eyebrow (right), type: string }
+              - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+              - { name: subtitle, label: Subtitle, type: text }
+          - name: questions
+            label: "Section: Questions we answer"
+            type: object
+            fields:
+              - { name: label, label: Section label, type: string }
+              - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+              - { name: items, label: Questions, type: string, list: true }
+      - name: body
+        label: Body (unused)
+        type: text
+
   - name: page-journal
     label: "Page: Journal"
     type: file
