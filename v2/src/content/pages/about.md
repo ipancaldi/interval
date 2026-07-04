@@ -1,4 +1,5 @@
 ---
+visible: true
 meta:
   title: About
   description: About Interval Advisory — a strategic experience consultancy specialising in Total Experience Design for cultural, commercial, sports and immersive infrastructure projects, with studios in London and Melbourne.

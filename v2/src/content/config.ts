@@ -21,6 +21,9 @@ const pages = defineCollection({
   type: "content",
   schema: z.object({
     meta: pageMeta,
+    /** Show/hide toggle. When false the page is dropped from the nav +
+     *  sitemap and its URL serves the 404 (see the per-page guard). */
+    visible: z.boolean().default(true),
     /** Free-form structured data, validated per-page in the page itself. */
     data: z.record(z.string(), z.unknown()).default({}),
   }),

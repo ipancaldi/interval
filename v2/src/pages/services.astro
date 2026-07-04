@@ -22,6 +22,8 @@ import { services, getPalette } from "@lib/services-catalog";
 import { asset } from "@lib/asset";
 
 const page = await getPage("services");
+// Hidden in the CMS (visible: false) → serve the 404, don't render the page.
+if (!page.visible) return Astro.rewrite("/404");
 const d = page.data as {
   hero: { eyebrowLeft: string; eyebrowRight: string; title: string; subtitle: string };
   questions: { label: string; title: string; items: string[] };

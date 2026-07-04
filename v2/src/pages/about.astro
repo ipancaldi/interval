@@ -23,6 +23,8 @@ import { getPage, getSite } from "@lib/content";
 import { asset } from "@lib/asset";
 
 const page = await getPage("about");
+// Hidden in the CMS (visible: false) → serve the 404, don't render the page.
+if (!page.visible) return Astro.rewrite("/404");
 const site = await getSite();
 const d = page.data as {
   hero: { eyebrowLeft: string; eyebrowRight: string; title: string; subtitle: string };

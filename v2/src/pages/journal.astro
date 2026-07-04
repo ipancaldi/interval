@@ -20,6 +20,8 @@ import { asset } from "@lib/asset";
 import type { JournalEntry } from "@typings/content";
 
 const page = await getPage("journal");
+// Hidden in the CMS (visible: false) → serve the 404, don't render the page.
+if (!page.visible) return Astro.rewrite("/404");
 const d = page.data as {
   hero: { eyebrowLeft: string; eyebrowRight: string; title: string; subtitle: string };
   categories: { key: string; label: string }[];

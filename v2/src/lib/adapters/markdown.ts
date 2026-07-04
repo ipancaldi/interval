@@ -44,6 +44,7 @@ async function loadPage(slug: PageSlug): Promise<PageContent> {
   return {
     slug: entry.id as PageSlug,
     meta: entry.data.meta,
+    visible: entry.data.visible ?? true,
     body: entry.body ?? "",
     data: (entry.data.data ?? {}) as Record<string, unknown>,
   };
@@ -54,6 +55,7 @@ async function loadAllPages(): Promise<PageContent[]> {
   return entries.map((entry) => ({
     slug: entry.id as PageSlug,
     meta: entry.data.meta,
+    visible: entry.data.visible ?? true,
     body: entry.body ?? "",
     data: (entry.data.data ?? {}) as Record<string, unknown>,
   }));

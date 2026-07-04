@@ -37,6 +37,8 @@ const { Content } = await render(entry);
 // Category labels come from the Journal page content so they stay in
 // sync with the index filters when renamed via the CMS.
 const journalPage = await getPage("journal");
+// If the Journal section is hidden in the CMS, its articles go with it.
+if (!journalPage.visible) return Astro.rewrite("/404");
 const categories =
   (journalPage.data as { categories: { key: string; label: string }[] }).categories;
 const categoryLabel =

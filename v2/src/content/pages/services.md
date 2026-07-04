@@ -1,4 +1,5 @@
 ---
+visible: true
 meta:
   title: Services
   description: Interval Advisory's experience-led services — Safari, Vision, Masterplan, Prototyping and Realisation Framework — applying Total Experience Design across cultural, commercial, sports and immersive infrastructure projects.

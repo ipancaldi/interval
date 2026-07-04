@@ -1,0 +1,71 @@
+---
+/**
+ * 404 — page not found.
+ *
+ * Also the rewrite target for pages toggled hidden in the CMS
+ * (visible: false) — see the per-page visibility guards.
+ */
+import Base from "@layouts/Base.astro";
+import { asset } from "@lib/asset";
+
+const meta = { title: "Page not found", noIndex: true };
+---
+
+<Base meta={meta}>
+  <div class="light-block notfound" data-surface="light">
+    <section class="container notfound__inner">
+      <p class="notfound__eyebrow">Error 404</p>
+      <h1 class="notfound__title">This page isn't <em>here</em>.</h1>
+      <p class="notfound__copy">
+        The page you're looking for may have moved, or isn't published.
+      </p>
+      <a class="notfound__link" href={asset("/")}>← Back to home</a>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .light-block { background: var(--bg); color: var(--fg); }
+  .notfound__inner {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: clamp(120px, 20vh, 200px);
+    padding-bottom: var(--section-pad);
+  }
+  .notfound__eyebrow {
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+    margin-bottom: clamp(16px, 2.5vw, 24px);
+  }
+  .notfound__title {
+    font-weight: 400;
+    font-size: clamp(40px, 6.2vw, 88px);
+    line-height: var(--lh-display);
+    letter-spacing: var(--tracking-display);
+    max-width: 16ch;
+    text-wrap: balance;
+  }
+  .notfound__title :global(em) { color: var(--accent-light); }
+  .notfound__copy {
+    margin-top: clamp(20px, 3vw, 28px);
+    max-width: 42ch;
+    font-size: var(--fs-body-lg);
+    line-height: 1.45;
+    color: #1a1a1a;
+  }
+  .notfound__link {
+    margin-top: clamp(28px, 4vw, 40px);
+    font-size: var(--fs-meta);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--fg-muted);
+    transition: color var(--dur-fast) ease;
+  }
+  .notfound__link:hover { color: var(--c-black); }
+</style>

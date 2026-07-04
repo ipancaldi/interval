@@ -27,6 +27,8 @@ import { asset } from "@lib/asset";
 import type { DimensionKey } from "@typings/ui";
 
 const page = await getPage("approach");
+// Hidden in the CMS (visible: false) → serve the 404, don't render the page.
+if (!page.visible) return Astro.rewrite("/404");
 const d = page.data as {
   hero: { eyebrowLeft: string; eyebrowRight: string; title: string; subtitle: string };
   closing: { label: string; title: string; body: string[] };

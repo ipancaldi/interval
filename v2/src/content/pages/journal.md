@@ -1,4 +1,5 @@
 ---
+visible: true
 meta:
   title: Journal
   description: The Interval Advisory journal — news, articles, event reports, research and projects. Perspectives on Total Experience Design for cultural, commercial, sports and immersive infrastructure projects.

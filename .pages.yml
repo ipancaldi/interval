@@ -158,6 +158,7 @@ content:
     path: v2/src/content/pages/approach.md
     format: yaml-frontmatter
     fields:
+      - { name: visible, label: "Show on site (uncheck to hide the page)", type: boolean, default: true }
       - name: meta
         label: SEO
         type: object
@@ -228,6 +229,7 @@ content:
     path: v2/src/content/pages/services.md
     format: yaml-frontmatter
     fields:
+      - { name: visible, label: "Show on site (uncheck to hide the page)", type: boolean, default: true }
       - name: meta
         label: SEO
         type: object
@@ -271,6 +273,7 @@ content:
     path: v2/src/content/pages/journal.md
     format: yaml-frontmatter
     fields:
+      - { name: visible, label: "Show on site (uncheck to hide the page)", type: boolean, default: true }
       - name: meta
         label: SEO
         type: object
@@ -307,6 +310,7 @@ content:
     path: v2/src/content/pages/about.md
     format: yaml-frontmatter
     fields:
+      - { name: visible, label: "Show on site (uncheck to hide the page)", type: boolean, default: true }
       - name: meta
         label: SEO
         type: object
@@ -382,6 +386,7 @@ content:
     path: v2/src/content/pages/contact.md
     format: yaml-frontmatter
     fields:
+      - { name: visible, label: "Show on site (uncheck to hide the page)", type: boolean, default: true }
       - name: meta
         label: SEO
         type: object

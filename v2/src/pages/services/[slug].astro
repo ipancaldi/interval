@@ -14,6 +14,7 @@ import ServiceModule from "@components/sections/ServiceModule.astro";
 import PhotoBleed from "@components/sections/PhotoBleed.astro";
 import Button from "@components/ui/Button.astro";
 import { services, getPalette, type Service } from "@lib/services-catalog";
+import { getPage } from "@lib/content";
 import { asset } from "@lib/asset";
 
 export function getStaticPaths() {
@@ -34,6 +35,10 @@ interface Props {
 }
 
 const { service, prev, next } = Astro.props;
+
+// If the Services section is hidden in the CMS, its detail pages go with it.
+const servicesPage = await getPage("services");
+if (!servicesPage.visible) return Astro.rewrite("/404");
 
 const meta = {
   title: service.name,

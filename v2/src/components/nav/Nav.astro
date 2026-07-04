@@ -11,6 +11,7 @@
  */
 
 import { asset } from "@lib/asset";
+import { listPages } from "@lib/content";
 
 interface NavLink {
   href: string;
@@ -50,9 +51,23 @@ const isActive = (href: string): boolean => {
   return currentPath === rel || currentPath.startsWith(rel);
 };
 
+// Drop any page toggled hidden in the CMS (visible: false) from the nav.
+const allPages = await listPages();
+const hiddenSlugs = new Set<string>(
+  allPages.filter((p) => !p.visible).map((p) => p.slug.replace(/\.md$/, ""))
+);
+const hrefToSlug = (href: string): string => {
+  const rel = stripBase(href).replace(/^\/|\/$/g, "");
+  return rel === "" ? "home" : rel;
+};
+const visibleLinks = links.filter((l) => !hiddenSlugs.has(hrefToSlug(l.href)));
+const showCta = !hiddenSlugs.has(hrefToSlug(cta.href));
+
 // Build a single ordered list that includes the CTA, used by the
 // mobile overlay so all destinations are reachable from one place.
-const mobileItems = [...links, { href: cta.href, label: cta.label }];
+const mobileItems = showCta
+  ? [...visibleLinks, { href: cta.href, label: cta.label }]
+  : [...visibleLinks];
 ---
 
 <nav class="nav" data-nav data-surface="dark" aria-label="Primary">
@@ -76,7 +91,7 @@ const mobileItems = [...links, { href: cta.href, label: cta.label }];
     </a>
 
     <ul class="nav__links" role="list">
-      {links.map((link) => (
+      {visibleLinks.map((link) => (
         <li>
           <a
             href={link.href}
@@ -89,7 +104,7 @@ const mobileItems = [...links, { href: cta.href, label: cta.label }];
       ))}
     </ul>
 
-    <a class="nav__cta" href={cta.href}>{cta.label}</a>
+    {showCta && <a class="nav__cta" href={cta.href}>{cta.label}</a>}
 
     <!-- Hamburger toggle — visible only below the desktop nav breakpoint. -->
     <button

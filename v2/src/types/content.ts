@@ -25,6 +25,9 @@ export interface PageMeta {
 export interface PageContent {
   slug: PageSlug;
   meta: PageMeta;
+  /** When false, the page is hidden from nav + sitemap and its URL
+   *  serves the 404 (enforced by a per-page guard). */
+  visible: boolean;
   /** Raw markdown body. Pages that want a rendered Content component
    *  can call `render(entry)` from astro:content directly. */
   body: string;
