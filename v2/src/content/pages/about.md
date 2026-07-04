@@ -1,5 +1,5 @@
 ---
-visible: false
+visible: true
 meta:
   title: About
   description: About Interval Advisory — a strategic experience consultancy
