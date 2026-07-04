@@ -287,6 +287,22 @@ content:
               - { name: eyebrowRight, label: Eyebrow (right), type: string }
               - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
               - { name: subtitle, label: Subtitle, type: text }
+          - name: founders
+            label: Founders
+            type: object
+            fields:
+              - { name: label, label: Section label, type: string }
+              - { name: title, label: Title (HTML — use <em> for emphasis), type: string }
+              - name: people
+                label: Founders
+                type: object
+                list: true
+                fields:
+                  - { name: name, label: Name, type: string }
+                  - { name: role, label: Role, type: string }
+                  - { name: image, label: Portrait, type: image }
+                  - { name: imageAlt, label: Portrait description (alt text), type: string }
+                  - { name: bio, label: Biography paragraphs, type: text, list: true }
           - name: story
             label: Who we are
             type: object

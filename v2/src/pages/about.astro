@@ -13,7 +13,7 @@
  */
 
 import Base from "@layouts/Base.astro";
-import PageHeader from "@components/sections/PageHeader.astro";
+import Founders from "@components/sections/Founders.astro";
 import MetaRow from "@components/sections/MetaRow.astro";
 import Editorial from "@components/sections/Editorial.astro";
 import SectionTitle from "@components/sections/SectionTitle.astro";
@@ -26,6 +26,11 @@ const page = await getPage("about");
 const site = await getSite();
 const d = page.data as {
   hero: { eyebrowLeft: string; eyebrowRight: string; title: string; subtitle: string };
+  founders: {
+    label: string;
+    title: string;
+    people: { name: string; role: string; image?: string; imageAlt?: string; bio: string[] }[];
+  };
   story: { label: string; title: string; body: string[] };
   how: { label: string; title: string; bodyLeft: string[]; bodyRight: string[] };
   studios: { label: string; title: string; body: string };
@@ -37,11 +42,11 @@ const d = page.data as {
 
   <div class="light-block" data-surface="light">
 
-    <PageHeader
-      eyebrowLeft={d.hero.eyebrowLeft}
-      eyebrowRight={d.hero.eyebrowRight}
-      title={d.hero.title}
-      subtitle={d.hero.subtitle}
+    <!-- FOUNDERS -->
+    <Founders
+      label={d.founders.label}
+      title={d.founders.title}
+      people={d.founders.people}
     />
 
     <!-- WHO WE ARE -->
@@ -104,7 +109,12 @@ const d = page.data as {
 </Base>
 
 <style>
-  .light-block { background: var(--bg); color: var(--fg); }
+  /* No hero — clear the fixed nav so the founders lead the page. */
+  .light-block {
+    background: var(--bg);
+    color: var(--fg);
+    padding-top: clamp(72px, 10vh, 104px);
+  }
 
   .how__columns {
     display: grid;

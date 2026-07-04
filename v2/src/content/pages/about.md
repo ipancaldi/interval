@@ -8,6 +8,22 @@ data:
     eyebrowRight: "London · Melbourne · Est. 2026"
     title: "The studio behind <em>Total Experience Design</em>."
     subtitle: "Interval Advisory is a strategic experience consultancy working across cultural, commercial, sports and immersive infrastructure projects."
+  founders:
+    label: "IV004 / Founders"
+    title: "Meet the <em>founders</em>."
+    people:
+      - name: "Alex"
+        role: "Co-founder"
+        image: ""
+        imageAlt: ""
+        bio:
+          - "Alex is a co-founder of Interval Advisory, the strategic experience consultancy behind Total Experience Design."
+      - name: "Karen"
+        role: "Co-founder"
+        image: ""
+        imageAlt: ""
+        bio:
+          - "Karen is a co-founder of Interval Advisory, the strategic experience consultancy behind Total Experience Design."
   story:
     label: "IV004 / Who we are"
     title: "Who we <em>are</em>."
