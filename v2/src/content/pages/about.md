@@ -35,7 +35,7 @@ data:
     title: Who we <em>are</em>.
     body:
       - Interval Advisory is a strategic experience consultancy. We help
-        organisations imagine, define and realise adaptive spaces — places
+        organisations imagine, define and realise adaptive spaces, places
         designed to serve multiple audiences, change across time and keep
         earning their place in people's lives.
       - "The studio brings together more than 20 years of experience across
