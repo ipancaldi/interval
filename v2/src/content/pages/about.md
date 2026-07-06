@@ -16,14 +16,14 @@ data:
     label: IV004 / Founders
     title: Meet the <em>founders</em>.
     people:
-      - name: Alex
+      - name: Alex Wills
         role: Co-founder
         image: /assets/images/alex.jpg
         imageAlt: Portrait of Alex, co-founder of Interval Advisory.
         bio:
           - Alex is a co-founder of Interval Advisory, the strategic experience
             consultancy behind Total Experience Design.
-      - name: Karen
+      - name: Karen Jemison
         role: Co-founder
         image: /assets/images/karen.jpg
         imageAlt: Portrait of Karen, co-founder of Interval Advisory.
