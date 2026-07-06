@@ -1,5 +1,5 @@
 ---
-visible: false
+visible: true
 meta:
   title: Journal
   description: The Interval Advisory journal — news, articles, event reports,
