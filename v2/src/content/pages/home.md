@@ -16,9 +16,9 @@ data:
       to create deeper engagement, stronger loyalty and lasting value.
   problem:
     label: IV001 / The Problem
-    title: Designing for <em>Adaptability</em>.
+    title: Designing for <em>Flexibility</em>.
     body:
-      - Adaptability is a core requirement for new spaces. Sports stadiums need
+      - Flexibility is a core requirement for new spaces. Sports stadiums need
         to double as concert venues, museums must seamlessly execute corporate
         events and commercial developments have to mix office floors with
         performance spaces.
